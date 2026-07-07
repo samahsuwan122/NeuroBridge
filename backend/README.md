@@ -3,12 +3,13 @@
 The backend is a **FastAPI** (Python) REST API. It serves all clients: the Flutter mobile app
 (patient + family) and the React + Vite web dashboard (doctor, therapist, admin, manager).
 
-As of **Phase 6**, this folder contains the FastAPI foundation (config + health endpoints), the
-**database foundation** (SQLAlchemy models, Alembic migrations, role seed), **authentication + RBAC**
-(JWT login/refresh/logout, current-user, role guards, login audit), **admin user management**
-(admin-only user CRUD, activate/deactivate, role assignment, audit), and the **patient profile module**
-(profiles, clinician assignment, family/caregiver linking, role-based visibility). There are still
-**no** cognitive games, therapy, AI, or report APIs — those come later.
+As of **Phase 9**, this folder contains the FastAPI foundation, the **database foundation**,
+**authentication + RBAC**, **admin user management**, the **patient profile module**, and the
+**cognitive games module** (game definitions, patient-submitted results, role-scoped result
+visibility, audit). There are still **no** assessment, therapy, AI, or report APIs — those come later.
+
+Games are cognitive **exercises** and progress tracking only. There are **no** diagnostic fields;
+scores are exercise/game performance only.
 
 ## Python version
 
@@ -30,6 +31,7 @@ backend/
     versions/
       0001_initial.py   # creates users, roles, user_roles, medical_centers, audit_logs
       0002_patient_profiles.py  # patient_profiles, patient_assignments, patient_family_links
+      0003_cognitive_games.py   # game_definitions, game_results
   app/
     __init__.py
     main.py             # FastAPI app + health endpoints
@@ -48,9 +50,11 @@ backend/
       __init__.py       # imports all models (registers them on Base.metadata)
       user.py role.py user_role.py medical_center.py audit_log.py
       patient_profile.py patient_assignment.py patient_family_link.py
+      game_definition.py game_result.py
     scripts/
       __init__.py
       seed_roles.py     # idempotent seeding of the 6 default roles
+      seed_games.py     # idempotent seeding of the default game definitions
     modules/            # feature modules
       __init__.py
       auth/             # authentication + RBAC (Phase 4)
@@ -62,6 +66,8 @@ backend/
         schemas.py service.py routes.py
       patients/         # patient profiles + care-team links (Phase 6)
         schemas.py service.py routes.py
+      games/            # cognitive games + results (Phase 9)
+        schemas.py service.py routes.py
     tests/
       __init__.py
       conftest.py       # isolated in-memory DB + client + user_factory fixtures
@@ -70,6 +76,7 @@ backend/
       test_auth.py      # auth + RBAC tests
       test_admin_users.py  # admin user-management tests
       test_patients.py  # patient profile + visibility tests
+      test_games.py     # cognitive games + result visibility tests
 ```
 
 ## Database
@@ -190,6 +197,28 @@ disease prediction, or scoring fields.
   `family` role (role mismatch / missing user → `400`).
 - **Audit:** `create_patient_profile`, `update_patient_profile`, `assign_clinician`, `link_family`
   (plus `deactivate_assignment` / `deactivate_family_link`).
+
+## Cognitive games (Phase 9)
+
+Cognitive **exercises** and progress tracking — **no diagnosis, disease prediction, or medical
+interpretation**. Scores are exercise/game performance only.
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/api/v1/games` | any (auth) | List active games (`?include_inactive=true` respected for admin) |
+| POST | `/api/v1/games` | admin | Create a game definition (unique slug) |
+| GET | `/api/v1/games/results` | any (scoped) | List game results visible to the caller |
+| GET | `/api/v1/games/{game_id}` | any (auth) | Get one game definition |
+| PUT | `/api/v1/games/{game_id}` | admin | Update a game definition |
+| POST | `/api/v1/games/{game_id}/results` | patient | Submit a result for the caller's own profile |
+
+- **Result visibility** reuses the patient-profile rules: admin → all; doctor/therapist → assigned
+  patients; patient → own; family → linked; manager → same medical center. Unrelated patients' results
+  are never returned.
+- **Validation:** duplicate slug → `409`; submit to an inactive game → `400`; submit for a profile you
+  don't own → `403`; unknown game → `404`. Seed with `python -m app.scripts.seed_games`
+  (memory_match, attention_focus, reaction_time, sequence_order).
+- **Audit:** `create_game_definition`, `update_game_definition`, `submit_game_result`.
 
 ## Configuration
 

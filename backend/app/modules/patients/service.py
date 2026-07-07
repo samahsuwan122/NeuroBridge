@@ -264,6 +264,19 @@ def list_profiles(
     return list(rows), len(ids)
 
 
+def visible_patient_profile_ids(
+    session: Session, viewer: User, roles: Iterable[str]
+) -> Optional[Set[uuid.UUID]]:
+    """Profile ids the viewer may access, or None for admin (meaning "all").
+
+    Reused by other modules (e.g. games) so patient-visibility rules live in one
+    place.
+    """
+    if ROLE_ADMIN in set(roles):
+        return None
+    return _visible_profile_ids(session, viewer, roles)
+
+
 # --- mutations ---------------------------------------------------------------
 
 

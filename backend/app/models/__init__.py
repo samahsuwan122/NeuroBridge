@@ -7,6 +7,8 @@ that metadata is complete.
 
 from app.db.base import Base
 from app.models.audit_log import AuditLog
+from app.models.game_definition import GameDefinition
+from app.models.game_result import GameResult
 from app.models.medical_center import MedicalCenter
 from app.models.patient_assignment import PatientAssignment
 from app.models.patient_family_link import PatientFamilyLink
@@ -25,4 +27,6 @@ __all__ = [
     "PatientProfile",
     "PatientAssignment",
     "PatientFamilyLink",
+    "GameDefinition",
+    "GameResult",
 ]
