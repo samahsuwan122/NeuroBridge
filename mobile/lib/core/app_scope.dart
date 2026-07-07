@@ -1,19 +1,22 @@
 import 'package:flutter/widgets.dart';
 
 import '../features/auth/application/auth_controller.dart';
+import '../features/home/application/home_controller.dart';
 import 'localization/locale_controller.dart';
 
-/// Exposes the app-wide controllers (auth + locale) to the widget tree.
+/// Exposes the app-wide controllers (auth, locale, home) to the widget tree.
 class AppScope extends InheritedWidget {
   const AppScope({
     super.key,
     required this.auth,
     required this.locale,
+    required this.home,
     required super.child,
   });
 
   final AuthController auth;
   final LocaleController locale;
+  final HomeController home;
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -23,5 +26,7 @@ class AppScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(AppScope oldWidget) =>
-      auth != oldWidget.auth || locale != oldWidget.locale;
+      auth != oldWidget.auth ||
+      locale != oldWidget.locale ||
+      home != oldWidget.home;
 }

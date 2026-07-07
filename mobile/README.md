@@ -7,12 +7,14 @@ for patients and their families/caregivers.
 > Clinical and administrative roles (doctor, therapist, admin, manager) use the **web dashboard**
 > instead — see [`../web/README.md`](../web/README.md). There is **no patient web dashboard**.
 
-As of **Phase 7**, the Flutter project is scaffolded with a clean foundation: routing, theme,
-Arabic/English localization (RTL), a secure token store, a Dio API client, and a **login screen wired
-to the backend** plus a logged-in **home placeholder** with logout. Patient/family features come in
-later phases.
+As of **Phase 8**, the app has a clean foundation (routing, theme, Arabic/English localization with
+RTL, secure token store, Dio API client, backend-wired login) and a **patient/family home screen**:
+a header (name, roles, logout), a **patient profile summary** (loaded from `GET /api/v1/patients`,
+with safe empty/error states), and elderly-friendly **dashboard cards** (Today's Therapy, Cognitive
+Games, Progress, Reminders, My Profile, Family Support) shown as **"Coming soon"** placeholders. No
+real games/therapy/progress logic yet.
 
-## Project structure (Phase 7)
+## Project structure
 
 ```text
 mobile/
@@ -21,7 +23,7 @@ mobile/
     main.dart                     # bootstrap + dependency wiring
     app.dart                      # MaterialApp.router + theme + localization
     core/
-      app_scope.dart              # exposes auth + locale controllers to the tree
+      app_scope.dart              # exposes auth + locale + home controllers
       config/app_config.dart      # configurable backend base URL
       network/api_client.dart     # Dio wrapper
       storage/secure_storage_service.dart
@@ -29,12 +31,17 @@ mobile/
       localization/app_localizations.dart   # en/ar strings + delegate
       localization/locale_controller.dart
       widgets/language_button.dart
+      widgets/dashboard_card.dart  # large elderly-friendly card
+      widgets/loading_state.dart
+      widgets/error_state.dart
     features/
       auth/
         data/{auth_api,auth_repository,auth_user}.dart
         application/auth_controller.dart
         presentation/login_screen.dart
       home/
+        data/{patient_api,patient_profile_summary}.dart
+        application/home_controller.dart
         presentation/home_screen.dart
     routes/app_router.dart        # go_router with auth redirect
 ```

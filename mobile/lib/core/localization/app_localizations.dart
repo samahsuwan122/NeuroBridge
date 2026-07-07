@@ -33,6 +33,27 @@ class AppLocalizations {
       'rolesLabel': 'Roles',
       'fieldRequired': 'This field is required.',
       'languageToggle': 'العربية',
+      // Dashboard cards
+      'todayTherapy': "Today's Therapy",
+      'todayTherapyDesc': 'Your therapy activities for today.',
+      'cognitiveGames': 'Cognitive Games',
+      'cognitiveGamesDesc': 'Exercises for memory and attention.',
+      'progress': 'Progress',
+      'progressDesc': 'See how you are doing over time.',
+      'reminders': 'Reminders',
+      'remindersDesc': 'Medication and appointment reminders.',
+      'myProfile': 'My Profile',
+      'myProfileDesc': 'View your profile details.',
+      'familySupport': 'Family Support',
+      'familySupportDesc': 'Stay connected with your caregivers.',
+      'comingSoon': 'Coming soon',
+      // Patient summary
+      'patientSummary': 'Patient summary',
+      'noPatientProfile': 'No patient profile linked yet.',
+      'profileLoadError': 'Could not load your profile. Please try again.',
+      'retry': 'Retry',
+      'emergencyContact': 'Emergency contact',
+      'medicalCenter': 'Medical center',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -48,6 +69,27 @@ class AppLocalizations {
       'rolesLabel': 'الأدوار',
       'fieldRequired': 'هذا الحقل مطلوب.',
       'languageToggle': 'English',
+      // Dashboard cards
+      'todayTherapy': 'جلسة اليوم',
+      'todayTherapyDesc': 'أنشطة العلاج الخاصة بك اليوم.',
+      'cognitiveGames': 'الألعاب الإدراكية',
+      'cognitiveGamesDesc': 'تمارين للذاكرة والانتباه.',
+      'progress': 'التقدم',
+      'progressDesc': 'تابع أداءك مع مرور الوقت.',
+      'reminders': 'التذكيرات',
+      'remindersDesc': 'تذكيرات الأدوية والمواعيد.',
+      'myProfile': 'ملفي الشخصي',
+      'myProfileDesc': 'عرض تفاصيل ملفك الشخصي.',
+      'familySupport': 'دعم العائلة',
+      'familySupportDesc': 'ابقَ على تواصل مع مقدّمي الرعاية.',
+      'comingSoon': 'قريبًا',
+      // Patient summary
+      'patientSummary': 'ملخص المريض',
+      'noPatientProfile': 'لا يوجد ملف مريض مرتبط بعد.',
+      'profileLoadError': 'تعذّر تحميل ملفك. حاول مرة أخرى.',
+      'retry': 'إعادة المحاولة',
+      'emergencyContact': 'جهة اتصال للطوارئ',
+      'medicalCenter': 'المركز الطبي',
     },
   };
 
@@ -67,6 +109,27 @@ class AppLocalizations {
   String get rolesLabel => _t('rolesLabel');
   String get fieldRequired => _t('fieldRequired');
   String get languageToggle => _t('languageToggle');
+
+  String get todayTherapy => _t('todayTherapy');
+  String get todayTherapyDesc => _t('todayTherapyDesc');
+  String get cognitiveGames => _t('cognitiveGames');
+  String get cognitiveGamesDesc => _t('cognitiveGamesDesc');
+  String get progress => _t('progress');
+  String get progressDesc => _t('progressDesc');
+  String get reminders => _t('reminders');
+  String get remindersDesc => _t('remindersDesc');
+  String get myProfile => _t('myProfile');
+  String get myProfileDesc => _t('myProfileDesc');
+  String get familySupport => _t('familySupport');
+  String get familySupportDesc => _t('familySupportDesc');
+  String get comingSoon => _t('comingSoon');
+
+  String get patientSummary => _t('patientSummary');
+  String get noPatientProfile => _t('noPatientProfile');
+  String get profileLoadError => _t('profileLoadError');
+  String get retry => _t('retry');
+  String get emergencyContact => _t('emergencyContact');
+  String get medicalCenter => _t('medicalCenter');
 }
 
 class _AppLocalizationsDelegate
