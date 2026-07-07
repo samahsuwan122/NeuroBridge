@@ -1,9 +1,8 @@
 # NeuroBridge
 
-NeuroBridge is a **mobile-first, AI-powered cognitive rehabilitation and monitoring platform**.
-It helps patients complete cognitive exercises and therapy activities, lets families/caregivers
-follow along, and gives doctors, therapists, and administrators the tools to review progress and
-coordinate care.
+NeuroBridge is a smart cognitive rehabilitation and monitoring platform designed to connect patients, doctors, therapists, and families in one system.
+
+The platform helps patients complete cognitive exercises and therapy activities, allows caregivers to monitor daily progress, and provides doctors with tools to review reports, track improvement, and coordinate personalized care.
 
 > ⚠️ **NeuroBridge is NOT a diagnostic medical system.**
 > It does not diagnose Alzheimer's, dementia, stroke, cognitive impairment, or any other medical
