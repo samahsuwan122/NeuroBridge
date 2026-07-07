@@ -3,9 +3,10 @@
 The backend is a **FastAPI** (Python) REST API. It serves all clients: the Flutter mobile app
 (patient + family) and the React + Vite web dashboard (doctor, therapist, admin, manager).
 
-As of **Phase 3**, this folder contains a FastAPI application foundation (config + health endpoints)
-plus the **database foundation**: SQLAlchemy models, Alembic migrations, and a role seed script.
-There is still **no** authentication and **no** business/API modules — those arrive in later phases.
+As of **Phase 4**, this folder contains the FastAPI foundation (config + health endpoints), the
+**database foundation** (SQLAlchemy models, Alembic migrations, role seed), and **authentication +
+RBAC** (JWT login/refresh/logout, current-user, role guards, login audit). There are still **no**
+business/feature APIs (patients, admin user management, doctor/family dashboards) — those come later.
 
 ## Python version
 
@@ -33,6 +34,8 @@ backend/
       __init__.py
       config.py         # environment-driven settings
       database.py       # re-exports engine/session + credential-safe helpers
+      security.py       # password hashing (bcrypt)
+      permissions.py    # role constants + has_any_role
     db/
       __init__.py
       base.py           # DeclarativeBase + constraint naming convention
@@ -44,12 +47,19 @@ backend/
     scripts/
       __init__.py
       seed_roles.py     # idempotent seeding of the 6 default roles
-    modules/            # feature modules (later phases)
+    modules/            # feature modules
       __init__.py
+      auth/             # authentication + RBAC (Phase 4)
+        tokens.py       # JWT create/decode (PyJWT)
+        schemas.py service.py routes.py dependencies.py
+      audit/            # reusable audit-log service (Phase 4)
+        service.py
     tests/
       __init__.py
+      conftest.py       # isolated in-memory DB + client + user_factory fixtures
       test_health.py    # health endpoint tests
       test_database.py  # model/metadata/seed tests
+      test_auth.py      # auth + RBAC tests
 ```
 
 ## Database
@@ -104,12 +114,34 @@ pytest
 Both return: `success`, `service` (`"NeuroBridge API"`), `status` (`"healthy"`), `version` (`"v1"`),
 and `environment` (current `APP_ENV`).
 
+## Authentication (Phase 4)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/api/v1/auth/login` | none | Log in with `email_or_phone` + `password`; returns access/refresh tokens, user info, roles |
+| GET | `/api/v1/auth/me` | Bearer | Current user's basic info and roles |
+| POST | `/api/v1/auth/refresh` | none (refresh token in body) | Issue a new access token from a valid refresh token |
+| POST | `/api/v1/auth/logout` | Bearer | Record a logout audit entry (JWT is stateless; client discards the token) |
+
+- **Passwords:** hashed with **bcrypt** (`app/core/security.py`); only the hash is stored. Plain-text
+  passwords are never stored or logged.
+- **JWT:** **PyJWT** (`app/modules/auth/tokens.py`), signed with `JWT_SECRET_KEY`/`JWT_ALGORITHM`;
+  access-token TTL from `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`, refresh from `JWT_REFRESH_TOKEN_EXPIRE_DAYS`.
+- **RBAC guards:** `get_current_user`, `get_current_active_user`, and `require_roles([...])` in
+  `app/modules/auth/dependencies.py`. Roles are validated against the database.
+- **Audit:** successful login writes an `audit_logs` row (`action="login"`); logout writes
+  `action="logout"`.
+- **Safe errors:** invalid login (unknown user / wrong password / inactive) returns a single generic
+  `401`. Missing/invalid bearer token returns `401`; wrong role returns `403`.
+
+> Change `JWT_SECRET_KEY` from the default before any non-local use.
+
 ## Configuration
 
 Backend configuration comes from environment variables (see [`../.env.example`](../.env.example)),
 loaded via `app/core/config.py`. Sensible defaults let the app run without a `.env` file. Key values:
-`DATABASE_URL` (SQLite locally, PostgreSQL officially), `CORS_ORIGINS`, and `JWT_*` (reserved for the
-auth phase; no auth logic exists yet).
+`DATABASE_URL` (SQLite locally, PostgreSQL officially), `CORS_ORIGINS`, and `JWT_*` (secret, algorithm,
+and token lifetimes used by authentication).
 
 ## Safety reminder
 

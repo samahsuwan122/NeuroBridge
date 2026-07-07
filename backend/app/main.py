@@ -7,9 +7,9 @@ This defines a real FastAPI application with:
 - Environment-driven configuration
 - CORS configured from CORS_ORIGINS
 - Health endpoints: GET /health and GET /api/v1/health
-- A database connection placeholder (no models, no migrations yet)
+- Authentication routes under /api/v1/auth (Phase 4)
 
-No authentication, database models, or business features are implemented yet.
+No business/feature APIs (patients, admin, doctor/family) are implemented yet.
 NeuroBridge is NOT a diagnostic medical system.
 """
 
@@ -21,6 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core import database
 from app.core.config import get_settings
+from app.modules.auth.routes import router as auth_router
 
 logger = logging.getLogger("neurobridge")
 
@@ -35,8 +36,7 @@ async def lifespan(app: FastAPI):
     """Application startup/shutdown logging (no side effects on the database)."""
     logger.info("%s starting (environment=%s)", SERVICE_NAME, settings.app_env)
     logger.info(
-        "Database configured (placeholder, no models yet): backend=%s",
-        database.describe_configured_database(),
+        "Database configured: backend=%s", database.describe_configured_database()
     )
     yield
     logger.info("%s shutting down", SERVICE_NAME)
@@ -56,6 +56,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Feature routers.
+app.include_router(auth_router)
 
 
 def _health_payload() -> dict:
