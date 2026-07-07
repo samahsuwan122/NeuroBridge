@@ -1,19 +1,19 @@
-"""Database connection placeholder for the NeuroBridge backend.
+"""Database access helpers for the NeuroBridge backend.
 
-Phase 2 scope: read `DATABASE_URL` only.
+Phase 3: the SQLAlchemy engine, session factory, and `get_db` dependency live in
+`app.db.session` and are re-exported here for convenience/backwards
+compatibility. This module also exposes small, credential-safe helpers used for
+logging/diagnostics.
 
-- No SQLAlchemy engine, ORM models, or sessions are created here.
-- No migrations are run here.
-- The real engine/session setup and models arrive in **Phase 3**, together with
-  SQLAlchemy and Alembic.
-
-Local development uses SQLite by default; PostgreSQL is the official database.
-The active database is chosen entirely by the `DATABASE_URL` value.
+The active database is chosen entirely by `DATABASE_URL`:
+- Local development defaults to SQLite (no server required).
+- PostgreSQL is the official database.
 """
 
 from urllib.parse import urlparse
 
 from app.core.config import get_settings
+from app.db.session import SessionLocal, engine, get_db  # noqa: F401  (re-export)
 
 
 def get_database_url() -> str:
@@ -29,3 +29,12 @@ def describe_configured_database() -> str:
     """
     scheme = urlparse(get_database_url()).scheme or "unknown"
     return scheme.split("+", 1)[0]
+
+
+__all__ = [
+    "engine",
+    "SessionLocal",
+    "get_db",
+    "get_database_url",
+    "describe_configured_database",
+]
