@@ -1,16 +1,81 @@
-"""NeuroBridge backend entry point.
+"""NeuroBridge backend application entry point.
 
-PLACEHOLDER (Phase 1 — Project Foundation).
-
-No FastAPI application, routes, configuration, database, or authentication are
-defined yet. The real application entry point (including the health-check
-endpoints `GET /health` and `GET /api/v1/health`) is implemented in
 Phase 2 — Backend Skeleton.
 
-See:
-- ../README.md
-- ../../PROJECT_EXECUTION_PLAN.md (Phase 2)
-- ../../CLAUDE.md (project rules and medical-safety guardrails)
+This defines a real FastAPI application with:
+- App title "NeuroBridge API" and API version "v1"
+- Environment-driven configuration
+- CORS configured from CORS_ORIGINS
+- Health endpoints: GET /health and GET /api/v1/health
+- A database connection placeholder (no models, no migrations yet)
+
+No authentication, database models, or business features are implemented yet.
+NeuroBridge is NOT a diagnostic medical system.
 """
 
-# Intentionally empty in Phase 1. Do not add business logic here yet.
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core import database
+from app.core.config import get_settings
+
+logger = logging.getLogger("neurobridge")
+
+settings = get_settings()
+
+API_VERSION = "v1"
+SERVICE_NAME = "NeuroBridge API"
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application startup/shutdown logging (no side effects on the database)."""
+    logger.info("%s starting (environment=%s)", SERVICE_NAME, settings.app_env)
+    logger.info(
+        "Database configured (placeholder, no models yet): backend=%s",
+        database.describe_configured_database(),
+    )
+    yield
+    logger.info("%s shutting down", SERVICE_NAME)
+
+
+app = FastAPI(
+    title=SERVICE_NAME,
+    version=API_VERSION,
+    lifespan=lifespan,
+)
+
+# CORS — allow the configured web dashboard origins.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+def _health_payload() -> dict:
+    """Shared health-check response body."""
+    return {
+        "success": True,
+        "service": SERVICE_NAME,
+        "status": "healthy",
+        "version": API_VERSION,
+        "environment": settings.app_env,
+    }
+
+
+@app.get("/health", tags=["health"])
+def health() -> dict:
+    """Service liveness check."""
+    return _health_payload()
+
+
+@app.get("/api/v1/health", tags=["health"])
+def api_health() -> dict:
+    """Versioned API health check."""
+    return _health_payload()
