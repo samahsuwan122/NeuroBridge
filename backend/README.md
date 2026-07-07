@@ -3,11 +3,12 @@
 The backend is a **FastAPI** (Python) REST API. It serves all clients: the Flutter mobile app
 (patient + family) and the React + Vite web dashboard (doctor, therapist, admin, manager).
 
-As of **Phase 5**, this folder contains the FastAPI foundation (config + health endpoints), the
+As of **Phase 6**, this folder contains the FastAPI foundation (config + health endpoints), the
 **database foundation** (SQLAlchemy models, Alembic migrations, role seed), **authentication + RBAC**
-(JWT login/refresh/logout, current-user, role guards, login audit), and **admin user management**
-(admin-only user CRUD, activate/deactivate, role assignment, audit). There are still **no** patient,
-doctor, or family feature APIs — those come later.
+(JWT login/refresh/logout, current-user, role guards, login audit), **admin user management**
+(admin-only user CRUD, activate/deactivate, role assignment, audit), and the **patient profile module**
+(profiles, clinician assignment, family/caregiver linking, role-based visibility). There are still
+**no** cognitive games, therapy, AI, or report APIs — those come later.
 
 ## Python version
 
@@ -28,6 +29,7 @@ backend/
     script.py.mako
     versions/
       0001_initial.py   # creates users, roles, user_roles, medical_centers, audit_logs
+      0002_patient_profiles.py  # patient_profiles, patient_assignments, patient_family_links
   app/
     __init__.py
     main.py             # FastAPI app + health endpoints
@@ -45,6 +47,7 @@ backend/
     models/
       __init__.py       # imports all models (registers them on Base.metadata)
       user.py role.py user_role.py medical_center.py audit_log.py
+      patient_profile.py patient_assignment.py patient_family_link.py
     scripts/
       __init__.py
       seed_roles.py     # idempotent seeding of the 6 default roles
@@ -57,6 +60,8 @@ backend/
         service.py
       admin/            # admin user management (Phase 5)
         schemas.py service.py routes.py
+      patients/         # patient profiles + care-team links (Phase 6)
+        schemas.py service.py routes.py
     tests/
       __init__.py
       conftest.py       # isolated in-memory DB + client + user_factory fixtures
@@ -64,6 +69,7 @@ backend/
       test_database.py  # model/metadata/seed tests
       test_auth.py      # auth + RBAC tests
       test_admin_users.py  # admin user-management tests
+      test_patients.py  # patient profile + visibility tests
 ```
 
 ## Database
@@ -159,6 +165,31 @@ Responses never include `password_hash`.
 - **Audit:** `create_user`, `update_user`, `deactivate_user`, `activate_user` each write an
   `audit_logs` row (with the acting admin as `actor_user_id`).
 - There is **no** public registration endpoint — users are provisioned by an admin.
+
+## Patient profiles (Phase 6)
+
+Stores patient profile and care-team relationship data only. **No diagnostic data** — no diagnosis,
+disease prediction, or scoring fields.
+
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| POST | `/api/v1/patients` | admin | Create a patient profile (user must have the `patient` role) |
+| GET | `/api/v1/patients` | any (scoped) | List profiles visible to the caller |
+| GET | `/api/v1/patients/{id}` | any (scoped) | Get one profile (403 if not visible) |
+| PUT | `/api/v1/patients/{id}` | admin | Update provided fields |
+| POST | `/api/v1/patients/{id}/assign-clinician` | admin | Assign a doctor/therapist |
+| POST | `/api/v1/patients/{id}/link-family` | admin | Link a family/caregiver user |
+| POST | `/api/v1/patients/{id}/assignments/{assignment_id}/deactivate` | admin | Deactivate an assignment |
+| POST | `/api/v1/patients/{id}/family-links/{link_id}/deactivate` | admin | Deactivate a family link |
+
+- **Visibility (RBAC):** admin → all; manager → same medical center; doctor/therapist → actively
+  assigned patients; patient → own profile; family → actively linked profiles. Unauthenticated →
+  `401`; authenticated but not permitted → `403`; missing profile → `404`.
+- **Validation:** target user must have the `patient` role; one profile per user (duplicate → `409`);
+  assigned clinician must hold the matching `doctor`/`therapist` role; linked user must hold the
+  `family` role (role mismatch / missing user → `400`).
+- **Audit:** `create_patient_profile`, `update_patient_profile`, `assign_clinician`, `link_family`
+  (plus `deactivate_assignment` / `deactivate_family_link`).
 
 ## Configuration
 
