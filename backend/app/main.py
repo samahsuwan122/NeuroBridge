@@ -8,8 +8,9 @@ This defines a real FastAPI application with:
 - CORS configured from CORS_ORIGINS
 - Health endpoints: GET /health and GET /api/v1/health
 - Authentication routes under /api/v1/auth (Phase 4)
+- Admin user-management routes under /api/v1/admin (Phase 5)
 
-No business/feature APIs (patients, admin, doctor/family) are implemented yet.
+No patient/doctor/family feature APIs are implemented yet.
 NeuroBridge is NOT a diagnostic medical system.
 """
 
@@ -21,6 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core import database
 from app.core.config import get_settings
+from app.modules.admin.routes import router as admin_router
 from app.modules.auth.routes import router as auth_router
 
 logger = logging.getLogger("neurobridge")
@@ -59,6 +61,7 @@ app.add_middleware(
 
 # Feature routers.
 app.include_router(auth_router)
+app.include_router(admin_router)
 
 
 def _health_payload() -> dict:

@@ -3,10 +3,11 @@
 The backend is a **FastAPI** (Python) REST API. It serves all clients: the Flutter mobile app
 (patient + family) and the React + Vite web dashboard (doctor, therapist, admin, manager).
 
-As of **Phase 4**, this folder contains the FastAPI foundation (config + health endpoints), the
-**database foundation** (SQLAlchemy models, Alembic migrations, role seed), and **authentication +
-RBAC** (JWT login/refresh/logout, current-user, role guards, login audit). There are still **no**
-business/feature APIs (patients, admin user management, doctor/family dashboards) — those come later.
+As of **Phase 5**, this folder contains the FastAPI foundation (config + health endpoints), the
+**database foundation** (SQLAlchemy models, Alembic migrations, role seed), **authentication + RBAC**
+(JWT login/refresh/logout, current-user, role guards, login audit), and **admin user management**
+(admin-only user CRUD, activate/deactivate, role assignment, audit). There are still **no** patient,
+doctor, or family feature APIs — those come later.
 
 ## Python version
 
@@ -54,12 +55,15 @@ backend/
         schemas.py service.py routes.py dependencies.py
       audit/            # reusable audit-log service (Phase 4)
         service.py
+      admin/            # admin user management (Phase 5)
+        schemas.py service.py routes.py
     tests/
       __init__.py
       conftest.py       # isolated in-memory DB + client + user_factory fixtures
       test_health.py    # health endpoint tests
       test_database.py  # model/metadata/seed tests
       test_auth.py      # auth + RBAC tests
+      test_admin_users.py  # admin user-management tests
 ```
 
 ## Database
@@ -135,6 +139,26 @@ and `environment` (current `APP_ENV`).
   `401`. Missing/invalid bearer token returns `401`; wrong role returns `403`.
 
 > Change `JWT_SECRET_KEY` from the default before any non-local use.
+
+## Admin user management (Phase 5)
+
+All endpoints require an authenticated **admin** (unauthenticated → `401`, non-admin → `403`).
+Responses never include `password_hash`.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/v1/admin/users` | List users (`limit`, `offset`); includes roles |
+| POST | `/api/v1/admin/users` | Create a user (hashed password, role assignment) → `201` |
+| PUT | `/api/v1/admin/users/{userId}` | Update provided fields; optionally replace roles / reset password |
+| POST | `/api/v1/admin/users/{userId}/deactivate` | Set status to `inactive` (no delete) |
+| POST | `/api/v1/admin/users/{userId}/activate` | Set status to `active` |
+| GET | `/api/v1/admin/roles` | List the seeded roles |
+
+- **Validation:** a user needs at least an email or phone; duplicate email/phone → `409`; unknown
+  role → `400`; unknown user → `404`.
+- **Audit:** `create_user`, `update_user`, `deactivate_user`, `activate_user` each write an
+  `audit_logs` row (with the acting admin as `actor_user_id`).
+- There is **no** public registration endpoint — users are provisioned by an admin.
 
 ## Configuration
 
