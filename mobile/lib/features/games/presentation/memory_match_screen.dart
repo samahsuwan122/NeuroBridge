@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/app_scope.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/language_button.dart';
+import '../application/game_result_controller.dart';
 import '../application/memory_match_controller.dart';
 import '../data/game_definition.dart';
 import '../data/memory_card.dart';
 
-/// Playable Memory Match exercise (mobile). Play-only — results are not
-/// submitted to the backend, and scores are game performance only.
+/// Playable Memory Match exercise (mobile). On completion the result is
+/// auto-submitted once as game performance only (no medical interpretation).
 class MemoryMatchScreen extends StatefulWidget {
   const MemoryMatchScreen({super.key, this.game});
 
@@ -19,16 +21,69 @@ class MemoryMatchScreen extends StatefulWidget {
 
 class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
   final MemoryMatchController _controller = MemoryMatchController();
+  GameResultController? _submitter;
+  bool _submitAttempted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onGameChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _submitter = AppScope.of(context).gameResults;
+  }
 
   @override
   void dispose() {
+    _controller.removeListener(_onGameChanged);
     _controller.dispose();
     super.dispose();
+  }
+
+  void _onGameChanged() {
+    // Auto-submit once when the game is completed (only if we know the game id).
+    if (_controller.completed &&
+        !_submitAttempted &&
+        widget.game != null &&
+        _submitter != null) {
+      _submitAttempted = true;
+      _submitResult();
+    }
+  }
+
+  void _submitResult() {
+    final game = widget.game;
+    final submitter = _submitter;
+    if (game == null || submitter == null) return;
+    submitter.submit(
+      gameId: game.id,
+      score: _controller.matchedPairs,
+      maxScore: _controller.totalPairs,
+      durationSeconds: _controller.elapsedSeconds,
+      completed: true,
+      metrics: {
+        'moves': _controller.moves,
+        'mistakes': _controller.mistakes,
+        'matched_pairs': _controller.matchedPairs,
+        'total_pairs': _controller.totalPairs,
+      },
+    );
+  }
+
+  void _playAgain() {
+    _submitAttempted = false;
+    _submitter?.reset();
+    _controller.restart();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final submitter = AppScope.of(context).gameResults;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.game?.name ?? 'Memory Match'),
@@ -39,7 +94,7 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
             child: AnimatedBuilder(
-              animation: _controller,
+              animation: Listenable.merge([_controller, submitter]),
               builder: (context, _) {
                 return Padding(
                   padding: const EdgeInsets.all(16),
@@ -48,7 +103,14 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
                       _StatsRow(controller: _controller, l10n: l10n),
                       const SizedBox(height: 12),
                       if (_controller.completed) ...[
-                        _CompletionPanel(controller: _controller, l10n: l10n),
+                        _CompletionPanel(
+                          controller: _controller,
+                          l10n: l10n,
+                          submitStatus:
+                              widget.game != null ? submitter.status : null,
+                          onRetrySave: _submitResult,
+                          onPlayAgain: _playAgain,
+                        ),
                         const SizedBox(height: 12),
                       ],
                       Expanded(
@@ -149,10 +211,19 @@ class _CardTile extends StatelessWidget {
 }
 
 class _CompletionPanel extends StatelessWidget {
-  const _CompletionPanel({required this.controller, required this.l10n});
+  const _CompletionPanel({
+    required this.controller,
+    required this.l10n,
+    required this.submitStatus,
+    required this.onRetrySave,
+    required this.onPlayAgain,
+  });
 
   final MemoryMatchController controller;
   final AppLocalizations l10n;
+  final SubmitStatus? submitStatus;
+  final VoidCallback onRetrySave;
+  final VoidCallback onPlayAgain;
 
   @override
   Widget build(BuildContext context) {
@@ -172,13 +243,18 @@ class _CompletionPanel extends StatelessWidget {
             Text('${l10n.mistakes}: ${controller.mistakes}'),
             Text('${l10n.time}: ${controller.elapsedSeconds}s'),
             const SizedBox(height: 8),
-            Text(
-              l10n.performanceOnlyNote,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(l10n.performanceOnlyNote, style: theme.textTheme.bodySmall),
+            if (submitStatus != null) ...[
+              const SizedBox(height: 12),
+              _SubmissionRow(
+                status: submitStatus!,
+                l10n: l10n,
+                onRetry: onRetrySave,
+              ),
+            ],
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: controller.restart,
+              onPressed: onPlayAgain,
               icon: const Icon(Icons.refresh),
               label: Text(l10n.playAgain),
             ),
@@ -186,5 +262,52 @@ class _CompletionPanel extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SubmissionRow extends StatelessWidget {
+  const _SubmissionRow({
+    required this.status,
+    required this.l10n,
+    required this.onRetry,
+  });
+
+  final SubmitStatus status;
+  final AppLocalizations l10n;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    switch (status) {
+      case SubmitStatus.idle:
+      case SubmitStatus.submitting:
+        return Row(
+          children: [
+            const SizedBox(
+              height: 16,
+              width: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            const SizedBox(width: 8),
+            Text(l10n.savingResult),
+          ],
+        );
+      case SubmitStatus.saved:
+        return Row(
+          children: [
+            Icon(Icons.check_circle, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Text(l10n.resultSaved),
+          ],
+        );
+      case SubmitStatus.error:
+        return Row(
+          children: [
+            Expanded(child: Text(l10n.resultSaveFailed)),
+            TextButton(onPressed: onRetry, child: Text(l10n.retrySave)),
+          ],
+        );
+    }
   }
 }

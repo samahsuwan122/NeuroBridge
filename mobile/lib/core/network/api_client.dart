@@ -21,9 +21,16 @@ class ApiClient {
 
   Future<Response<dynamic>> postJson(
     String path,
-    Map<String, dynamic> data,
-  ) {
-    return _dio.post<dynamic>('${AppConfig.apiPrefix}$path', data: data);
+    Map<String, dynamic> data, {
+    String? token,
+  }) {
+    return _dio.post<dynamic>(
+      '${AppConfig.apiPrefix}$path',
+      data: data,
+      options: token != null
+          ? Options(headers: {'Authorization': 'Bearer $token'})
+          : null,
+    );
   }
 
   Future<Response<dynamic>> getJson(String path, {String? token}) {

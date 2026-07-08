@@ -10,8 +10,10 @@ import 'package:neurobridge_mobile/features/auth/application/auth_controller.dar
 import 'package:neurobridge_mobile/features/auth/data/auth_api.dart';
 import 'package:neurobridge_mobile/features/auth/data/auth_repository.dart';
 import 'package:neurobridge_mobile/features/auth/data/auth_user.dart';
+import 'package:neurobridge_mobile/features/games/application/game_result_controller.dart';
 import 'package:neurobridge_mobile/features/games/application/games_controller.dart';
 import 'package:neurobridge_mobile/features/games/data/game_definition.dart';
+import 'package:neurobridge_mobile/features/games/data/game_results_api.dart';
 import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/games/presentation/game_details_screen.dart';
 import 'package:neurobridge_mobile/features/games/presentation/games_screen.dart';
@@ -84,6 +86,11 @@ Future<void> _wrap(
       locale: LocaleController(locale),
       home: _FakeHome(),
       games: games ?? _FakeGames(GamesStatus.empty),
+      gameResults: GameResultController(
+        GameResultsApi(ApiClient()),
+        PatientApi(ApiClient()),
+        SecureStorageService(),
+      ),
       child: MaterialApp(
         locale: locale,
         supportedLocales: AppLocalizations.supportedLocales,

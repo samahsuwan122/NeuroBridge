@@ -7,7 +7,9 @@ import 'core/storage/secure_storage_service.dart';
 import 'features/auth/application/auth_controller.dart';
 import 'features/auth/data/auth_api.dart';
 import 'features/auth/data/auth_repository.dart';
+import 'features/games/application/game_result_controller.dart';
 import 'features/games/application/games_controller.dart';
+import 'features/games/data/game_results_api.dart';
 import 'features/games/data/games_api.dart';
 import 'features/home/application/home_controller.dart';
 import 'features/home/data/patient_api.dart';
@@ -22,6 +24,11 @@ Future<void> main() async {
   final localeController = LocaleController();
   final homeController = HomeController(PatientApi(apiClient), storage);
   final gamesController = GamesController(GamesApi(apiClient), storage);
+  final gameResultController = GameResultController(
+    GameResultsApi(apiClient),
+    PatientApi(apiClient),
+    storage,
+  );
 
   // Resolve initial auth state from any stored token before the first frame.
   await authController.bootstrap();
@@ -32,6 +39,7 @@ Future<void> main() async {
       locale: localeController,
       home: homeController,
       games: gamesController,
+      gameResults: gameResultController,
     ),
   );
 }

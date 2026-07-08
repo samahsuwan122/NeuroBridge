@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
 
 import '../features/auth/application/auth_controller.dart';
+import '../features/games/application/game_result_controller.dart';
 import '../features/games/application/games_controller.dart';
 import '../features/home/application/home_controller.dart';
 import 'localization/locale_controller.dart';
 
-/// Exposes the app-wide controllers (auth, locale, home, games) to the tree.
+/// Exposes the app-wide controllers to the tree.
 class AppScope extends InheritedWidget {
   const AppScope({
     super.key,
@@ -13,6 +14,7 @@ class AppScope extends InheritedWidget {
     required this.locale,
     required this.home,
     required this.games,
+    required this.gameResults,
     required super.child,
   });
 
@@ -20,6 +22,7 @@ class AppScope extends InheritedWidget {
   final LocaleController locale;
   final HomeController home;
   final GamesController games;
+  final GameResultController gameResults;
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -32,5 +35,6 @@ class AppScope extends InheritedWidget {
       auth != oldWidget.auth ||
       locale != oldWidget.locale ||
       home != oldWidget.home ||
-      games != oldWidget.games;
+      games != oldWidget.games ||
+      gameResults != oldWidget.gameResults;
 }

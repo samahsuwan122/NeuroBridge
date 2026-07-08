@@ -51,10 +51,11 @@ mobile/
     routes/app_router.dart        # /login /home /games /games/details /games/play/memory-match
 ```
 
-**Memory Match** is the first playable exercise (play-only; results are **not** submitted yet). Its
-details screen shows a **Play** button; other games still show "Game play will be added in a later
-phase." Scores are **game performance only** (moves/matches/mistakes/time) — no medical
-interpretation.
+**Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
+games still show "Game play will be added in a later phase." On completion the result is
+**auto-submitted once** to `POST /api/v1/games/{id}/results` (with a Saving/Saved/Retry status), and
+scores are **game performance only** (score=matched pairs, metrics=moves/mistakes/matched/total) — no
+medical interpretation. Submission is skipped gracefully if the game id is unavailable.
 
 ## Running
 

@@ -75,6 +75,10 @@ class AppLocalizations {
       'gameSummary': 'Game summary',
       'performanceOnlyNote':
           'This is a cognitive exercise. Scores reflect game performance only.',
+      'savingResult': 'Saving result…',
+      'resultSaved': 'Result saved',
+      'resultSaveFailed': 'Could not save result.',
+      'retrySave': 'Retry',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -131,6 +135,10 @@ class AppLocalizations {
       'playAgain': 'العب مرة أخرى',
       'gameSummary': 'ملخص اللعبة',
       'performanceOnlyNote': 'هذا تمرين إدراكي. النتائج تعكس أداء اللعبة فقط.',
+      'savingResult': 'جارٍ حفظ النتيجة…',
+      'resultSaved': 'تم حفظ النتيجة',
+      'resultSaveFailed': 'تعذّر حفظ النتيجة.',
+      'retrySave': 'إعادة المحاولة',
     },
   };
 
@@ -191,6 +199,10 @@ class AppLocalizations {
   String get playAgain => _t('playAgain');
   String get gameSummary => _t('gameSummary');
   String get performanceOnlyNote => _t('performanceOnlyNote');
+  String get savingResult => _t('savingResult');
+  String get resultSaved => _t('resultSaved');
+  String get resultSaveFailed => _t('resultSaveFailed');
+  String get retrySave => _t('retrySave');
 }
 
 class _AppLocalizationsDelegate
