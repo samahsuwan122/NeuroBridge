@@ -54,6 +54,17 @@ class AppLocalizations {
       'retry': 'Retry',
       'emergencyContact': 'Emergency contact',
       'medicalCenter': 'Medical center',
+      // Games
+      'gamesTitle': 'Cognitive Games',
+      'loadingGames': 'Loading games…',
+      'noGamesAvailable': 'No games available yet.',
+      'gamesLoadError': 'Could not load games. Please try again.',
+      'difficulty': 'Difficulty',
+      'estimatedDuration': 'Estimated duration',
+      'minutes': 'min',
+      'instructions': 'Instructions',
+      'gameDetails': 'Game details',
+      'gamePlayComingLater': 'Game play will be added in a later phase.',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -90,6 +101,17 @@ class AppLocalizations {
       'retry': 'إعادة المحاولة',
       'emergencyContact': 'جهة اتصال للطوارئ',
       'medicalCenter': 'المركز الطبي',
+      // Games
+      'gamesTitle': 'الألعاب الإدراكية',
+      'loadingGames': 'جارٍ تحميل الألعاب…',
+      'noGamesAvailable': 'لا توجد ألعاب متاحة بعد.',
+      'gamesLoadError': 'تعذّر تحميل الألعاب. حاول مرة أخرى.',
+      'difficulty': 'الصعوبة',
+      'estimatedDuration': 'المدة التقديرية',
+      'minutes': 'دقيقة',
+      'instructions': 'التعليمات',
+      'gameDetails': 'تفاصيل اللعبة',
+      'gamePlayComingLater': 'سيتم إضافة اللعب في مرحلة لاحقة.',
     },
   };
 
@@ -130,6 +152,17 @@ class AppLocalizations {
   String get retry => _t('retry');
   String get emergencyContact => _t('emergencyContact');
   String get medicalCenter => _t('medicalCenter');
+
+  String get gamesTitle => _t('gamesTitle');
+  String get loadingGames => _t('loadingGames');
+  String get noGamesAvailable => _t('noGamesAvailable');
+  String get gamesLoadError => _t('gamesLoadError');
+  String get difficulty => _t('difficulty');
+  String get estimatedDuration => _t('estimatedDuration');
+  String get minutes => _t('minutes');
+  String get instructions => _t('instructions');
+  String get gameDetails => _t('gameDetails');
+  String get gamePlayComingLater => _t('gamePlayComingLater');
 }
 
 class _AppLocalizationsDelegate

@@ -8,6 +8,8 @@ import 'package:neurobridge_mobile/features/auth/application/auth_controller.dar
 import 'package:neurobridge_mobile/features/auth/data/auth_repository.dart';
 import 'package:neurobridge_mobile/features/auth/data/auth_api.dart';
 import 'package:neurobridge_mobile/features/auth/data/auth_user.dart';
+import 'package:neurobridge_mobile/features/games/application/games_controller.dart';
+import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
 
@@ -55,6 +57,7 @@ Future<void> _pumpHome(
       auth: auth,
       locale: LocaleController(locale),
       home: _FakeHome(home),
+      games: GamesController(GamesApi(ApiClient()), SecureStorageService()),
     ),
   );
   await tester.pumpAndSettle();

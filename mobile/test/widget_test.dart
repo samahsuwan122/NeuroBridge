@@ -6,6 +6,8 @@ import 'package:neurobridge_mobile/core/storage/secure_storage_service.dart';
 import 'package:neurobridge_mobile/features/auth/application/auth_controller.dart';
 import 'package:neurobridge_mobile/features/auth/data/auth_api.dart';
 import 'package:neurobridge_mobile/features/auth/data/auth_repository.dart';
+import 'package:neurobridge_mobile/features/games/application/games_controller.dart';
+import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
 
@@ -18,9 +20,10 @@ void main() {
     final auth = AuthController(AuthRepository(AuthApi(apiClient), storage));
     final locale = LocaleController();
     final home = HomeController(PatientApi(apiClient), storage);
+    final games = GamesController(GamesApi(apiClient), storage);
 
     await tester.pumpWidget(
-      NeuroBridgeApp(auth: auth, locale: locale, home: home),
+      NeuroBridgeApp(auth: auth, locale: locale, home: home, games: games),
     );
     await tester.pumpAndSettle();
 

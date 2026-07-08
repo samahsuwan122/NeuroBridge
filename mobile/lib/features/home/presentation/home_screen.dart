@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/app_scope.dart';
 import '../../../core/localization/app_localizations.dart';
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     l10n: l10n,
                   ),
                   const SizedBox(height: 8),
-                  ..._dashboardCards(l10n),
+                  ..._dashboardCards(context, l10n),
                 ],
               ),
             ),
@@ -74,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<Widget> _dashboardCards(AppLocalizations l10n) {
+  List<Widget> _dashboardCards(BuildContext context, AppLocalizations l10n) {
     return [
       DashboardCard(
         icon: Icons.self_improvement,
@@ -87,6 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: l10n.cognitiveGames,
         description: l10n.cognitiveGamesDesc,
         comingSoonLabel: l10n.comingSoon,
+        enabled: true,
+        onTap: () => context.go('/games'),
       ),
       DashboardCard(
         icon: Icons.show_chart,

@@ -7,12 +7,13 @@ for patients and their families/caregivers.
 > Clinical and administrative roles (doctor, therapist, admin, manager) use the **web dashboard**
 > instead — see [`../web/README.md`](../web/README.md). There is **no patient web dashboard**.
 
-As of **Phase 8**, the app has a clean foundation (routing, theme, Arabic/English localization with
-RTL, secure token store, Dio API client, backend-wired login) and a **patient/family home screen**:
-a header (name, roles, logout), a **patient profile summary** (loaded from `GET /api/v1/patients`,
-with safe empty/error states), and elderly-friendly **dashboard cards** (Today's Therapy, Cognitive
-Games, Progress, Reminders, My Profile, Family Support) shown as **"Coming soon"** placeholders. No
-real games/therapy/progress logic yet.
+As of **Phase 10**, the app has a clean foundation (routing, theme, Arabic/English localization with
+RTL, secure token store, Dio API client, backend-wired login), a **patient/family home screen**, and
+a **cognitive games list**: the home "Cognitive Games" card opens a **Games screen** that loads active
+games from `GET /api/v1/games` (with safe loading/empty/error states) and shows large elderly-friendly
+game cards; tapping one opens a **Game details placeholder** (metadata + "Game play will be added in a
+later phase."). Other home cards remain **"Coming soon"**. No real game mechanics or result submission
+yet.
 
 ## Project structure
 
@@ -43,7 +44,11 @@ mobile/
         data/{patient_api,patient_profile_summary}.dart
         application/home_controller.dart
         presentation/home_screen.dart
-    routes/app_router.dart        # go_router with auth redirect
+      games/
+        data/{games_api,game_definition}.dart
+        application/games_controller.dart
+        presentation/{games_screen,game_details_screen}.dart
+    routes/app_router.dart        # go_router: /login /home /games /games/details
 ```
 
 ## Running

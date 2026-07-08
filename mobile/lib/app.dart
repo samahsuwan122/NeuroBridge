@@ -7,6 +7,7 @@ import 'core/localization/app_localizations.dart';
 import 'core/localization/locale_controller.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/application/auth_controller.dart';
+import 'features/games/application/games_controller.dart';
 import 'features/home/application/home_controller.dart';
 import 'routes/app_router.dart';
 
@@ -18,11 +19,13 @@ class NeuroBridgeApp extends StatefulWidget {
     required this.auth,
     required this.locale,
     required this.home,
+    required this.games,
   });
 
   final AuthController auth;
   final LocaleController locale;
   final HomeController home;
+  final GamesController games;
 
   @override
   State<NeuroBridgeApp> createState() => _NeuroBridgeAppState();
@@ -37,6 +40,7 @@ class _NeuroBridgeAppState extends State<NeuroBridgeApp> {
       auth: widget.auth,
       locale: widget.locale,
       home: widget.home,
+      games: widget.games,
       child: ListenableBuilder(
         listenable: widget.locale,
         builder: (context, _) {
