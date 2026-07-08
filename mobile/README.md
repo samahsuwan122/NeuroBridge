@@ -45,11 +45,16 @@ mobile/
         application/home_controller.dart
         presentation/home_screen.dart
       games/
-        data/{games_api,game_definition}.dart
-        application/games_controller.dart
-        presentation/{games_screen,game_details_screen}.dart
-    routes/app_router.dart        # go_router: /login /home /games /games/details
+        data/{games_api,game_definition,memory_card}.dart
+        application/{games_controller,memory_match_controller}.dart
+        presentation/{games_screen,game_details_screen,memory_match_screen}.dart
+    routes/app_router.dart        # /login /home /games /games/details /games/play/memory-match
 ```
+
+**Memory Match** is the first playable exercise (play-only; results are **not** submitted yet). Its
+details screen shows a **Play** button; other games still show "Game play will be added in a later
+phase." Scores are **game performance only** (moves/matches/mistakes/time) — no medical
+interpretation.
 
 ## Running
 

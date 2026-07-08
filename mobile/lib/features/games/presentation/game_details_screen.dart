@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/language_button.dart';
 import '../data/game_definition.dart';
 
-/// Placeholder game details. Shows metadata and a note that game play is added
-/// in a later phase. No game mechanics here.
+const _memoryMatchSlug = 'memory_match';
+
+/// Game details. For playable games (Memory Match) it shows a Play button;
+/// other games show a note that game play is added in a later phase.
 class GameDetailsScreen extends StatelessWidget {
   const GameDetailsScreen({super.key, this.game});
 
@@ -49,18 +52,29 @@ class GameDetailsScreen extends StatelessWidget {
                           Text(game.instructions!),
                         ],
                         const SizedBox(height: 24),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.info_outline),
-                                const SizedBox(width: 12),
-                                Expanded(child: Text(l10n.gamePlayComingLater)),
-                              ],
+                        if (game.slug == _memoryMatchSlug)
+                          FilledButton.icon(
+                            onPressed: () => context.go(
+                              '/games/play/memory-match',
+                              extra: game,
+                            ),
+                            icon: const Icon(Icons.play_arrow),
+                            label: Text(l10n.play),
+                          )
+                        else
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.info_outline),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                      child: Text(l10n.gamePlayComingLater)),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
             ),

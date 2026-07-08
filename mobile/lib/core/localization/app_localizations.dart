@@ -65,6 +65,16 @@ class AppLocalizations {
       'instructions': 'Instructions',
       'gameDetails': 'Game details',
       'gamePlayComingLater': 'Game play will be added in a later phase.',
+      'play': 'Play',
+      'moves': 'Moves',
+      'matches': 'Matches',
+      'mistakes': 'Mistakes',
+      'time': 'Time',
+      'wellDone': 'Well done!',
+      'playAgain': 'Play again',
+      'gameSummary': 'Game summary',
+      'performanceOnlyNote':
+          'This is a cognitive exercise. Scores reflect game performance only.',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -112,6 +122,15 @@ class AppLocalizations {
       'instructions': 'التعليمات',
       'gameDetails': 'تفاصيل اللعبة',
       'gamePlayComingLater': 'سيتم إضافة اللعب في مرحلة لاحقة.',
+      'play': 'العب',
+      'moves': 'الحركات',
+      'matches': 'المطابقات',
+      'mistakes': 'الأخطاء',
+      'time': 'الوقت',
+      'wellDone': 'أحسنت!',
+      'playAgain': 'العب مرة أخرى',
+      'gameSummary': 'ملخص اللعبة',
+      'performanceOnlyNote': 'هذا تمرين إدراكي. النتائج تعكس أداء اللعبة فقط.',
     },
   };
 
@@ -163,6 +182,15 @@ class AppLocalizations {
   String get instructions => _t('instructions');
   String get gameDetails => _t('gameDetails');
   String get gamePlayComingLater => _t('gamePlayComingLater');
+  String get play => _t('play');
+  String get moves => _t('moves');
+  String get matches => _t('matches');
+  String get mistakes => _t('mistakes');
+  String get time => _t('time');
+  String get wellDone => _t('wellDone');
+  String get playAgain => _t('playAgain');
+  String get gameSummary => _t('gameSummary');
+  String get performanceOnlyNote => _t('performanceOnlyNote');
 }
 
 class _AppLocalizationsDelegate

@@ -131,12 +131,22 @@ void main() {
     expect(find.textContaining('Difficulty'), findsWidgets);
   });
 
-  testWidgets('game details screen shows placeholder text', (tester) async {
-    await _wrap(tester, const GameDetailsScreen(game: _memoryMatch));
-    expect(find.text('Memory Match'), findsWidgets);
+  testWidgets('non-memory game details shows the coming-later note',
+      (tester) async {
+    await _wrap(tester, const GameDetailsScreen(game: _reactionTime));
+    expect(find.text('Reaction Time'), findsWidgets);
     expect(
       find.text('Game play will be added in a later phase.'),
       findsOneWidget,
+    );
+  });
+
+  testWidgets('memory_match details shows a Play button', (tester) async {
+    await _wrap(tester, const GameDetailsScreen(game: _memoryMatch));
+    expect(find.text('Play'), findsOneWidget);
+    expect(
+      find.text('Game play will be added in a later phase.'),
+      findsNothing,
     );
   });
 
