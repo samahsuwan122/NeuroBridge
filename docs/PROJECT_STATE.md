@@ -13,12 +13,13 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 17 Step 3B (Add Memory form) completed and committed locally. Users can
-  now **create** Memory Album entries from mobile (`/memories/new` →
-  `POST /api/v1/memories`). Real image upload is still deferred to Phase 18, and
-  edit/delete UI is still deferred.
-- Latest local commit: `f03317d feat(mobile): add memory creation form`
-- Last pushed commit: `cd2029e` — the Phase 15/16/17 commits are **not pushed
+- Phase 18A (backend real image upload) completed and committed locally. Added
+  `POST /api/v1/memories/{memory_id}/media` (jpeg/png/webp, max 5 MB) with local
+  storage under `backend/storage/memory_uploads/` and public URLs at
+  `/media/memory_uploads/<filename>`; only the creator or an admin may
+  upload/replace. The **mobile upload UI is still deferred to Phase 18B**.
+- Latest local commit: `e27e3d2 feat(backend): add memory image upload`
+- Last pushed commit: `cd2029e` — the Phase 15/16/17/18 commits are **not pushed
   yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -43,6 +44,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 17 (Step 2): Memory Album backend foundation (model, migration, APIs)
 - Phase 17 (Step 3A): Memory Album mobile viewing (read-only list + detail)
 - Phase 17 (Step 3B): Memory Album mobile create form (POST, no upload)
+- Phase 18A: Memory Album backend real image upload (local storage + static URL)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -55,14 +57,17 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. **Phase 17 — Memory Album is functionally complete and
-committed** (Step 2 backend, Step 3A mobile viewing, Step 3B mobile create form).
-Users can create Memory Album entries from mobile via `/memories/new` →
-`POST /api/v1/memories` (title required, other fields optional, media URL is
-placeholder text). Memories are supportive/family-engagement content only — no
-diagnosis, scoring, or medical interpretation. **Real image upload is deferred to
-Phase 18, and edit/delete UI is still deferred.** **Next step: Phase 18 — Real
-Image Upload.**
+Phase 18 — Real Image Upload for Memory Album. **Step 18A (backend) is complete
+and committed:** `POST /api/v1/memories/{memory_id}/media` accepts a
+jpeg/png/webp image (max 5 MB), stores it locally under
+`backend/storage/memory_uploads/` with a safe UUID filename, serves it read-only
+at `/media/memory_uploads/<filename>`, and sets `media_type="image"` +
+`media_url`. Only the memory's creator or an admin may upload/replace; replacing
+safely removes the old local file; an audit event (`memory_media_uploaded`) is
+recorded. Uploaded runtime images are git-ignored (only a `.gitkeep` is tracked).
+Memories remain supportive/family-engagement content only — no diagnosis,
+scoring, or interpretation. **Next step: Phase 18B — the mobile upload UI** (image
+picker + call the media endpoint); edit/delete UI is still deferred.
 
 ## 6. Phase 13 summary (done)
 
@@ -74,11 +79,12 @@ Image Upload.**
 
 ## 7. Next step
 
-Phase 18 — Real Image Upload for Memory Album (replace the `media_url`
-placeholder with actual uploaded images). Edit/delete UI for memories is also
-still deferred. Final UI polish is deferred until the core features are complete.
-Also: the Phase 15/16/17 commits are committed locally but **not pushed** — push
-when ready.
+Phase 18B — the mobile upload UI for Memory Album images (image picker + call
+`POST /api/v1/memories/{memory_id}/media`, then show the uploaded image via its
+`/media/memory_uploads/<filename>` URL). Edit/delete UI for memories is also still
+deferred. Final UI polish is deferred until the core features are complete. Also:
+the Phase 15/16/17/18 commits are committed locally but **not pushed** — push when
+ready.
 
 ## 8. Medical safety rules
 
