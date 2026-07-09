@@ -13,10 +13,11 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 17 Step 2 (Memory Album backend foundation) completed and committed
-  locally. Adds the `memory_entries` table + `/api/v1/memories` APIs. Media
-  upload is still deferred to a later phase.
-- Latest local commit: `2cc3e54 feat(backend): add memory album foundation`
+- Phase 17 Step 3A (Memory Album mobile viewing) completed and committed
+  locally. Adds read-only Memory Album list + detail screens (`/memories`,
+  `/memories/details`) on top of the Step 2 backend. Create/edit/delete and real
+  image upload are still deferred to later steps/phases.
+- Latest local commit: `0bcd6dd feat(mobile): add memory album viewing`
 - Last pushed commit: `cd2029e` — the Phase 15/16/17 commits are **not pushed
   yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -40,6 +41,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 15: patient care & safety information (backend + mobile)
 - Phase 16: premium medical mobile theme (styling only)
 - Phase 17 (Step 2): Memory Album backend foundation (model, migration, APIs)
+- Phase 17 (Step 3A): Memory Album mobile viewing (read-only list + detail)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -52,14 +54,16 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-Phase 17 — Memory Album. **Step 2 (backend foundation) is complete and
-committed:** `memory_entries` table, the `memories` module, and the
-`/api/v1/memories` APIs (list/create/detail/update/soft-delete) with role-scoped
-access (patient own, family linked create/view, doctor/therapist/manager
-view-only, admin full). Memories are supportive/family-engagement content only —
-no diagnosis, scoring, or medical interpretation. Media upload is deferred to a
-later phase (`media_type`/`media_url` are placeholders). **Next step: the mobile
-Memory Album** (list + detail + family create).
+Phase 17 — Memory Album. **Step 2 (backend) and Step 3A (mobile viewing) are
+complete and committed.** Step 3A added a read-only Memory Album — a new
+`memories` feature (model/API/controller) with a **list screen** (`/memories`)
+and a **detail screen** (`/memories/details`), reached from a new Home "Memory
+Album" card, loading from `GET /api/v1/memories` with safe loading/empty/error+
+retry states. View-only: no create/edit/delete UI and no real image upload
+(`media_url` shown as placeholder text). Memories are supportive/family-
+engagement content only — no diagnosis, scoring, or medical interpretation.
+**Next step: Phase 17 Step 3B — the Add Memory form** (family create via
+`POST /api/v1/memories`); real image upload remains deferred to a later phase.
 
 ## 6. Phase 13 summary (done)
 
@@ -71,9 +75,9 @@ Memory Album** (list + detail + family create).
 
 ## 7. Next step
 
-Phase 17 mobile Memory Album (list + detail + family create) — the backend is
-ready at `/api/v1/memories`. Media upload is deferred to a later phase. Final UI
-polish is also deferred until the core features are complete. Also: the Phase
+Phase 17 Step 3B — the mobile **Add Memory form** (family create via
+`POST /api/v1/memories`). Real image upload is deferred to a later phase. Final
+UI polish is also deferred until the core features are complete. Also: the Phase
 15/16/17 commits are committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
