@@ -12,6 +12,8 @@ import 'package:neurobridge_mobile/features/games/data/game_results_api.dart';
 import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
+import 'package:neurobridge_mobile/features/profile/application/profile_controller.dart';
+import 'package:neurobridge_mobile/features/profile/data/profile_api.dart';
 import 'package:neurobridge_mobile/features/progress/application/progress_controller.dart';
 import 'package:neurobridge_mobile/features/progress/data/progress_api.dart';
 
@@ -35,6 +37,7 @@ void main() {
       GamesApi(apiClient),
       storage,
     );
+    final profile = ProfileController(ProfileApi(apiClient), storage);
 
     await tester.pumpWidget(
       NeuroBridgeApp(
@@ -44,6 +47,7 @@ void main() {
         games: games,
         gameResults: gameResults,
         progress: progress,
+        profile: profile,
       ),
     );
     await tester.pumpAndSettle();

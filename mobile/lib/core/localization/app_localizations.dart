@@ -91,6 +91,17 @@ class AppLocalizations {
       'date': 'Date',
       'performanceOnlyProgressNote':
           'These are cognitive exercise results (game performance only), not a medical assessment.',
+      // Profile
+      'profileSubtitle': 'Your basic profile information.',
+      'loadingProfile': 'Loading your profile…',
+      'profileLoadFailed': 'Could not load your profile. Please try again.',
+      'fullName': 'Full name',
+      'email': 'Email',
+      'phone': 'Phone',
+      'dateOfBirth': 'Date of birth',
+      'gender': 'Gender',
+      'memberSince': 'Member since',
+      'notProvided': 'Not provided',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -163,6 +174,17 @@ class AppLocalizations {
       'date': 'التاريخ',
       'performanceOnlyProgressNote':
           'هذه نتائج تمارين إدراكية (أداء اللعبة فقط)، وليست تقييمًا طبيًا.',
+      // Profile
+      'profileSubtitle': 'معلومات ملفك الأساسية.',
+      'loadingProfile': 'جارٍ تحميل ملفك…',
+      'profileLoadFailed': 'تعذّر تحميل ملفك. حاول مرة أخرى.',
+      'fullName': 'الاسم الكامل',
+      'email': 'البريد الإلكتروني',
+      'phone': 'الهاتف',
+      'dateOfBirth': 'تاريخ الميلاد',
+      'gender': 'الجنس',
+      'memberSince': 'عضو منذ',
+      'notProvided': 'غير متوفر',
     },
   };
 
@@ -238,6 +260,17 @@ class AppLocalizations {
   String get notCompleted => _t('notCompleted');
   String get date => _t('date');
   String get performanceOnlyProgressNote => _t('performanceOnlyProgressNote');
+
+  String get profileSubtitle => _t('profileSubtitle');
+  String get loadingProfile => _t('loadingProfile');
+  String get profileLoadFailed => _t('profileLoadFailed');
+  String get fullName => _t('fullName');
+  String get email => _t('email');
+  String get phone => _t('phone');
+  String get dateOfBirth => _t('dateOfBirth');
+  String get gender => _t('gender');
+  String get memberSince => _t('memberSince');
+  String get notProvided => _t('notProvided');
 }
 
 class _AppLocalizationsDelegate

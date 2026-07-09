@@ -4,6 +4,7 @@ import '../features/auth/application/auth_controller.dart';
 import '../features/games/application/game_result_controller.dart';
 import '../features/games/application/games_controller.dart';
 import '../features/home/application/home_controller.dart';
+import '../features/profile/application/profile_controller.dart';
 import '../features/progress/application/progress_controller.dart';
 import 'localization/locale_controller.dart';
 
@@ -17,6 +18,7 @@ class AppScope extends InheritedWidget {
     required this.games,
     required this.gameResults,
     required this.progress,
+    required this.profile,
     required super.child,
   });
 
@@ -26,6 +28,7 @@ class AppScope extends InheritedWidget {
   final GamesController games;
   final GameResultController gameResults;
   final ProgressController progress;
+  final ProfileController profile;
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -40,5 +43,6 @@ class AppScope extends InheritedWidget {
       home != oldWidget.home ||
       games != oldWidget.games ||
       gameResults != oldWidget.gameResults ||
-      progress != oldWidget.progress;
+      progress != oldWidget.progress ||
+      profile != oldWidget.profile;
 }

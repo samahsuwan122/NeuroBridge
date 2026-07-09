@@ -20,6 +20,8 @@ import 'package:neurobridge_mobile/features/games/presentation/games_screen.dart
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
 import 'package:neurobridge_mobile/features/home/presentation/home_screen.dart';
+import 'package:neurobridge_mobile/features/profile/application/profile_controller.dart';
+import 'package:neurobridge_mobile/features/profile/data/profile_api.dart';
 import 'package:neurobridge_mobile/features/progress/application/progress_controller.dart';
 import 'package:neurobridge_mobile/features/progress/data/progress_api.dart';
 
@@ -98,6 +100,7 @@ Future<void> _wrap(
         GamesApi(ApiClient()),
         SecureStorageService(),
       ),
+      profile: ProfileController(ProfileApi(ApiClient()), SecureStorageService()),
       child: MaterialApp(
         locale: locale,
         supportedLocales: AppLocalizations.supportedLocales,

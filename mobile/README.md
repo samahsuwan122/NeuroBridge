@@ -52,9 +52,19 @@ mobile/
         data/{progress_api,game_result_summary}.dart
         application/progress_controller.dart
         presentation/progress_screen.dart
+      profile/
+        data/{profile_api,patient_profile_detail}.dart
+        application/profile_controller.dart
+        presentation/profile_screen.dart
     routes/app_router.dart        # /login /home /games /games/details
-                                  # /games/play/memory-match /progress
+                                  # /games/play/memory-match /progress /profile
 ```
+
+The home **My Profile** card opens a **read-only Profile screen** (`/profile`) that shows the
+patient's own basic fields from `GET /api/v1/patients` (first profile): full name, email, phone, date
+of birth, gender, emergency contact, and member-since — each with a **"Not provided"** fallback. It
+deliberately omits `medical_center_id`, `notes`, and anything diagnostic. Safe
+loading/empty/error+retry states; no editing in this phase.
 
 The home **Progress** card opens a **Progress screen** (`/progress`) that lists the patient's saved
 results from `GET /api/v1/games/results`, joined with `GET /api/v1/games` for game titles (fallback to

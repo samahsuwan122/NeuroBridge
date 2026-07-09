@@ -110,6 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: l10n.myProfile,
         description: l10n.myProfileDesc,
         comingSoonLabel: l10n.comingSoon,
+        enabled: true,
+        onTap: () => context.go('/profile'),
       ),
       DashboardCard(
         icon: Icons.family_restroom,

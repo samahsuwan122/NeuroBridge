@@ -13,6 +13,8 @@ import 'features/games/data/game_results_api.dart';
 import 'features/games/data/games_api.dart';
 import 'features/home/application/home_controller.dart';
 import 'features/home/data/patient_api.dart';
+import 'features/profile/application/profile_controller.dart';
+import 'features/profile/data/profile_api.dart';
 import 'features/progress/application/progress_controller.dart';
 import 'features/progress/data/progress_api.dart';
 
@@ -36,6 +38,7 @@ Future<void> main() async {
     GamesApi(apiClient),
     storage,
   );
+  final profileController = ProfileController(ProfileApi(apiClient), storage);
 
   // Resolve initial auth state from any stored token before the first frame.
   await authController.bootstrap();
@@ -48,6 +51,7 @@ Future<void> main() async {
       games: gamesController,
       gameResults: gameResultController,
       progress: progressController,
+      profile: profileController,
     ),
   );
 }
