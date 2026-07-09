@@ -60,10 +60,10 @@ mobile/
       memories/
         data/{memories_api,memory_entry}.dart
         application/memories_controller.dart
-        presentation/{memories_screen,memory_details_screen}.dart
+        presentation/{memories_screen,memory_details_screen,memory_create_screen}.dart
     routes/app_router.dart        # /login /home /games /games/details
                                   # /games/play/memory-match /progress /profile
-                                  # /memories /memories/details
+                                  # /memories /memories/new /memories/details
 ```
 
 The home **My Profile** card opens a **read-only Profile screen** (`/profile`) that shows the
@@ -84,9 +84,16 @@ caller's visible memories from `GET /api/v1/memories` (role-scoped by the backen
 the title, person/relationship, place, and category/media-type/date chips; tapping one opens a
 **memory detail** screen (`/memories/details`) with the full fields. Memories are **supportive,
 family-engagement content only** (a small note says they are "for family connection and supportive
-recall activities only") — no diagnosis, scoring, or medical interpretation. This phase is
-**view-only**: no create/edit/delete UI and no real image upload (`media_url` is shown as
-placeholder text, not an image). Safe loading/empty/error+retry states.
+recall activities only") — no diagnosis, scoring, or medical interpretation. `media_url` is shown as
+placeholder text, not an image (no real upload yet). Safe loading/empty/error+retry states.
+
+An **Add memory** button opens a form (`/memories/new`) where a patient/family/admin user can create
+a memory via `POST /api/v1/memories` (title required; description, person, relationship, place,
+memory date `YYYY-MM-DD`, category, media type, and a media-URL/placeholder text — all optional). The
+target patient profile is resolved from the first visible `GET /api/v1/patients` profile; a missing
+profile or backend error shows a friendly message. On success the form returns to the album and the
+list refreshes. **No file upload / image picker** — real image upload is deferred to Phase 18. No
+edit/delete UI yet.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

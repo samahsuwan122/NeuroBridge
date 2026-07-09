@@ -9,6 +9,7 @@ import '../features/games/presentation/memory_match_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/memories/data/memory_entry.dart';
 import '../features/memories/presentation/memories_screen.dart';
+import '../features/memories/presentation/memory_create_screen.dart';
 import '../features/memories/presentation/memory_details_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/progress/presentation/progress_screen.dart';
@@ -60,6 +61,10 @@ GoRouter createRouter(AuthController auth) {
       GoRoute(
         path: '/memories',
         builder: (context, state) => const MemoriesScreen(),
+      ),
+      GoRoute(
+        path: '/memories/new',
+        builder: (context, state) => const MemoryCreateScreen(),
       ),
       GoRoute(
         path: '/memories/details',

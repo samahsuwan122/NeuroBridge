@@ -56,7 +56,7 @@ Future<void> _wrap(WidgetTester tester, ProfileController profile) async {
       ),
       progress: ProgressController(ProgressApi(_c()), GamesApi(_c()), storage),
       profile: profile,
-      memories: MemoriesController(MemoriesApi(_c()), storage),
+      memories: MemoriesController(MemoriesApi(_c()), PatientApi(_c()), storage),
       child: const MaterialApp(
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: [

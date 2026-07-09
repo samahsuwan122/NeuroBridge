@@ -103,8 +103,11 @@ Future<void> _wrap(
         SecureStorageService(),
       ),
       profile: ProfileController(ProfileApi(ApiClient()), SecureStorageService()),
-      memories:
-          MemoriesController(MemoriesApi(ApiClient()), SecureStorageService()),
+      memories: MemoriesController(
+        MemoriesApi(ApiClient()),
+        PatientApi(ApiClient()),
+        SecureStorageService(),
+      ),
       child: MaterialApp(
         locale: locale,
         supportedLocales: AppLocalizations.supportedLocales,

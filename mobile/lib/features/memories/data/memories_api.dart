@@ -25,4 +25,42 @@ class MemoriesApi {
     final res = await _client.getJson('/memories/$memoryId', token: token);
     return MemoryEntry.fromJson((res.data as Map).cast<String, dynamic>());
   }
+
+  /// POST /api/v1/memories — create a memory for [patientProfileId].
+  ///
+  /// Supportive/family-engagement content only. `mediaUrl` is a text placeholder
+  /// (no real file upload in this phase). Empty optional fields are omitted.
+  Future<MemoryEntry> createMemory({
+    required String token,
+    required String patientProfileId,
+    required String title,
+    String? description,
+    String? personName,
+    String? relationship,
+    String? placeName,
+    String? memoryDate,
+    String? category,
+    String? mediaType,
+    String? mediaUrl,
+  }) async {
+    final payload = <String, dynamic>{
+      'patient_profile_id': patientProfileId,
+      'title': title.trim(),
+    };
+    void put(String key, String? value) {
+      if (value != null && value.trim().isNotEmpty) payload[key] = value.trim();
+    }
+
+    put('description', description);
+    put('person_name', personName);
+    put('relationship', relationship);
+    put('place_name', placeName);
+    put('memory_date', memoryDate);
+    put('category', category);
+    put('media_type', mediaType);
+    put('media_url', mediaUrl);
+
+    final res = await _client.postJson('/memories', payload, token: token);
+    return MemoryEntry.fromJson((res.data as Map).cast<String, dynamic>());
+  }
 }

@@ -41,8 +41,11 @@ Future<void> main() async {
     storage,
   );
   final profileController = ProfileController(ProfileApi(apiClient), storage);
-  final memoriesController =
-      MemoriesController(MemoriesApi(apiClient), storage);
+  final memoriesController = MemoriesController(
+    MemoriesApi(apiClient),
+    PatientApi(apiClient),
+    storage,
+  );
 
   // Resolve initial auth state from any stored token before the first frame.
   await authController.bootstrap();

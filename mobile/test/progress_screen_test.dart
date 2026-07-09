@@ -65,8 +65,11 @@ Future<void> _wrap(
       ),
       progress: progress,
       profile: ProfileController(ProfileApi(ApiClient()), SecureStorageService()),
-      memories:
-          MemoriesController(MemoriesApi(ApiClient()), SecureStorageService()),
+      memories: MemoriesController(
+        MemoriesApi(ApiClient()),
+        PatientApi(ApiClient()),
+        SecureStorageService(),
+      ),
       child: const MaterialApp(
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: [

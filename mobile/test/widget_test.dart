@@ -40,7 +40,11 @@ void main() {
       storage,
     );
     final profile = ProfileController(ProfileApi(apiClient), storage);
-    final memories = MemoriesController(MemoriesApi(apiClient), storage);
+    final memories = MemoriesController(
+      MemoriesApi(apiClient),
+      PatientApi(apiClient),
+      storage,
+    );
 
     await tester.pumpWidget(
       NeuroBridgeApp(

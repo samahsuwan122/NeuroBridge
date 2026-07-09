@@ -77,8 +77,11 @@ Future<void> _pumpHome(
         SecureStorageService(),
       ),
       profile: ProfileController(ProfileApi(ApiClient()), SecureStorageService()),
-      memories:
-          MemoriesController(MemoriesApi(ApiClient()), SecureStorageService()),
+      memories: MemoriesController(
+        MemoriesApi(ApiClient()),
+        PatientApi(ApiClient()),
+        SecureStorageService(),
+      ),
     ),
   );
   await tester.pumpAndSettle();

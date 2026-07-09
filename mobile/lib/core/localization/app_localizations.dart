@@ -135,6 +135,19 @@ class AppLocalizations {
       'mediaUrl': 'Media',
       'createdAt': 'Added on',
       'viewDetails': 'View details',
+      // Add Memory form
+      'addMemory': 'Add memory',
+      'saveMemory': 'Save memory',
+      'memoryTitle': 'Title',
+      'memoryDescription': 'Description',
+      'memoryTitleRequired': 'Please enter a title.',
+      'memorySaved': 'Memory saved.',
+      'memorySaveFailed': 'Could not save the memory. Please try again.',
+      'optional': 'Optional',
+      'cancel': 'Cancel',
+      'submitting': 'Saving…',
+      'memoryDateHint': 'YYYY-MM-DD',
+      'mediaUrlHint': 'Link or note (no file upload yet)',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -250,6 +263,19 @@ class AppLocalizations {
       'mediaUrl': 'الوسائط',
       'createdAt': 'أُضيفت في',
       'viewDetails': 'عرض التفاصيل',
+      // Add Memory form
+      'addMemory': 'إضافة ذكرى',
+      'saveMemory': 'حفظ الذكرى',
+      'memoryTitle': 'العنوان',
+      'memoryDescription': 'الوصف',
+      'memoryTitleRequired': 'يرجى إدخال عنوان.',
+      'memorySaved': 'تم حفظ الذكرى.',
+      'memorySaveFailed': 'تعذّر حفظ الذكرى. حاول مرة أخرى.',
+      'optional': 'اختياري',
+      'cancel': 'إلغاء',
+      'submitting': 'جارٍ الحفظ…',
+      'memoryDateHint': 'YYYY-MM-DD',
+      'mediaUrlHint': 'رابط أو ملاحظة (لا يوجد رفع ملفات بعد)',
     },
   };
 
@@ -367,6 +393,19 @@ class AppLocalizations {
   String get mediaUrl => _t('mediaUrl');
   String get createdAt => _t('createdAt');
   String get viewDetails => _t('viewDetails');
+
+  String get addMemory => _t('addMemory');
+  String get saveMemory => _t('saveMemory');
+  String get memoryTitle => _t('memoryTitle');
+  String get memoryDescription => _t('memoryDescription');
+  String get memoryTitleRequired => _t('memoryTitleRequired');
+  String get memorySaved => _t('memorySaved');
+  String get memorySaveFailed => _t('memorySaveFailed');
+  String get optional => _t('optional');
+  String get cancel => _t('cancel');
+  String get submitting => _t('submitting');
+  String get memoryDateHint => _t('memoryDateHint');
+  String get mediaUrlHint => _t('mediaUrlHint');
 }
 
 class _AppLocalizationsDelegate

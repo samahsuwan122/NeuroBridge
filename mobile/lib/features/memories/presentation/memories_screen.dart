@@ -78,6 +78,8 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _IntroNote(l10n: l10n),
+              const SizedBox(height: 16),
+              _AddButton(l10n: l10n),
               const SizedBox(height: 24),
               Center(child: Text(l10n.noMemoriesYet)),
             ],
@@ -91,6 +93,8 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
             children: [
               _IntroNote(l10n: l10n),
               const SizedBox(height: 12),
+              _AddButton(l10n: l10n),
+              const SizedBox(height: 8),
               for (final memory in memories.memories)
                 _MemoryCard(
                   memory: memory,
@@ -120,6 +124,21 @@ class _IntroNote extends StatelessWidget {
         const SizedBox(height: 4),
         Text(l10n.memoryAlbumNote, style: theme.textTheme.bodySmall),
       ],
+    );
+  }
+}
+
+class _AddButton extends StatelessWidget {
+  const _AddButton({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: () => context.go('/memories/new'),
+      icon: const Icon(Icons.add),
+      label: Text(l10n.addMemory),
     );
   }
 }
