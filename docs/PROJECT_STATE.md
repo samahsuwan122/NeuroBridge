@@ -13,9 +13,10 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 13 completed and committed locally.
-- Latest local commit: `2dcdfb4 feat(mobile): add progress screen for game results`
-- Last pushed commit: `57afbf8` — **the Phase 13 commit is not pushed yet**
+- Phase 15 completed and committed locally. **Patient Care & Safety Information**
+  added (backend + mobile).
+- Latest local commit: `911f68e feat: add patient care and safety information`
+- Last pushed commit: `cd2029e` — the Phase 15 commits are **not pushed yet**
   (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -34,6 +35,8 @@ platform. **Not a diagnostic medical system.**
 - Phase 11: playable Memory Match game
 - Phase 12: Memory Match result submission to backend
 - Phase 13: patient progress screen (mobile) — lists saved game results
+- Phase 14: read-only patient profile screen (mobile)
+- Phase 15: patient care & safety information (backend + mobile)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -46,7 +49,8 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. Phase 13 (Progress Screen, mobile) is complete and committed.
+None in progress. Phase 15 (Patient Care & Safety Information) is complete and
+committed. **Next step: Phase 16 — not started.**
 
 ## 6. Phase 13 summary (done)
 
@@ -58,9 +62,10 @@ None in progress. Phase 13 (Progress Screen, mobile) is complete and committed.
 
 ## 7. Next step
 
-Phase 14 — not started. (Pick the next feature per PROJECT_EXECUTION_PLAN.md,
-e.g. cognitive assessment or reminders.) Also: the Phase 13 commit `2dcdfb4` is
-committed locally but **not pushed** — push when ready.
+Phase 16 — not started. (Pick the next feature per PROJECT_EXECUTION_PLAN.md,
+e.g. cognitive assessment or reminders.) Also: the Phase 15 commits
+(`911f68e` + the docs commit) are committed locally but **not pushed** — push
+when ready.
 
 ## 8. Medical safety rules
 
