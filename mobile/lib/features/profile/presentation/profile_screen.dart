@@ -5,6 +5,7 @@ import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
+import '../../../core/widgets/section_header.dart';
 import '../application/profile_controller.dart';
 import '../data/patient_profile_detail.dart';
 
@@ -95,8 +96,11 @@ class _ProfileView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-        Text(l10n.profileSubtitle,
-            style: Theme.of(context).textTheme.titleMedium),
+        SectionHeader(
+          icon: Icons.badge_outlined,
+          title: l10n.basicInformation,
+          subtitle: l10n.profileSubtitle,
+        ),
         const SizedBox(height: 12),
         Card(
           child: Padding(
@@ -130,12 +134,12 @@ class _ProfileView extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
-        Text(l10n.careSafetyInformation,
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 4),
-        Text(l10n.careSafetyNote,
-            style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 20),
+        SectionHeader(
+          icon: Icons.health_and_safety_outlined,
+          title: l10n.careSafetyInformation,
+          subtitle: l10n.careSafetyNote,
+        ),
         const SizedBox(height: 8),
         Card(
           child: Padding(

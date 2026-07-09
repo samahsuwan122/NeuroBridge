@@ -21,7 +21,9 @@ class AppLocalizations {
   static const Map<String, Map<String, String>> _values = {
     'en': {
       'appTitle': 'NeuroBridge',
-      'loginSubtitle': 'Cognitive care, thoughtfully designed.',
+      'loginSubtitle': 'Bridging memory. Connecting lives.',
+      'homeSupportiveMessage': 'Small steps every day make a difference.',
+      'basicInformation': 'Basic Information',
       'loginTitle': 'Sign in',
       'emailOrPhone': 'Email or phone',
       'password': 'Password',
@@ -117,7 +119,9 @@ class AppLocalizations {
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
-      'loginSubtitle': 'رعاية إدراكية مصمّمة بعناية.',
+      'loginSubtitle': 'نجسر الذاكرة، ونصل الحياة.',
+      'homeSupportiveMessage': 'خطوات صغيرة كل يوم تُحدث فرقًا.',
+      'basicInformation': 'المعلومات الأساسية',
       'loginTitle': 'تسجيل الدخول',
       'emailOrPhone': 'البريد الإلكتروني أو الهاتف',
       'password': 'كلمة المرور',
@@ -216,6 +220,8 @@ class AppLocalizations {
 
   String get appTitle => _t('appTitle');
   String get loginSubtitle => _t('loginSubtitle');
+  String get homeSupportiveMessage => _t('homeSupportiveMessage');
+  String get basicInformation => _t('basicInformation');
   String get loginTitle => _t('loginTitle');
   String get emailOrPhone => _t('emailOrPhone');
   String get password => _t('password');

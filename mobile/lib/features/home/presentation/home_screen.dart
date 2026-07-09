@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/app_scope.dart';
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/dashboard_card.dart';
+import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
@@ -131,36 +133,94 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final text = Theme.of(context).textTheme;
     return AnimatedBuilder(
       animation: auth,
       builder: (context, _) {
         final user = auth.user;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.appTitle, style: theme.textTheme.headlineSmall),
-            const SizedBox(height: 8),
-            Text(
-              '${l10n.welcome}, ${user?.fullName ?? ''}',
-              style: theme.textTheme.titleLarge,
-            ),
-            if (user != null && user.roles.isNotEmpty) ...[
-              const SizedBox(height: 4),
+        return EmeraldPanel(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const IconChip(
+                    icon: Icons.favorite_rounded,
+                    size: 46,
+                    background: Color(0x22FFFFFF),
+                    foreground: AppColors.softGold,
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      '${l10n.welcome}, ${user?.fullName ?? ''}',
+                      style: text.titleLarge?.copyWith(
+                        color: AppColors.onHero,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
               Text(
-                '${l10n.rolesLabel}: ${user.roles.join(', ')}',
-                style: theme.textTheme.bodyMedium,
+                l10n.homeSupportiveMessage,
+                style: text.bodyMedium?.copyWith(color: AppColors.onHeroMuted),
+              ),
+              if (user != null && user.roles.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [for (final role in user.roles) _RoleChip(label: role)],
+                ),
+              ],
+              const SizedBox(height: 16),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  onPressed: auth.logout,
+                  icon: const Icon(Icons.logout, color: AppColors.onHero),
+                  label: Text(
+                    l10n.logoutButton,
+                    style: const TextStyle(color: AppColors.onHero),
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0x22FFFFFF),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  ),
+                ),
               ),
             ],
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: auth.logout,
-              icon: const Icon(Icons.logout),
-              label: Text(l10n.logoutButton),
-            ),
-          ],
+          ),
         );
       },
+    );
+  }
+}
+
+class _RoleChip extends StatelessWidget {
+  const _RoleChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0x1FFFFFFF),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.softGold),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: AppColors.onHero,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }

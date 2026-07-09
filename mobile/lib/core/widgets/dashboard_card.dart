@@ -52,6 +52,8 @@ class DashboardCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (enabled)
+                Icon(Icons.chevron_right, color: theme.colorScheme.primary),
               if (!enabled) ...[
                 const SizedBox(width: 8),
                 _ComingSoonBadge(label: comingSoonLabel),

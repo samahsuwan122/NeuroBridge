@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/app_scope.dart';
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/language_button.dart';
 import '../application/game_result_controller.dart';
 import '../application/memory_match_controller.dart';
@@ -188,22 +190,34 @@ class _CardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final revealed = card.isFaceUp || card.isMatched;
+    final Color background = card.isMatched
+        ? scheme.primaryContainer
+        : (card.isFaceUp ? AppColors.warmWhite : scheme.surfaceContainerHighest);
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        color: card.isMatched
-            ? theme.colorScheme.primaryContainer
-            : theme.colorScheme.surfaceContainerHighest,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: card.isMatched ? AppColors.softGold : AppColors.warmStone,
+            width: card.isMatched ? 2 : 1,
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x14000000),
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
         child: Center(
           child: revealed
               ? Text(card.value, style: const TextStyle(fontSize: 40))
-              : Icon(
-                  Icons.help_outline,
-                  size: 36,
-                  color: theme.colorScheme.primary,
-                ),
+              : Icon(Icons.help_outline, size: 34, color: scheme.primary),
         ),
       ),
     );
@@ -229,37 +243,71 @@ class _CompletionPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
-      color: theme.colorScheme.secondaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.wellDone, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(l10n.gameSummary, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text('${l10n.moves}: ${controller.moves}'),
-            Text('${l10n.mistakes}: ${controller.mistakes}'),
-            Text('${l10n.time}: ${controller.elapsedSeconds}s'),
-            const SizedBox(height: 8),
-            Text(l10n.performanceOnlyNote, style: theme.textTheme.bodySmall),
-            if (submitStatus != null) ...[
-              const SizedBox(height: 12),
-              _SubmissionRow(
-                status: submitStatus!,
-                l10n: l10n,
-                onRetry: onRetrySave,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [AppColors.heroStart, AppColors.heroEnd],
               ),
-            ],
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: onPlayAgain,
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.playAgain),
             ),
-          ],
-        ),
+            child: Row(
+              children: [
+                const IconChip(
+                  icon: Icons.emoji_events_rounded,
+                  size: 44,
+                  background: Color(0x22FFFFFF),
+                  foreground: AppColors.softGold,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    l10n.wellDone,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: AppColors.onHero,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.gameSummary, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 6),
+                Text('${l10n.moves}: ${controller.moves}'),
+                Text('${l10n.mistakes}: ${controller.mistakes}'),
+                Text('${l10n.time}: ${controller.elapsedSeconds}s'),
+                const SizedBox(height: 8),
+                Text(l10n.performanceOnlyNote,
+                    style: theme.textTheme.bodySmall),
+                if (submitStatus != null) ...[
+                  const SizedBox(height: 12),
+                  _SubmissionRow(
+                    status: submitStatus!,
+                    l10n: l10n,
+                    onRetry: onRetrySave,
+                  ),
+                ],
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: onPlayAgain,
+                  icon: const Icon(Icons.refresh),
+                  label: Text(l10n.playAgain),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

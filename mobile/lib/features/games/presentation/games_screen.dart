@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/app_scope.dart';
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
@@ -117,20 +118,12 @@ class _GameCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: theme.colorScheme.primaryContainer,
-                child: Icon(
-                  Icons.videogame_asset,
-                  size: 28,
-                  color: theme.colorScheme.onPrimaryContainer,
-                ),
-              ),
+              const IconChip(icon: Icons.videogame_asset_rounded, size: 54),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -142,12 +135,16 @@ class _GameCard extends StatelessWidget {
                       Text(game.description!, style: theme.textTheme.bodyMedium),
                     ],
                     const SizedBox(height: 6),
-                    Text(meta.join('  ·  '), style: theme.textTheme.bodySmall),
+                    Text(
+                      meta.join('  ·  '),
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.chevron_right),
+              Icon(Icons.chevron_right, color: theme.colorScheme.primary),
             ],
           ),
         ),

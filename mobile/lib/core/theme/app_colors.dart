@@ -27,4 +27,10 @@ class AppColors {
   static const Color onSurfaceDeep = Color(0xFF1E2B26);
   static const Color onSurfaceMuted = Color(0xFF4C5A52);
   static const Color outlineSoft = Color(0xFF6B776E);
+
+  // Emerald hero gradient + text tones for use on emerald surfaces.
+  static const Color heroStart = Color(0xFF12695B);
+  static const Color heroEnd = Color(0xFF0A4034);
+  static const Color onHero = Color(0xFFF4F0E6);
+  static const Color onHeroMuted = Color(0xFFBFD3CA);
 }

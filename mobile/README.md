@@ -135,8 +135,12 @@ Android emulator → `10.0.2.2:8000`). Override with
 The app uses a premium **"medical luxury"** Material 3 **light** theme (`core/theme/`): deep
 emerald/dark-teal primary, ivory/warm-white backgrounds, muted sage, and champagne-gold **accents
 only** (chips/borders/icons — never body text, to preserve contrast). Rounded cards with soft
-shadows, 56px emerald buttons, rounded inputs, and slightly larger readable typography. Styling only —
-no behavior or medical logic changes.
+shadows, 56px emerald buttons, rounded inputs, and slightly larger readable typography.
+
+Shared premium building blocks live in `core/widgets/`: `EmeraldPanel` (deep-emerald gradient hero),
+`IconChip`, and `SectionHeader`. These give a **hero login**, an **emerald welcome card** on Home,
+icon-chip game/result cards, richer Memory Match tiles + a gradient completion header, and
+icon-chip section headers on the Profile screen. Styling only — no behavior or medical logic changes.
 
 ## Localization & accessibility
 

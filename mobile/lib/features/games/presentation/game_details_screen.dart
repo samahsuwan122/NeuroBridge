@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/language_button.dart';
 import '../data/game_definition.dart';
 
@@ -36,8 +37,18 @@ class GameDetailsScreen extends StatelessWidget {
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(game.name, style: theme.textTheme.headlineSmall),
-                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            const IconChip(
+                                icon: Icons.videogame_asset_rounded, size: 56),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Text(game.name,
+                                  style: theme.textTheme.headlineSmall),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
                         _MetaRow(label: l10n.difficulty, value: game.difficulty),
                         if (game.estimatedDurationMinutes != null)
                           _MetaRow(

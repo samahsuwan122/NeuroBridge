@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/app_scope.dart';
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
@@ -115,37 +117,101 @@ class _ResultCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(result.gameTitle, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 16,
-              runSpacing: 4,
+            Row(
               children: [
-                Text('${l10n.score}: $scoreText'),
-                if (result.durationSeconds != null)
-                  Text('${l10n.duration}: ${result.durationSeconds}s'),
-                Text(result.completed ? l10n.completed : l10n.notCompleted),
+                const IconChip(icon: Icons.emoji_events_outlined, size: 46),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(result.gameTitle,
+                      style: theme.textTheme.titleLarge),
+                ),
+                _CompletionChip(completed: result.completed, l10n: l10n),
               ],
             ),
-            if (result.moves != null || result.mistakes != null) ...[
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 16,
-                children: [
-                  if (result.moves != null)
-                    Text('${l10n.moves}: ${result.moves}'),
-                  if (result.mistakes != null)
-                    Text('${l10n.mistakes}: ${result.mistakes}'),
-                ],
-              ),
-            ],
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                _StatPill(label: l10n.score, value: scoreText),
+                if (result.durationSeconds != null)
+                  _StatPill(
+                      label: l10n.duration,
+                      value: '${result.durationSeconds}s'),
+                if (result.moves != null)
+                  _StatPill(label: l10n.moves, value: '${result.moves}'),
+                if (result.mistakes != null)
+                  _StatPill(label: l10n.mistakes, value: '${result.mistakes}'),
+              ],
+            ),
             if (result.shortDate.isNotEmpty) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 12),
               Text('${l10n.date}: ${result.shortDate}',
-                  style: theme.textTheme.bodySmall),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _StatPill extends StatelessWidget {
+  const _StatPill({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          Text(value, style: theme.textTheme.titleMedium),
+        ],
+      ),
+    );
+  }
+}
+
+class _CompletionChip extends StatelessWidget {
+  const _CompletionChip({required this.completed, required this.l10n});
+
+  final bool completed;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final Color bg = completed
+        ? theme.colorScheme.tertiaryContainer
+        : theme.colorScheme.surfaceContainerHighest;
+    final Color fg = completed
+        ? theme.colorScheme.onTertiaryContainer
+        : theme.colorScheme.onSurfaceVariant;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+        border: completed ? Border.all(color: AppColors.softGold) : null,
+      ),
+      child: Text(
+        completed ? l10n.completed : l10n.notCompleted,
+        style: theme.textTheme.labelMedium
+            ?.copyWith(color: fg, fontWeight: FontWeight.w600),
       ),
     );
   }
