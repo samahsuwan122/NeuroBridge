@@ -63,8 +63,10 @@ mobile/
 The home **My Profile** card opens a **read-only Profile screen** (`/profile`) that shows the
 patient's own basic fields from `GET /api/v1/patients` (first profile): full name, email, phone, date
 of birth, gender, emergency contact, and member-since — each with a **"Not provided"** fallback. It
-deliberately omits `medical_center_id`, `notes`, and anything diagnostic. Safe
-loading/empty/error+retry states; no editing in this phase.
+also shows a read-only **Care & Safety Information** section (allergies, current medications, blood
+type, mobility needs, vision/hearing needs, preferred communication, caregiver notes) with a
+"care/safety only, not a diagnosis" note. It deliberately omits `medical_center_id`, `notes`, and
+anything diagnostic. Safe loading/empty/error+retry states; no editing in this phase.
 
 The home **Progress** card opens a **Progress screen** (`/progress`) that lists the patient's saved
 results from `GET /api/v1/games/results`, joined with `GET /api/v1/games` for game titles (fallback to

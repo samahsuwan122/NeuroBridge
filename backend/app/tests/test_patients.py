@@ -309,3 +309,53 @@ def test_audit_logs_created_for_patient_actions(client, admin_headers, user_fact
         "link_family",
     ):
         assert expected in actions
+
+
+# --- care & safety information (Phase 15) -------------------------------------
+
+_CARE = {
+    "allergies": "Penicillin",
+    "current_medications": "None",
+    "blood_type": "O+",
+    "mobility_needs": "Needs a cane",
+    "vision_hearing_needs": "Reading glasses",
+    "preferred_communication": "Speak slowly",
+    "caregiver_notes": "Prefers mornings",
+}
+
+
+def test_create_patient_profile_with_care_fields(client, admin_headers, user_factory):
+    patient = user_factory(email="patient@example.test", roles=("patient",))
+    resp = _create_profile(
+        client, admin_headers, patient.id, allergies="Peanuts", blood_type="A-"
+    )
+    assert resp.status_code == 201
+    data = resp.json()
+    assert data["allergies"] == "Peanuts"
+    assert data["blood_type"] == "A-"
+
+
+def test_update_and_get_care_fields(client, admin_headers, user_factory):
+    patient = user_factory(email="patient@example.test", roles=("patient",))
+    profile = _create_profile(client, admin_headers, patient.id).json()
+
+    put = client.put(
+        f"/api/v1/patients/{profile['id']}", headers=admin_headers, json=_CARE
+    )
+    assert put.status_code == 200
+    for key, value in _CARE.items():
+        assert put.json()[key] == value
+
+    got = client.get(
+        f"/api/v1/patients/{profile['id']}", headers=admin_headers
+    ).json()
+    for key, value in _CARE.items():
+        assert got[key] == value
+
+
+def test_care_response_has_no_diagnostic_fields(client, admin_headers, user_factory):
+    patient = user_factory(email="patient@example.test", roles=("patient",))
+    profile = _create_profile(client, admin_headers, patient.id).json()
+    forbidden = ("diagnosis", "disease", "dementia", "alzheimer", "interpretation")
+    for key in profile:
+        assert not any(bad in key.lower() for bad in forbidden)

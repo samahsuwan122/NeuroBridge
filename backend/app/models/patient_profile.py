@@ -37,5 +37,16 @@ class PatientProfile(UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin, Base)
     # General, non-diagnostic profile notes only.
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
+    # --- Care & safety information (non-diagnostic; stored/displayed as-is) ---
+    # These are practical care/safety details only. They are never analyzed,
+    # scored, or used to infer any medical condition.
+    allergies: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    current_medications: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    blood_type: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
+    mobility_needs: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    vision_hearing_needs: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    preferred_communication: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    caregiver_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
     def __repr__(self) -> str:  # pragma: no cover - debug helper
         return f"<PatientProfile id={self.id!r} user_id={self.user_id!r}>"

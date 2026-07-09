@@ -79,6 +79,13 @@ PatientProfileDetail _sample() => PatientProfileDetail(
       emergencyContactName: 'Care Giver',
       emergencyContactPhone: '+199',
       createdAt: DateTime(2026, 7, 9),
+      allergies: 'Penicillin',
+      currentMedications: null, // exercises the "Not provided" fallback
+      bloodType: 'O+',
+      mobilityNeeds: 'Needs walking support',
+      visionHearingNeeds: 'Uses reading glasses',
+      preferredCommunication: 'Speak slowly and clearly',
+      caregiverNotes: 'Prefers morning activities',
     );
 
 void main() {
@@ -105,11 +112,25 @@ void main() {
     expect(find.text('Retry'), findsOneWidget);
   });
 
-  testWidgets('profile contains no diagnosis/medical text', (tester) async {
+  testWidgets('profile shows the care & safety section', (tester) async {
     await _wrap(tester, _FakeProfile(ProfileStatus.loaded, _sample()));
-    for (final word in ['diagnosis', 'disease', 'dementia', 'alzheimer']) {
+    expect(find.text('Care & Safety Information'), findsOneWidget);
+    expect(find.text('Allergies'), findsOneWidget);
+    expect(find.text('Penicillin'), findsOneWidget);
+    expect(find.text('Blood type'), findsOneWidget);
+    expect(find.text('O+'), findsOneWidget);
+    expect(find.textContaining('Prefers morning activities'), findsOneWidget);
+    // Missing care value falls back to "Not provided".
+    expect(find.text('Not provided'), findsWidgets);
+  });
+
+  testWidgets('profile shows no diagnostic conclusions', (tester) async {
+    await _wrap(tester, _FakeProfile(ProfileStatus.loaded, _sample()));
+    for (final word in ['disease', 'dementia', 'alzheimer', 'interpretation']) {
       expect(find.textContaining(word), findsNothing);
       expect(find.textContaining(word.toUpperCase()), findsNothing);
     }
+    // "diagnosis" appears only in the safe disclaimer ("not a medical diagnosis").
+    expect(find.textContaining('not a medical diagnosis'), findsOneWidget);
   });
 }

@@ -42,6 +42,29 @@ DEMO_USERS = [
     ("therapist.demo@neurobridge.local", "Demo Therapist", "therapist"),
 ]
 
+# LOCAL DEV ONLY fake care/safety details for the demo patient. These are
+# non-diagnostic care details only — never analyzed, scored, or interpreted.
+DEMO_CARE = {
+    "allergies": "Penicillin",
+    "current_medications": "Not provided",
+    "blood_type": "O+",
+    "mobility_needs": "Needs walking support",
+    "vision_hearing_needs": "Uses reading glasses",
+    "preferred_communication": "Speak slowly and clearly",
+    "caregiver_notes": "Prefers morning activities",
+}
+
+
+def _backfill_care(profile) -> bool:
+    """Set demo care fields only where currently missing/empty."""
+    changed = False
+    for key, value in DEMO_CARE.items():
+        current = getattr(profile, key, None)
+        if current is None or (isinstance(current, str) and not current.strip()):
+            setattr(profile, key, value)
+            changed = True
+    return changed
+
 
 def _get_or_create_center(session: Session) -> Tuple[MedicalCenter, bool]:
     existing = session.execute(
@@ -182,6 +205,9 @@ def seed_demo_data(session: Session) -> Dict[str, object]:
     profile, profile_created = _get_or_create_profile(
         session, users["patient"], center.id
     )
+    care_backfilled = _backfill_care(profile)
+    if care_backfilled:
+        session.add(profile)
     family_created = _ensure_family_link(session, profile, users["family"])
     doctor_created = _ensure_assignment(session, profile, users["doctor"], "doctor")
     therapist_created = _ensure_assignment(
@@ -194,6 +220,7 @@ def seed_demo_data(session: Session) -> Dict[str, object]:
         "center": "created" if center_created else "reused",
         "users": user_status,
         "profile": "created" if profile_created else "reused",
+        "care_info": "backfilled" if care_backfilled else "already set",
         "family_link": "created" if family_created else "reused",
         "doctor_assignment": "created" if doctor_created else "reused",
         "therapist_assignment": "created" if therapist_created else "reused",
@@ -215,6 +242,7 @@ def main() -> None:
     for email, status in result["users"].items():  # type: ignore[union-attr]
         print(f"  {email}: {status}")
     print("Patient profile: " + str(result["profile"]))
+    print("Care & safety demo info: " + str(result["care_info"]))
     print("Family link (patient.demo <- family.demo): " + str(result["family_link"]))
     print("Doctor assignment: " + str(result["doctor_assignment"]))
     print("Therapist assignment: " + str(result["therapist_assignment"]))

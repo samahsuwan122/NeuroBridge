@@ -13,7 +13,19 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.modules.auth.schemas import UserBasic
 
 
-class PatientProfileCreate(BaseModel):
+class CareSafetyFields(BaseModel):
+    """Non-diagnostic care/safety details (stored/displayed as-is)."""
+
+    allergies: Optional[str] = None
+    current_medications: Optional[str] = None
+    blood_type: Optional[str] = Field(default=None, max_length=8)
+    mobility_needs: Optional[str] = Field(default=None, max_length=255)
+    vision_hearing_needs: Optional[str] = Field(default=None, max_length=255)
+    preferred_communication: Optional[str] = Field(default=None, max_length=255)
+    caregiver_notes: Optional[str] = None
+
+
+class PatientProfileCreate(CareSafetyFields):
     user_id: UUID
     medical_center_id: Optional[UUID] = None
     date_of_birth: Optional[date] = None
@@ -23,7 +35,7 @@ class PatientProfileCreate(BaseModel):
     notes: Optional[str] = None
 
 
-class PatientProfileUpdate(BaseModel):
+class PatientProfileUpdate(CareSafetyFields):
     medical_center_id: Optional[UUID] = None
     date_of_birth: Optional[date] = None
     gender: Optional[str] = Field(default=None, max_length=32)
@@ -66,6 +78,14 @@ class PatientProfileResponse(BaseModel):
     emergency_contact_name: Optional[str] = None
     emergency_contact_phone: Optional[str] = None
     notes: Optional[str] = None
+    # Care & safety information (non-diagnostic).
+    allergies: Optional[str] = None
+    current_medications: Optional[str] = None
+    blood_type: Optional[str] = None
+    mobility_needs: Optional[str] = None
+    vision_hearing_needs: Optional[str] = None
+    preferred_communication: Optional[str] = None
+    caregiver_notes: Optional[str] = None
     assignments: List[PatientAssignmentResponse] = Field(default_factory=list)
     family_links: List[PatientFamilyLinkResponse] = Field(default_factory=list)
     created_at: datetime

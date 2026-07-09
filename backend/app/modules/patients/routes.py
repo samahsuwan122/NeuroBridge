@@ -99,6 +99,13 @@ def _profile_response(db: Session, profile: PatientProfile) -> PatientProfileRes
         emergency_contact_name=profile.emergency_contact_name,
         emergency_contact_phone=profile.emergency_contact_phone,
         notes=profile.notes,
+        allergies=profile.allergies,
+        current_medications=profile.current_medications,
+        blood_type=profile.blood_type,
+        mobility_needs=profile.mobility_needs,
+        vision_hearing_needs=profile.vision_hearing_needs,
+        preferred_communication=profile.preferred_communication,
+        caregiver_notes=profile.caregiver_notes,
         assignments=[_assignment_response(a) for a in assignments],
         family_links=[_family_response(link) for link in links],
         created_at=profile.created_at,
@@ -133,6 +140,9 @@ def create_patient_profile(
             emergency_contact_name=payload.emergency_contact_name,
             emergency_contact_phone=payload.emergency_contact_phone,
             notes=payload.notes,
+            care_fields=payload.model_dump(
+                include=set(service.CARE_FIELDS), exclude_none=True
+            ),
             actor_user_id=admin.id,
             ip_address=ip_address,
             device_info=device_info,

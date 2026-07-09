@@ -280,6 +280,18 @@ def visible_patient_profile_ids(
 # --- mutations ---------------------------------------------------------------
 
 
+# Care & safety fields (non-diagnostic; stored/displayed as-is, never analyzed).
+CARE_FIELDS = (
+    "allergies",
+    "current_medications",
+    "blood_type",
+    "mobility_needs",
+    "vision_hearing_needs",
+    "preferred_communication",
+    "caregiver_notes",
+)
+
+
 def create_patient_profile(
     session: Session,
     *,
@@ -290,6 +302,7 @@ def create_patient_profile(
     emergency_contact_name: Optional[str] = None,
     emergency_contact_phone: Optional[str] = None,
     notes: Optional[str] = None,
+    care_fields: Optional[dict] = None,
     actor_user_id: Optional[uuid.UUID] = None,
     ip_address: Optional[str] = None,
     device_info: Optional[str] = None,
@@ -316,6 +329,10 @@ def create_patient_profile(
         emergency_contact_phone=emergency_contact_phone,
         notes=notes,
     )
+    if care_fields:
+        for key, value in care_fields.items():
+            if key in CARE_FIELDS:
+                setattr(profile, key, value)
     session.add(profile)
     session.flush()
     record_audit(
@@ -339,7 +356,7 @@ _UPDATABLE_FIELDS = (
     "emergency_contact_name",
     "emergency_contact_phone",
     "notes",
-)
+) + CARE_FIELDS
 
 
 def update_patient_profile(

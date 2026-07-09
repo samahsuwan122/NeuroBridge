@@ -90,9 +90,11 @@ class _ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
         Text(l10n.profileSubtitle,
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 12),
@@ -128,7 +130,54 @@ class _ProfileView extends StatelessWidget {
             ),
           ),
         ),
-      ],
+        const SizedBox(height: 16),
+        Text(l10n.careSafetyInformation,
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 4),
+        Text(l10n.careSafetyNote,
+            style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 8),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _InfoRow(label: l10n.allergies, value: profile.allergies, l10n: l10n),
+                const Divider(),
+                _InfoRow(
+                    label: l10n.currentMedications,
+                    value: profile.currentMedications,
+                    l10n: l10n),
+                const Divider(),
+                _InfoRow(
+                    label: l10n.bloodType, value: profile.bloodType, l10n: l10n),
+                const Divider(),
+                _InfoRow(
+                    label: l10n.mobilityNeeds,
+                    value: profile.mobilityNeeds,
+                    l10n: l10n),
+                const Divider(),
+                _InfoRow(
+                    label: l10n.visionHearingNeeds,
+                    value: profile.visionHearingNeeds,
+                    l10n: l10n),
+                const Divider(),
+                _InfoRow(
+                    label: l10n.preferredCommunication,
+                    value: profile.preferredCommunication,
+                    l10n: l10n),
+                const Divider(),
+                _InfoRow(
+                    label: l10n.caregiverNotes,
+                    value: profile.caregiverNotes,
+                    l10n: l10n),
+              ],
+            ),
+          ),
+        ),
+        ],
+      ),
     );
   }
 }

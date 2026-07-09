@@ -102,6 +102,17 @@ class AppLocalizations {
       'gender': 'Gender',
       'memberSince': 'Member since',
       'notProvided': 'Not provided',
+      // Care & safety
+      'careSafetyInformation': 'Care & Safety Information',
+      'careSafetyNote':
+          'These are care and safety details only, not a medical diagnosis.',
+      'allergies': 'Allergies',
+      'currentMedications': 'Current medications',
+      'bloodType': 'Blood type',
+      'mobilityNeeds': 'Mobility needs',
+      'visionHearingNeeds': 'Vision/hearing needs',
+      'preferredCommunication': 'Preferred communication',
+      'caregiverNotes': 'Caregiver notes',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -185,6 +196,16 @@ class AppLocalizations {
       'gender': 'الجنس',
       'memberSince': 'عضو منذ',
       'notProvided': 'غير متوفر',
+      // Care & safety
+      'careSafetyInformation': 'معلومات الرعاية والسلامة',
+      'careSafetyNote': 'هذه تفاصيل رعاية وسلامة فقط، وليست تشخيصًا طبيًا.',
+      'allergies': 'الحساسية',
+      'currentMedications': 'الأدوية الحالية',
+      'bloodType': 'فصيلة الدم',
+      'mobilityNeeds': 'احتياجات الحركة',
+      'visionHearingNeeds': 'احتياجات البصر/السمع',
+      'preferredCommunication': 'طريقة التواصل المفضّلة',
+      'caregiverNotes': 'ملاحظات مقدّم الرعاية',
     },
   };
 
@@ -271,6 +292,16 @@ class AppLocalizations {
   String get gender => _t('gender');
   String get memberSince => _t('memberSince');
   String get notProvided => _t('notProvided');
+
+  String get careSafetyInformation => _t('careSafetyInformation');
+  String get careSafetyNote => _t('careSafetyNote');
+  String get allergies => _t('allergies');
+  String get currentMedications => _t('currentMedications');
+  String get bloodType => _t('bloodType');
+  String get mobilityNeeds => _t('mobilityNeeds');
+  String get visionHearingNeeds => _t('visionHearingNeeds');
+  String get preferredCommunication => _t('preferredCommunication');
+  String get caregiverNotes => _t('caregiverNotes');
 }
 
 class _AppLocalizationsDelegate

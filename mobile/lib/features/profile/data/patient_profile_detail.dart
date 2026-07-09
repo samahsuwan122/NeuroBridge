@@ -13,6 +13,13 @@ class PatientProfileDetail {
     this.emergencyContactName,
     this.emergencyContactPhone,
     this.createdAt,
+    this.allergies,
+    this.currentMedications,
+    this.bloodType,
+    this.mobilityNeeds,
+    this.visionHearingNeeds,
+    this.preferredCommunication,
+    this.caregiverNotes,
   });
 
   final String id;
@@ -24,6 +31,15 @@ class PatientProfileDetail {
   final String? emergencyContactName;
   final String? emergencyContactPhone;
   final DateTime? createdAt;
+
+  // Care & safety information (non-diagnostic; displayed as-is).
+  final String? allergies;
+  final String? currentMedications;
+  final String? bloodType;
+  final String? mobilityNeeds;
+  final String? visionHearingNeeds;
+  final String? preferredCommunication;
+  final String? caregiverNotes;
 
   factory PatientProfileDetail.fromJson(Map<String, dynamic> json) {
     final user = (json['user'] as Map?)?.cast<String, dynamic>();
@@ -37,6 +53,13 @@ class PatientProfileDetail {
       emergencyContactName: json['emergency_contact_name'] as String?,
       emergencyContactPhone: json['emergency_contact_phone'] as String?,
       createdAt: _parseDate(json['created_at']),
+      allergies: json['allergies'] as String?,
+      currentMedications: json['current_medications'] as String?,
+      bloodType: json['blood_type'] as String?,
+      mobilityNeeds: json['mobility_needs'] as String?,
+      visionHearingNeeds: json['vision_hearing_needs'] as String?,
+      preferredCommunication: json['preferred_communication'] as String?,
+      caregiverNotes: json['caregiver_notes'] as String?,
     );
   }
 
