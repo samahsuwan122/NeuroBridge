@@ -13,6 +13,8 @@ import 'features/games/data/game_results_api.dart';
 import 'features/games/data/games_api.dart';
 import 'features/home/application/home_controller.dart';
 import 'features/home/data/patient_api.dart';
+import 'features/progress/application/progress_controller.dart';
+import 'features/progress/data/progress_api.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +31,11 @@ Future<void> main() async {
     PatientApi(apiClient),
     storage,
   );
+  final progressController = ProgressController(
+    ProgressApi(apiClient),
+    GamesApi(apiClient),
+    storage,
+  );
 
   // Resolve initial auth state from any stored token before the first frame.
   await authController.bootstrap();
@@ -40,6 +47,7 @@ Future<void> main() async {
       home: homeController,
       games: gamesController,
       gameResults: gameResultController,
+      progress: progressController,
     ),
   );
 }

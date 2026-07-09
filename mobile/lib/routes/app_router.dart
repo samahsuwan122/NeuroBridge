@@ -7,6 +7,7 @@ import '../features/games/presentation/game_details_screen.dart';
 import '../features/games/presentation/games_screen.dart';
 import '../features/games/presentation/memory_match_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/progress/presentation/progress_screen.dart';
 
 /// Builds the app router. It refreshes when auth state changes and redirects
 /// unauthenticated users to /login.
@@ -43,6 +44,10 @@ GoRouter createRouter(AuthController auth) {
         path: '/games/play/memory-match',
         builder: (context, state) =>
             MemoryMatchScreen(game: state.extra as GameDefinition?),
+      ),
+      GoRoute(
+        path: '/progress',
+        builder: (context, state) => const ProgressScreen(),
       ),
     ],
   );

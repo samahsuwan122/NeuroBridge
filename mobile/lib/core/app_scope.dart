@@ -4,6 +4,7 @@ import '../features/auth/application/auth_controller.dart';
 import '../features/games/application/game_result_controller.dart';
 import '../features/games/application/games_controller.dart';
 import '../features/home/application/home_controller.dart';
+import '../features/progress/application/progress_controller.dart';
 import 'localization/locale_controller.dart';
 
 /// Exposes the app-wide controllers to the tree.
@@ -15,6 +16,7 @@ class AppScope extends InheritedWidget {
     required this.home,
     required this.games,
     required this.gameResults,
+    required this.progress,
     required super.child,
   });
 
@@ -23,6 +25,7 @@ class AppScope extends InheritedWidget {
   final HomeController home;
   final GamesController games;
   final GameResultController gameResults;
+  final ProgressController progress;
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -36,5 +39,6 @@ class AppScope extends InheritedWidget {
       locale != oldWidget.locale ||
       home != oldWidget.home ||
       games != oldWidget.games ||
-      gameResults != oldWidget.gameResults;
+      gameResults != oldWidget.gameResults ||
+      progress != oldWidget.progress;
 }

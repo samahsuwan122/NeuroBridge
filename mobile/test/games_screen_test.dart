@@ -20,6 +20,8 @@ import 'package:neurobridge_mobile/features/games/presentation/games_screen.dart
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
 import 'package:neurobridge_mobile/features/home/presentation/home_screen.dart';
+import 'package:neurobridge_mobile/features/progress/application/progress_controller.dart';
+import 'package:neurobridge_mobile/features/progress/data/progress_api.dart';
 
 class _FakeAuth extends AuthController {
   _FakeAuth()
@@ -89,6 +91,11 @@ Future<void> _wrap(
       gameResults: GameResultController(
         GameResultsApi(ApiClient()),
         PatientApi(ApiClient()),
+        SecureStorageService(),
+      ),
+      progress: ProgressController(
+        ProgressApi(ApiClient()),
+        GamesApi(ApiClient()),
         SecureStorageService(),
       ),
       child: MaterialApp(

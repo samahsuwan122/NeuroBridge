@@ -45,11 +45,21 @@ mobile/
         application/home_controller.dart
         presentation/home_screen.dart
       games/
-        data/{games_api,game_definition,memory_card}.dart
-        application/{games_controller,memory_match_controller}.dart
+        data/{games_api,game_definition,memory_card,game_results_api}.dart
+        application/{games_controller,memory_match_controller,game_result_controller}.dart
         presentation/{games_screen,game_details_screen,memory_match_screen}.dart
-    routes/app_router.dart        # /login /home /games /games/details /games/play/memory-match
+      progress/
+        data/{progress_api,game_result_summary}.dart
+        application/progress_controller.dart
+        presentation/progress_screen.dart
+    routes/app_router.dart        # /login /home /games /games/details
+                                  # /games/play/memory-match /progress
 ```
+
+The home **Progress** card opens a **Progress screen** (`/progress`) that lists the patient's saved
+results from `GET /api/v1/games/results`, joined with `GET /api/v1/games` for game titles (fallback to
+id). Each card shows game title, score/max, duration, completed, date, and moves/mistakes — **game
+performance only**, not a medical assessment. Safe loading/empty/error+retry states; no charts.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

@@ -10,6 +10,7 @@ import 'features/auth/application/auth_controller.dart';
 import 'features/games/application/game_result_controller.dart';
 import 'features/games/application/games_controller.dart';
 import 'features/home/application/home_controller.dart';
+import 'features/progress/application/progress_controller.dart';
 import 'routes/app_router.dart';
 
 /// Root application widget. Wires theme, localization (with RTL for Arabic),
@@ -22,6 +23,7 @@ class NeuroBridgeApp extends StatefulWidget {
     required this.home,
     required this.games,
     required this.gameResults,
+    required this.progress,
   });
 
   final AuthController auth;
@@ -29,6 +31,7 @@ class NeuroBridgeApp extends StatefulWidget {
   final HomeController home;
   final GamesController games;
   final GameResultController gameResults;
+  final ProgressController progress;
 
   @override
   State<NeuroBridgeApp> createState() => _NeuroBridgeAppState();
@@ -45,6 +48,7 @@ class _NeuroBridgeAppState extends State<NeuroBridgeApp> {
       home: widget.home,
       games: widget.games,
       gameResults: widget.gameResults,
+      progress: widget.progress,
       child: ListenableBuilder(
         listenable: widget.locale,
         builder: (context, _) {

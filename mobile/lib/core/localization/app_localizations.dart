@@ -79,6 +79,18 @@ class AppLocalizations {
       'resultSaved': 'Result saved',
       'resultSaveFailed': 'Could not save result.',
       'retrySave': 'Retry',
+      // Progress
+      'progressSubtitle': 'Your recent exercise performance.',
+      'loadingProgress': 'Loading your progress…',
+      'noProgressYet': 'No results yet. Play a game to see your progress here.',
+      'progressLoadFailed': 'Could not load your progress. Please try again.',
+      'score': 'Score',
+      'duration': 'Duration',
+      'completed': 'Completed',
+      'notCompleted': 'Not completed',
+      'date': 'Date',
+      'performanceOnlyProgressNote':
+          'These are cognitive exercise results (game performance only), not a medical assessment.',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -139,6 +151,18 @@ class AppLocalizations {
       'resultSaved': 'تم حفظ النتيجة',
       'resultSaveFailed': 'تعذّر حفظ النتيجة.',
       'retrySave': 'إعادة المحاولة',
+      // Progress
+      'progressSubtitle': 'أداؤك الأخير في التمارين.',
+      'loadingProgress': 'جارٍ تحميل تقدمك…',
+      'noProgressYet': 'لا توجد نتائج بعد. العب لعبة لرؤية تقدمك هنا.',
+      'progressLoadFailed': 'تعذّر تحميل تقدمك. حاول مرة أخرى.',
+      'score': 'النتيجة',
+      'duration': 'المدة',
+      'completed': 'مكتمل',
+      'notCompleted': 'غير مكتمل',
+      'date': 'التاريخ',
+      'performanceOnlyProgressNote':
+          'هذه نتائج تمارين إدراكية (أداء اللعبة فقط)، وليست تقييمًا طبيًا.',
     },
   };
 
@@ -203,6 +227,17 @@ class AppLocalizations {
   String get resultSaved => _t('resultSaved');
   String get resultSaveFailed => _t('resultSaveFailed');
   String get retrySave => _t('retrySave');
+
+  String get progressSubtitle => _t('progressSubtitle');
+  String get loadingProgress => _t('loadingProgress');
+  String get noProgressYet => _t('noProgressYet');
+  String get progressLoadFailed => _t('progressLoadFailed');
+  String get score => _t('score');
+  String get duration => _t('duration');
+  String get completed => _t('completed');
+  String get notCompleted => _t('notCompleted');
+  String get date => _t('date');
+  String get performanceOnlyProgressNote => _t('performanceOnlyProgressNote');
 }
 
 class _AppLocalizationsDelegate

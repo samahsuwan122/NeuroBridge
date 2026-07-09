@@ -96,6 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: l10n.progress,
         description: l10n.progressDesc,
         comingSoonLabel: l10n.comingSoon,
+        enabled: true,
+        onTap: () => context.go('/progress'),
       ),
       DashboardCard(
         icon: Icons.alarm,

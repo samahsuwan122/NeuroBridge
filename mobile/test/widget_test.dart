@@ -12,6 +12,8 @@ import 'package:neurobridge_mobile/features/games/data/game_results_api.dart';
 import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
+import 'package:neurobridge_mobile/features/progress/application/progress_controller.dart';
+import 'package:neurobridge_mobile/features/progress/data/progress_api.dart';
 
 void main() {
   testWidgets('unauthenticated app shows the login screen', (tester) async {
@@ -28,6 +30,11 @@ void main() {
       PatientApi(apiClient),
       storage,
     );
+    final progress = ProgressController(
+      ProgressApi(apiClient),
+      GamesApi(apiClient),
+      storage,
+    );
 
     await tester.pumpWidget(
       NeuroBridgeApp(
@@ -36,6 +43,7 @@ void main() {
         home: home,
         games: games,
         gameResults: gameResults,
+        progress: progress,
       ),
     );
     await tester.pumpAndSettle();
