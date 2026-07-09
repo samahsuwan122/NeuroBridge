@@ -13,10 +13,10 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 15 completed and committed locally. **Patient Care & Safety Information**
-  added (backend + mobile).
-- Latest local commit: `911f68e feat: add patient care and safety information`
-- Last pushed commit: `cd2029e` — the Phase 15 commits are **not pushed yet**
+- Phase 16 completed and committed locally. **Premium medical mobile theme**
+  added (deep emerald / ivory / muted sage / champagne-gold accents).
+- Latest local commit: `71da130 style(mobile): apply premium medical theme`
+- Last pushed commit: `cd2029e` — the Phase 15 & 16 commits are **not pushed yet**
   (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -37,6 +37,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 13: patient progress screen (mobile) — lists saved game results
 - Phase 14: read-only patient profile screen (mobile)
 - Phase 15: patient care & safety information (backend + mobile)
+- Phase 16: premium medical mobile theme (styling only)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -49,8 +50,8 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. Phase 15 (Patient Care & Safety Information) is complete and
-committed. **Next step: Phase 16 — not started.**
+None in progress. Phase 16 (Premium Medical Mobile Theme) is complete and
+committed. **Next step: Phase 17 — not started.**
 
 ## 6. Phase 13 summary (done)
 
@@ -62,10 +63,9 @@ committed. **Next step: Phase 16 — not started.**
 
 ## 7. Next step
 
-Phase 16 — not started. (Pick the next feature per PROJECT_EXECUTION_PLAN.md,
-e.g. cognitive assessment or reminders.) Also: the Phase 15 commits
-(`911f68e` + the docs commit) are committed locally but **not pushed** — push
-when ready.
+Phase 17 — not started. (Pick the next feature per PROJECT_EXECUTION_PLAN.md,
+e.g. cognitive assessment or reminders.) Also: the Phase 15 & 16 commits are
+committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
