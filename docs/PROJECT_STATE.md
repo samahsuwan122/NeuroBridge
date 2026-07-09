@@ -13,9 +13,9 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 16 completed and committed locally. **Premium medical mobile theme**
-  added (deep emerald / ivory / muted sage / champagne-gold accents).
-- Latest local commit: `71da130 style(mobile): apply premium medical theme`
+- Phase 16 (premium medical theme + UI refinement) completed and committed
+  locally.
+- Latest local commit: `f85c981 style(mobile): refine luxury medical UI`
 - Last pushed commit: `cd2029e` — the Phase 15 & 16 commits are **not pushed yet**
   (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -50,8 +50,9 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. Phase 16 (Premium Medical Mobile Theme) is complete and
-committed. **Next step: Phase 17 — not started.**
+None in progress. Phase 16 UI refinement is complete and committed. **Next step:
+Phase 17 — Memory Album.** Final UI polish will happen later, after the core
+features are complete.
 
 ## 6. Phase 13 summary (done)
 
@@ -63,9 +64,9 @@ committed. **Next step: Phase 17 — not started.**
 
 ## 7. Next step
 
-Phase 17 — not started. (Pick the next feature per PROJECT_EXECUTION_PLAN.md,
-e.g. cognitive assessment or reminders.) Also: the Phase 15 & 16 commits are
-committed locally but **not pushed** — push when ready.
+Phase 17 — Memory Album (not started). Final UI polish is deferred until the
+core features are complete. Also: the Phase 15 & 16 commits are committed
+locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
