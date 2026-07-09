@@ -28,7 +28,8 @@ mobile/
       config/app_config.dart      # configurable backend base URL
       network/api_client.dart     # Dio wrapper
       storage/secure_storage_service.dart
-      theme/app_theme.dart
+      theme/app_colors.dart          # medical-luxury palette constants
+      theme/app_theme.dart           # premium M3 light theme (emerald/ivory/sage/gold)
       localization/app_localizations.dart   # en/ar strings + delegate
       localization/locale_controller.dart
       widgets/language_button.dart
@@ -128,6 +129,14 @@ Android emulator → `10.0.2.2:8000`). Override with
 - Simplified progress
 - Reminders
 - Alerts
+
+## Theme
+
+The app uses a premium **"medical luxury"** Material 3 **light** theme (`core/theme/`): deep
+emerald/dark-teal primary, ivory/warm-white backgrounds, muted sage, and champagne-gold **accents
+only** (chips/borders/icons — never body text, to preserve contrast). Rounded cards with soft
+shadows, 56px emerald buttons, rounded inputs, and slightly larger readable typography. Styling only —
+no behavior or medical logic changes.
 
 ## Localization & accessibility
 

@@ -21,6 +21,7 @@ class AppLocalizations {
   static const Map<String, Map<String, String>> _values = {
     'en': {
       'appTitle': 'NeuroBridge',
+      'loginSubtitle': 'Cognitive care, thoughtfully designed.',
       'loginTitle': 'Sign in',
       'emailOrPhone': 'Email or phone',
       'password': 'Password',
@@ -116,6 +117,7 @@ class AppLocalizations {
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
+      'loginSubtitle': 'رعاية إدراكية مصمّمة بعناية.',
       'loginTitle': 'تسجيل الدخول',
       'emailOrPhone': 'البريد الإلكتروني أو الهاتف',
       'password': 'كلمة المرور',
@@ -213,6 +215,7 @@ class AppLocalizations {
       _values[locale.languageCode]?[key] ?? _values['en']![key] ?? key;
 
   String get appTitle => _t('appTitle');
+  String get loginSubtitle => _t('loginSubtitle');
   String get loginTitle => _t('loginTitle');
   String get emailOrPhone => _t('emailOrPhone');
   String get password => _t('password');

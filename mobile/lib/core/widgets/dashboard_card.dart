@@ -27,17 +27,17 @@ class DashboardCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: InkWell(
         onTap: enabled ? onTap : null,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(18),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 28,
+                radius: 30,
                 backgroundColor: theme.colorScheme.primaryContainer,
                 child: Icon(
                   icon,
-                  size: 28,
+                  size: 30,
                   color: theme.colorScheme.onPrimaryContainer,
                 ),
               ),
@@ -73,15 +73,17 @@ class _ComingSoonBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: theme.colorScheme.secondaryContainer,
+        color: theme.colorScheme.tertiaryContainer,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.colorScheme.tertiary),
       ),
       child: Text(
         label,
         style: theme.textTheme.labelSmall?.copyWith(
-          color: theme.colorScheme.onSecondaryContainer,
+          color: theme.colorScheme.onTertiaryContainer,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
