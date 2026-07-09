@@ -13,11 +13,12 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 16 (premium medical theme + UI refinement) completed and committed
-  locally.
-- Latest local commit: `f85c981 style(mobile): refine luxury medical UI`
-- Last pushed commit: `cd2029e` — the Phase 15 & 16 commits are **not pushed yet**
-  (`origin/main` is behind local `main`).
+- Phase 17 Step 2 (Memory Album backend foundation) completed and committed
+  locally. Adds the `memory_entries` table + `/api/v1/memories` APIs. Media
+  upload is still deferred to a later phase.
+- Latest local commit: `2cc3e54 feat(backend): add memory album foundation`
+- Last pushed commit: `cd2029e` — the Phase 15/16/17 commits are **not pushed
+  yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
 ## 3. Completed phases summary
@@ -38,6 +39,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 14: read-only patient profile screen (mobile)
 - Phase 15: patient care & safety information (backend + mobile)
 - Phase 16: premium medical mobile theme (styling only)
+- Phase 17 (Step 2): Memory Album backend foundation (model, migration, APIs)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -50,9 +52,14 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. Phase 16 UI refinement is complete and committed. **Next step:
-Phase 17 — Memory Album.** Final UI polish will happen later, after the core
-features are complete.
+Phase 17 — Memory Album. **Step 2 (backend foundation) is complete and
+committed:** `memory_entries` table, the `memories` module, and the
+`/api/v1/memories` APIs (list/create/detail/update/soft-delete) with role-scoped
+access (patient own, family linked create/view, doctor/therapist/manager
+view-only, admin full). Memories are supportive/family-engagement content only —
+no diagnosis, scoring, or medical interpretation. Media upload is deferred to a
+later phase (`media_type`/`media_url` are placeholders). **Next step: the mobile
+Memory Album** (list + detail + family create).
 
 ## 6. Phase 13 summary (done)
 
@@ -64,9 +71,10 @@ features are complete.
 
 ## 7. Next step
 
-Phase 17 — Memory Album (not started). Final UI polish is deferred until the
-core features are complete. Also: the Phase 15 & 16 commits are committed
-locally but **not pushed** — push when ready.
+Phase 17 mobile Memory Album (list + detail + family create) — the backend is
+ready at `/api/v1/memories`. Media upload is deferred to a later phase. Final UI
+polish is also deferred until the core features are complete. Also: the Phase
+15/16/17 commits are committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
