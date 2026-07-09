@@ -15,6 +15,8 @@ import 'package:neurobridge_mobile/features/games/data/game_results_api.dart';
 import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
+import 'package:neurobridge_mobile/features/memories/application/memories_controller.dart';
+import 'package:neurobridge_mobile/features/memories/data/memories_api.dart';
 import 'package:neurobridge_mobile/features/profile/application/profile_controller.dart';
 import 'package:neurobridge_mobile/features/profile/data/patient_profile_detail.dart';
 import 'package:neurobridge_mobile/features/profile/data/profile_api.dart';
@@ -54,6 +56,7 @@ Future<void> _wrap(WidgetTester tester, ProfileController profile) async {
       ),
       progress: ProgressController(ProgressApi(_c()), GamesApi(_c()), storage),
       profile: profile,
+      memories: MemoriesController(MemoriesApi(_c()), storage),
       child: const MaterialApp(
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: [

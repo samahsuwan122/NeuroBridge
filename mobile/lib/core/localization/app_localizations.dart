@@ -47,6 +47,7 @@ class AppLocalizations {
       'remindersDesc': 'Medication and appointment reminders.',
       'myProfile': 'My Profile',
       'myProfileDesc': 'View your profile details.',
+      'memoryAlbumDesc': 'Photos and stories from your life.',
       'familySupport': 'Family Support',
       'familySupportDesc': 'Stay connected with your caregivers.',
       'comingSoon': 'Coming soon',
@@ -116,6 +117,24 @@ class AppLocalizations {
       'visionHearingNeeds': 'Vision/hearing needs',
       'preferredCommunication': 'Preferred communication',
       'caregiverNotes': 'Caregiver notes',
+      // Memory Album
+      'memoryAlbum': 'Memory Album',
+      'memoryAlbumSubtitle': 'Cherished memories with your family.',
+      'memoryAlbumNote':
+          'Memories are for family connection and supportive recall activities only.',
+      'loadingMemories': 'Loading memories…',
+      'noMemoriesYet': 'No memories yet.',
+      'memoriesLoadFailed': 'Could not load memories. Please try again.',
+      'memoryDetails': 'Memory details',
+      'personName': 'Person',
+      'relationship': 'Relationship',
+      'place': 'Place',
+      'memoryDate': 'Memory date',
+      'category': 'Category',
+      'mediaType': 'Media type',
+      'mediaUrl': 'Media',
+      'createdAt': 'Added on',
+      'viewDetails': 'View details',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -145,6 +164,7 @@ class AppLocalizations {
       'remindersDesc': 'تذكيرات الأدوية والمواعيد.',
       'myProfile': 'ملفي الشخصي',
       'myProfileDesc': 'عرض تفاصيل ملفك الشخصي.',
+      'memoryAlbumDesc': 'صور وقصص من حياتك.',
       'familySupport': 'دعم العائلة',
       'familySupportDesc': 'ابقَ على تواصل مع مقدّمي الرعاية.',
       'comingSoon': 'قريبًا',
@@ -212,6 +232,24 @@ class AppLocalizations {
       'visionHearingNeeds': 'احتياجات البصر/السمع',
       'preferredCommunication': 'طريقة التواصل المفضّلة',
       'caregiverNotes': 'ملاحظات مقدّم الرعاية',
+      // Memory Album
+      'memoryAlbum': 'ألبوم الذكريات',
+      'memoryAlbumSubtitle': 'ذكريات عزيزة مع عائلتك.',
+      'memoryAlbumNote':
+          'الذكريات مخصّصة للتواصل العائلي وأنشطة الاستذكار الداعمة فقط.',
+      'loadingMemories': 'جارٍ تحميل الذكريات…',
+      'noMemoriesYet': 'لا توجد ذكريات بعد.',
+      'memoriesLoadFailed': 'تعذّر تحميل الذكريات. حاول مرة أخرى.',
+      'memoryDetails': 'تفاصيل الذكرى',
+      'personName': 'الشخص',
+      'relationship': 'صلة القرابة',
+      'place': 'المكان',
+      'memoryDate': 'تاريخ الذكرى',
+      'category': 'الفئة',
+      'mediaType': 'نوع الوسائط',
+      'mediaUrl': 'الوسائط',
+      'createdAt': 'أُضيفت في',
+      'viewDetails': 'عرض التفاصيل',
     },
   };
 
@@ -245,6 +283,7 @@ class AppLocalizations {
   String get remindersDesc => _t('remindersDesc');
   String get myProfile => _t('myProfile');
   String get myProfileDesc => _t('myProfileDesc');
+  String get memoryAlbumDesc => _t('memoryAlbumDesc');
   String get familySupport => _t('familySupport');
   String get familySupportDesc => _t('familySupportDesc');
   String get comingSoon => _t('comingSoon');
@@ -311,6 +350,23 @@ class AppLocalizations {
   String get visionHearingNeeds => _t('visionHearingNeeds');
   String get preferredCommunication => _t('preferredCommunication');
   String get caregiverNotes => _t('caregiverNotes');
+
+  String get memoryAlbum => _t('memoryAlbum');
+  String get memoryAlbumSubtitle => _t('memoryAlbumSubtitle');
+  String get memoryAlbumNote => _t('memoryAlbumNote');
+  String get loadingMemories => _t('loadingMemories');
+  String get noMemoriesYet => _t('noMemoriesYet');
+  String get memoriesLoadFailed => _t('memoriesLoadFailed');
+  String get memoryDetails => _t('memoryDetails');
+  String get personName => _t('personName');
+  String get relationship => _t('relationship');
+  String get place => _t('place');
+  String get memoryDate => _t('memoryDate');
+  String get category => _t('category');
+  String get mediaType => _t('mediaType');
+  String get mediaUrl => _t('mediaUrl');
+  String get createdAt => _t('createdAt');
+  String get viewDetails => _t('viewDetails');
 }
 
 class _AppLocalizationsDelegate

@@ -14,6 +14,8 @@ import 'package:neurobridge_mobile/features/games/data/game_results_api.dart';
 import 'package:neurobridge_mobile/features/games/data/games_api.dart';
 import 'package:neurobridge_mobile/features/home/application/home_controller.dart';
 import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
+import 'package:neurobridge_mobile/features/memories/application/memories_controller.dart';
+import 'package:neurobridge_mobile/features/memories/data/memories_api.dart';
 import 'package:neurobridge_mobile/features/profile/application/profile_controller.dart';
 import 'package:neurobridge_mobile/features/profile/data/profile_api.dart';
 import 'package:neurobridge_mobile/features/progress/application/progress_controller.dart';
@@ -75,6 +77,8 @@ Future<void> _pumpHome(
         SecureStorageService(),
       ),
       profile: ProfileController(ProfileApi(ApiClient()), SecureStorageService()),
+      memories:
+          MemoriesController(MemoriesApi(ApiClient()), SecureStorageService()),
     ),
   );
   await tester.pumpAndSettle();

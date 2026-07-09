@@ -57,8 +57,13 @@ mobile/
         data/{profile_api,patient_profile_detail}.dart
         application/profile_controller.dart
         presentation/profile_screen.dart
+      memories/
+        data/{memories_api,memory_entry}.dart
+        application/memories_controller.dart
+        presentation/{memories_screen,memory_details_screen}.dart
     routes/app_router.dart        # /login /home /games /games/details
                                   # /games/play/memory-match /progress /profile
+                                  # /memories /memories/details
 ```
 
 The home **My Profile** card opens a **read-only Profile screen** (`/profile`) that shows the
@@ -73,6 +78,15 @@ The home **Progress** card opens a **Progress screen** (`/progress`) that lists 
 results from `GET /api/v1/games/results`, joined with `GET /api/v1/games` for game titles (fallback to
 id). Each card shows game title, score/max, duration, completed, date, and moves/mistakes — **game
 performance only**, not a medical assessment. Safe loading/empty/error+retry states; no charts.
+
+The home **Memory Album** card opens a read-only **Memory Album** (`/memories`) that lists the
+caller's visible memories from `GET /api/v1/memories` (role-scoped by the backend). Each card shows
+the title, person/relationship, place, and category/media-type/date chips; tapping one opens a
+**memory detail** screen (`/memories/details`) with the full fields. Memories are **supportive,
+family-engagement content only** (a small note says they are "for family connection and supportive
+recall activities only") — no diagnosis, scoring, or medical interpretation. This phase is
+**view-only**: no create/edit/delete UI and no real image upload (`media_url` is shown as
+placeholder text, not an image). Safe loading/empty/error+retry states.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

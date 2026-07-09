@@ -10,6 +10,7 @@ import 'features/auth/application/auth_controller.dart';
 import 'features/games/application/game_result_controller.dart';
 import 'features/games/application/games_controller.dart';
 import 'features/home/application/home_controller.dart';
+import 'features/memories/application/memories_controller.dart';
 import 'features/profile/application/profile_controller.dart';
 import 'features/progress/application/progress_controller.dart';
 import 'routes/app_router.dart';
@@ -26,6 +27,7 @@ class NeuroBridgeApp extends StatefulWidget {
     required this.gameResults,
     required this.progress,
     required this.profile,
+    required this.memories,
   });
 
   final AuthController auth;
@@ -35,6 +37,7 @@ class NeuroBridgeApp extends StatefulWidget {
   final GameResultController gameResults;
   final ProgressController progress;
   final ProfileController profile;
+  final MemoriesController memories;
 
   @override
   State<NeuroBridgeApp> createState() => _NeuroBridgeAppState();
@@ -53,6 +56,7 @@ class _NeuroBridgeAppState extends State<NeuroBridgeApp> {
       gameResults: widget.gameResults,
       progress: widget.progress,
       profile: widget.profile,
+      memories: widget.memories,
       child: ListenableBuilder(
         listenable: widget.locale,
         builder: (context, _) {

@@ -102,6 +102,14 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () => context.go('/progress'),
       ),
       DashboardCard(
+        icon: Icons.photo_library,
+        title: l10n.memoryAlbum,
+        description: l10n.memoryAlbumDesc,
+        comingSoonLabel: l10n.comingSoon,
+        enabled: true,
+        onTap: () => context.go('/memories'),
+      ),
+      DashboardCard(
         icon: Icons.alarm,
         title: l10n.reminders,
         description: l10n.remindersDesc,
