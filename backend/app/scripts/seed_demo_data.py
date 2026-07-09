@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from app.core.security import hash_password
 from app.models import (
     MedicalCenter,
+    MemoryEntry,
     PatientAssignment,
     PatientFamilyLink,
     PatientProfile,
@@ -53,6 +54,33 @@ DEMO_CARE = {
     "preferred_communication": "Speak slowly and clearly",
     "caregiver_notes": "Prefers morning activities",
 }
+
+
+# LOCAL DEV ONLY fake Memory Album entries for the demo patient. These are
+# supportive/family-engagement memories only — never analyzed or interpreted.
+# Uploaded by the demo family member. media_url is left empty (placeholder).
+DEMO_MEMORIES = [
+    {
+        "title": "Family picnic at the park",
+        "description": "A sunny afternoon by the lake with the whole family.",
+        "person_name": "Layla",
+        "relationship": "daughter",
+        "place_name": "Al-Nafoura Park",
+        "category": "family",
+        "media_type": "text",
+        "media_url": None,
+    },
+    {
+        "title": "Wedding day photo",
+        "description": "A treasured photo from the wedding celebration.",
+        "person_name": "Omar",
+        "relationship": "son",
+        "place_name": "Home",
+        "category": "milestone",
+        "media_type": "text",
+        "media_url": None,
+    },
+]
 
 
 def _backfill_care(profile) -> bool:
@@ -157,6 +185,32 @@ def _ensure_family_link(
     return True
 
 
+def _ensure_demo_memories(
+    session: Session, profile: PatientProfile, uploader: User
+) -> int:
+    """Create demo Memory Album entries that don't already exist. Returns count."""
+    created = 0
+    for data in DEMO_MEMORIES:
+        existing = session.execute(
+            select(MemoryEntry).where(
+                MemoryEntry.patient_profile_id == profile.id,
+                MemoryEntry.title == data["title"],
+                MemoryEntry.deleted_at.is_(None),
+            )
+        ).scalar_one_or_none()
+        if existing is not None:
+            continue
+        session.add(
+            MemoryEntry(
+                patient_profile_id=profile.id,
+                uploaded_by_user_id=uploader.id,
+                **data,
+            )
+        )
+        created += 1
+    return created
+
+
 def _ensure_assignment(
     session: Session,
     profile: PatientProfile,
@@ -213,6 +267,7 @@ def seed_demo_data(session: Session) -> Dict[str, object]:
     therapist_created = _ensure_assignment(
         session, profile, users["therapist"], "therapist"
     )
+    memories_created = _ensure_demo_memories(session, profile, users["family"])
 
     session.commit()
 
@@ -224,6 +279,7 @@ def seed_demo_data(session: Session) -> Dict[str, object]:
         "family_link": "created" if family_created else "reused",
         "doctor_assignment": "created" if doctor_created else "reused",
         "therapist_assignment": "created" if therapist_created else "reused",
+        "memories": memories_created,
         "games": games_result,
     }
 
@@ -246,6 +302,7 @@ def main() -> None:
     print("Family link (patient.demo <- family.demo): " + str(result["family_link"]))
     print("Doctor assignment: " + str(result["doctor_assignment"]))
     print("Therapist assignment: " + str(result["therapist_assignment"]))
+    print("Memory Album demo entries created: " + str(result["memories"]))
     games = result["games"]
     print(
         "Games created: "

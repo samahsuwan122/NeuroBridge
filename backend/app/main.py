@@ -11,6 +11,7 @@ This defines a real FastAPI application with:
 - Admin user-management routes under /api/v1/admin (Phase 5)
 - Patient profile routes under /api/v1/patients (Phase 6)
 - Cognitive games routes under /api/v1/games (Phase 9)
+- Memory Album routes under /api/v1/memories (Phase 17)
 
 No therapy, AI, or reports APIs are implemented yet.
 NeuroBridge is NOT a diagnostic medical system.
@@ -27,6 +28,7 @@ from app.core.config import get_settings
 from app.modules.admin.routes import router as admin_router
 from app.modules.auth.routes import router as auth_router
 from app.modules.games.routes import router as games_router
+from app.modules.memories.routes import router as memories_router
 from app.modules.patients.routes import router as patients_router
 
 logger = logging.getLogger("neurobridge")
@@ -68,6 +70,7 @@ app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(patients_router)
 app.include_router(games_router)
+app.include_router(memories_router)
 
 
 def _health_payload() -> dict:

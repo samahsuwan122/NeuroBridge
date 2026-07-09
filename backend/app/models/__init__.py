@@ -10,6 +10,7 @@ from app.models.audit_log import AuditLog
 from app.models.game_definition import GameDefinition
 from app.models.game_result import GameResult
 from app.models.medical_center import MedicalCenter
+from app.models.memory_entry import MemoryEntry
 from app.models.patient_assignment import PatientAssignment
 from app.models.patient_family_link import PatientFamilyLink
 from app.models.patient_profile import PatientProfile
@@ -29,4 +30,5 @@ __all__ = [
     "PatientFamilyLink",
     "GameDefinition",
     "GameResult",
+    "MemoryEntry",
 ]
