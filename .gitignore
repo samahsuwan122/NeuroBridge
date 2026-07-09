@@ -75,3 +75,11 @@ storage/
 uploads/
 *.pdf
 !docs/**/*.pdf
+
+# Keep the Memory Album upload folder in the repo (via .gitkeep) but never track
+# the runtime uploaded images themselves.
+!backend/storage/
+backend/storage/*
+!backend/storage/memory_uploads/
+backend/storage/memory_uploads/*
+!backend/storage/memory_uploads/.gitkeep

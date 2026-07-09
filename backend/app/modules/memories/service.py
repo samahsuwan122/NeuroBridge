@@ -24,6 +24,7 @@ from sqlalchemy.orm import Session
 from app.core.permissions import ROLE_ADMIN, ROLE_FAMILY, ROLE_PATIENT
 from app.models import MemoryEntry, PatientProfile, User
 from app.modules.audit.service import record_audit
+from app.modules.memories import media
 from app.modules.patients.service import (
     can_view_profile,
     visible_patient_profile_ids,
@@ -83,6 +84,13 @@ def can_view_memory(
     if profile is None or profile.deleted_at is not None:
         return False
     return can_view_profile(session, viewer, set(roles), profile)
+
+
+def can_modify_memory(editor: User, roles: Iterable[str], memory: MemoryEntry) -> bool:
+    """Return True if `editor` may modify `memory` (its creator or an admin)."""
+    return (
+        ROLE_ADMIN in set(roles) or memory.uploaded_by_user_id == editor.id
+    )
 
 
 def list_memories(
@@ -241,3 +249,47 @@ def delete_memory(
         commit=False,
     )
     session.commit()
+
+
+def attach_media(
+    session: Session,
+    *,
+    memory: MemoryEntry,
+    uploader: User,
+    roles: Iterable[str],
+    data: bytes,
+    extension: str,
+    ip_address: Optional[str] = None,
+    device_info: Optional[str] = None,
+) -> MemoryEntry:
+    """Store an uploaded image for `memory` and point it at the new file.
+
+    Only the creator or an admin may upload (caller should also enforce this).
+    Replacing a previously uploaded *local* image removes the old file safely.
+    """
+    if not can_modify_memory(uploader, roles, memory):
+        raise NotAllowedError()
+
+    previous_url = memory.media_url
+    filename = media.save_image_bytes(data, extension)
+
+    memory.media_type = "image"
+    memory.media_url = media.public_url(filename)
+    session.add(memory)
+    record_audit(
+        session,
+        action="memory_media_uploaded",
+        entity_type="MemoryEntry",
+        actor_user_id=uploader.id,
+        entity_id=memory.id,
+        ip_address=ip_address,
+        device_info=device_info,
+        metadata={"media_url": memory.media_url},
+        commit=False,
+    )
+    session.commit()
+
+    # Best-effort cleanup of the replaced local file (never external URLs).
+    if previous_url and previous_url != memory.media_url:
+        media.delete_local_media(previous_url)
+    return memory

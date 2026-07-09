@@ -12,6 +12,7 @@ This defines a real FastAPI application with:
 - Patient profile routes under /api/v1/patients (Phase 6)
 - Cognitive games routes under /api/v1/games (Phase 9)
 - Memory Album routes under /api/v1/memories (Phase 17)
+- Uploaded Memory Album images served read-only under /media/memory_uploads (Phase 18)
 
 No therapy, AI, or reports APIs are implemented yet.
 NeuroBridge is NOT a diagnostic medical system.
@@ -22,12 +23,14 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.core import database
 from app.core.config import get_settings
 from app.modules.admin.routes import router as admin_router
 from app.modules.auth.routes import router as auth_router
 from app.modules.games.routes import router as games_router
+from app.modules.memories.media import MEDIA_URL_PREFIX, memory_uploads_dir
 from app.modules.memories.routes import router as memories_router
 from app.modules.patients.routes import router as patients_router
 
@@ -71,6 +74,17 @@ app.include_router(admin_router)
 app.include_router(patients_router)
 app.include_router(games_router)
 app.include_router(memories_router)
+
+# Serve uploaded Memory Album images read-only. The directory is created if
+# missing so the mount is always valid; its contents are runtime-only and
+# git-ignored (never committed).
+_memory_media_dir = memory_uploads_dir()
+_memory_media_dir.mkdir(parents=True, exist_ok=True)
+app.mount(
+    MEDIA_URL_PREFIX,
+    StaticFiles(directory=str(_memory_media_dir)),
+    name="memory_media",
+)
 
 
 def _health_payload() -> dict:

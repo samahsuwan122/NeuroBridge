@@ -14,14 +14,23 @@ import uuid
 from contextlib import contextmanager
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    Query,
+    Request,
+    UploadFile,
+    status,
+)
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models import MemoryEntry, User
 from app.modules.auth.dependencies import get_current_active_user
 from app.modules.auth.service import get_role_names
-from app.modules.memories import service
+from app.modules.memories import media, service
 from app.modules.memories.schemas import (
     MemoryEntryCreate,
     MemoryEntryResponse,
@@ -151,6 +160,62 @@ def update_memory(
             editor=current_user,
             roles=roles,
             fields=payload.model_dump(exclude_unset=True),
+            ip_address=ip_address,
+            device_info=device_info,
+        )
+    return _memory_response(memory)
+
+
+@router.post("/{memory_id}/media", response_model=MemoryEntryResponse)
+async def upload_memory_media(
+    memory_id: uuid.UUID,
+    request: Request,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db),
+) -> MemoryEntryResponse:
+    """Upload a real image for a memory (creator or admin only).
+
+    Accepts multipart/form-data with an image `file` (jpeg/png/webp, <= 5 MB).
+    Sets media_type="image" and media_url to a public local URL.
+    """
+    memory = _require_memory(db, memory_id)
+    roles = get_role_names(db, current_user.id)
+    # Access: only the creator or an admin may upload.
+    if not service.can_modify_memory(current_user, roles, memory):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not allowed to upload media for this memory.",
+        )
+
+    # Validate the content type against the image allow-list.
+    extension = media.extension_for(file.content_type)
+    if extension is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Unsupported file type. Allowed: JPEG, PNG, WebP images.",
+        )
+
+    data = await file.read()
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="The file is empty."
+        )
+    if len(data) > media.MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            detail="The file is too large (maximum 5 MB).",
+        )
+
+    ip_address, device_info = _client_info(request)
+    with _translate_memory_errors():
+        memory = service.attach_media(
+            db,
+            memory=memory,
+            uploader=current_user,
+            roles=roles,
+            data=data,
+            extension=extension,
             ip_address=ip_address,
             device_info=device_info,
         )

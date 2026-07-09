@@ -35,11 +35,13 @@ psycopg2-binary>=2.9
 PyJWT>=2.8
 # Password hashing (used directly; strong bcrypt hashing).
 bcrypt>=4.1
+# Multipart form parsing (required by FastAPI for file uploads, e.g. Memory
+# Album image upload). Login still uses JSON bodies.
+python-multipart>=0.0.9
 
 # Alternatives considered (not used):
 # - passlib[bcrypt]: mis-detects bcrypt>=4.1 backend version on 3.12 (noisy).
 # - python-jose[cryptography]: heavier; PyJWT is sufficient.
-# - python-multipart: only needed for form-encoded login; we use JSON bodies.
 
 # ============================ Testing =====================================
 
