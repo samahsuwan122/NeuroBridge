@@ -13,14 +13,15 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 18C (display real images) completed and committed locally. The Memory
-  Album now **displays uploaded images** in list cards (rounded thumbnails) and
-  detail screens (large hero). Relative `/media/...` URLs are resolved using the
-  backend base URL; missing or failed images show elegant placeholders. Memory
-  Album is now **end-to-end complete: create, upload, display.**
-- Latest local commit: `449eeb9 feat(mobile): display memory images`
-- Last pushed commit: `cd2029e` — the Phase 15/16/17/18 commits are **not pushed
-  yet** (`origin/main` is behind local `main`).
+- Phase 19A (Memory Recall backend foundation) completed and committed locally.
+  Added **Memory Recall** as an idempotent seeded cognitive game. **No migration
+  was needed** — game result `metrics` already supports safe gameplay metadata.
+  Memory Recall results are stored as **game performance only**; no diagnosis,
+  disease prediction, dementia score, Alzheimer score, medical interpretation, or
+  treatment recommendation was added.
+- Latest local commit: `941f854 feat(backend): add Memory Recall game seed`
+- Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19 commits are **not
+  pushed yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
 ## 3. Completed phases summary
@@ -47,6 +48,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 18A: Memory Album backend real image upload (local storage + static URL)
 - Phase 18B: Memory Album mobile image picker + upload (create-then-upload)
 - Phase 18C: Memory Album image display (thumbnails + detail hero + placeholders)
+- Phase 19A: Memory Recall cognitive game backend foundation (idempotent seed)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -59,14 +61,16 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. **Phase 18 — Real Image Upload for Memory Album is complete and
-committed** (18A backend, 18B mobile picker + upload, 18C image display). The
-Memory Album is now **end-to-end complete: create, upload, display** — with
-`MemoryEntry.resolvedImageUrl(baseUrl)`, a reusable `MemoryImageView` (rounded +
-loading spinner + error placeholder), rounded list thumbnails, and a detail hero
-image (elegant placeholders when there is no image). Memories are personal
-memory content only — no diagnosis, scoring, or interpretation. No
-edit/delete/replace UI. **Next step: Phase 19 — Personalized Memory Exercise.**
+Phase 19 — Personalized Memory Exercise (Memory Recall). **Step 19A (backend
+foundation) is complete and committed:** Memory Recall is seeded as an idempotent
+cognitive game (`slug="memory_recall"`, `game_type="recall"`), and results submit
+through the existing `POST /api/v1/games/{id}/results` using the JSON `metrics`
+field for safe gameplay metadata (e.g. `exercise_type`, `question_count`,
+`correct_count`, `memory_entry_ids`) — **no migration** and no new score type.
+Results are game performance only; no diagnosis, disease prediction, dementia/
+Alzheimer scoring, medical interpretation, or treatment. The Memory Album
+(Phase 17–18) remains complete end-to-end. **Next step: Phase 19B — the mobile
+personalized Memory Recall game.**
 
 ## 6. Phase 13 summary (done)
 
@@ -78,11 +82,12 @@ edit/delete/replace UI. **Next step: Phase 19 — Personalized Memory Exercise.*
 
 ## 7. Next step
 
-Phase 19 — Personalized Memory Exercise (build a reminiscence-style activity on
-top of the completed Memory Album). Optional follow-ups also remain: edit/delete/
-replace UI for memories. Final UI polish is deferred until the core features are
-complete. Also: the Phase 15/16/17/18 commits are committed locally but **not
-pushed** — push when ready.
+Phase 19B — the mobile personalized Memory Recall game (build the reminiscence
+activity on top of the seeded game + Memory Album, and submit results via the
+existing games results API). Optional follow-ups also remain: edit/delete/replace
+UI for memories. Final UI polish is deferred until the core features are complete.
+Also: the Phase 15/16/17/18/19 commits are committed locally but **not pushed** —
+push when ready.
 
 ## 8. Medical safety rules
 
