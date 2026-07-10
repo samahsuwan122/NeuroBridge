@@ -13,13 +13,12 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 18B (mobile image picker + upload) completed and committed locally. From
-  the Add Memory form, users can select a JPEG/PNG/WebP image up to 5 MB; the
-  form **creates the memory first, then uploads the image** (`POST /memories/{id}
-  /media`). If the image upload fails after creation, the memory is kept safely.
-  The album list shows an **"Image attached"** chip. Real image preview/display
-  is still deferred to Phase 18C.
-- Latest local commit: `b810b0a feat(mobile): upload memory images`
+- Phase 18C (display real images) completed and committed locally. The Memory
+  Album now **displays uploaded images** in list cards (rounded thumbnails) and
+  detail screens (large hero). Relative `/media/...` URLs are resolved using the
+  backend base URL; missing or failed images show elegant placeholders. Memory
+  Album is now **end-to-end complete: create, upload, display.**
+- Latest local commit: `449eeb9 feat(mobile): display memory images`
 - Last pushed commit: `cd2029e` — the Phase 15/16/17/18 commits are **not pushed
   yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -47,6 +46,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 17 (Step 3B): Memory Album mobile create form (POST, no upload)
 - Phase 18A: Memory Album backend real image upload (local storage + static URL)
 - Phase 18B: Memory Album mobile image picker + upload (create-then-upload)
+- Phase 18C: Memory Album image display (thumbnails + detail hero + placeholders)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -59,16 +59,14 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-Phase 18 — Real Image Upload for Memory Album. **Step 18A (backend) and Step 18B
-(mobile image picker + upload) are complete and committed.** The Add Memory form
-has a **Choose image** button (`image_picker`, mobile + web) that picks a
-JPEG/PNG/WebP up to 5 MB (validated client-side). On save it **creates the memory
-then uploads the image** (`POST /memories/{id}/media`); if the image upload fails
-after creation the memory is kept and a friendly message is shown. The album list
-shows an **"Image attached"** chip for image memories. Images are sent as
-in-memory bytes (no local path logged); no edit/delete UI yet. Memories remain
-supportive/family-engagement content only — no diagnosis, scoring, or
-interpretation. **Real image preview/display is deferred to Phase 18C.**
+None in progress. **Phase 18 — Real Image Upload for Memory Album is complete and
+committed** (18A backend, 18B mobile picker + upload, 18C image display). The
+Memory Album is now **end-to-end complete: create, upload, display** — with
+`MemoryEntry.resolvedImageUrl(baseUrl)`, a reusable `MemoryImageView` (rounded +
+loading spinner + error placeholder), rounded list thumbnails, and a detail hero
+image (elegant placeholders when there is no image). Memories are personal
+memory content only — no diagnosis, scoring, or interpretation. No
+edit/delete/replace UI. **Next step: Phase 19 — Personalized Memory Exercise.**
 
 ## 6. Phase 13 summary (done)
 
@@ -80,11 +78,11 @@ interpretation. **Real image preview/display is deferred to Phase 18C.**
 
 ## 7. Next step
 
-Phase 18C — real image preview/display (show the uploaded image via its
-`/media/memory_uploads/<filename>` URL, e.g. on the details screen and/or list).
-Edit/delete UI for memories also remains deferred. Final UI polish is deferred
-until the core features are complete. Also: the Phase 15/16/17/18 commits are
-committed locally but **not pushed** — push when ready.
+Phase 19 — Personalized Memory Exercise (build a reminiscence-style activity on
+top of the completed Memory Album). Optional follow-ups also remain: edit/delete/
+replace UI for memories. Final UI polish is deferred until the core features are
+complete. Also: the Phase 15/16/17/18 commits are committed locally but **not
+pushed** — push when ready.
 
 ## 8. Medical safety rules
 
