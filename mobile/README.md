@@ -49,6 +49,10 @@ mobile/
         data/{games_api,game_definition,memory_card,game_results_api}.dart
         application/{games_controller,memory_match_controller,game_result_controller}.dart
         presentation/{games_screen,game_details_screen,memory_match_screen}.dart
+        memory_recall/
+          data/memory_recall_question.dart
+          application/memory_recall_controller.dart
+          presentation/memory_recall_screen.dart
       progress/
         data/{progress_api,game_result_summary}.dart
         application/progress_controller.dart
@@ -107,6 +111,18 @@ spinner, and a graceful error placeholder. The list card shows a **rounded thumb
 to the icon chip when there is no image) alongside the "Image attached" chip; the details screen
 shows a **large hero image** (or an elegant "No image attached" placeholder). Images are personal
 memory content only — no analysis or interpretation.
+
+**Memory Recall** is a personalized exercise built from the patient's Memory Album. From the game
+details screen (game slug `memory_recall`) a **Start Memory Recall** button opens
+`/games/play/memory-recall`. It loads the album via `GET /api/v1/memories` and generates safe
+multiple-choice questions **only from entered fields** — "Who is this person?" (person), "Where was
+this memory?" (place), "What category does this memory belong to?" (category) — using other entries
+as distractors (nothing is inferred, no AI, no image analysis). Each question shows the memory's
+image (or an elegant placeholder), gives immediate **Correct / Try again** feedback, and moves on;
+a final summary shows the score. If there are too few usable memories it shows *"Add more memories to
+start this exercise."* On completion it submits **game-performance-only** results via the existing
+`POST /api/v1/games/{id}/results` with metrics `exercise_type=memory_recall`, `question_count`,
+`correct_count`, `memory_entry_ids` — no diagnosis, scoring interpretation, or medical content.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

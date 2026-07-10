@@ -7,6 +7,7 @@ import '../../../core/widgets/language_button.dart';
 import '../data/game_definition.dart';
 
 const _memoryMatchSlug = 'memory_match';
+const _memoryRecallSlug = 'memory_recall';
 
 /// Game details. For playable games (Memory Match) it shows a Play button;
 /// other games show a note that game play is added in a later phase.
@@ -71,6 +72,15 @@ class GameDetailsScreen extends StatelessWidget {
                             ),
                             icon: const Icon(Icons.play_arrow),
                             label: Text(l10n.play),
+                          )
+                        else if (game.slug == _memoryRecallSlug)
+                          FilledButton.icon(
+                            onPressed: () => context.go(
+                              '/games/play/memory-recall',
+                              extra: game,
+                            ),
+                            icon: const Icon(Icons.play_arrow),
+                            label: Text(l10n.startMemoryRecall),
                           )
                         else
                           Card(

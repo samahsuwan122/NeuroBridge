@@ -164,6 +164,25 @@ class AppLocalizations {
       'imageUnavailable': 'Image unavailable',
       'memoryImage': 'Memory image',
       'noImageAttached': 'No image attached',
+      // Memory Recall exercise
+      'memoryRecall': 'Memory Recall',
+      'memoryRecallSubtitle': 'Remember moments from your Memory Album.',
+      'memoryRecallNote':
+          'A supportive recall activity for family connection only.',
+      'startMemoryRecall': 'Start Memory Recall',
+      'whoIsThisPerson': 'Who is this person?',
+      'whereWasThisMemory': 'Where was this memory?',
+      'whatCategoryIsThisMemory': 'What category does this memory belong to?',
+      'correct': 'Correct',
+      'tryAgain': 'Try again',
+      'nextQuestion': 'Next question',
+      'finishExercise': 'Finish',
+      'recallComplete': 'Exercise complete',
+      'recallScore': 'Your score',
+      'notEnoughMemories': 'Not enough memories yet',
+      'addMoreMemoriesToStart': 'Add more memories to start this exercise.',
+      'memoryRecallLoadFailed':
+          'Could not start Memory Recall. Please try again.',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -308,6 +327,23 @@ class AppLocalizations {
       'imageUnavailable': 'الصورة غير متاحة',
       'memoryImage': 'صورة الذكرى',
       'noImageAttached': 'لا توجد صورة مرفقة',
+      // Memory Recall exercise
+      'memoryRecall': 'استرجاع الذكريات',
+      'memoryRecallSubtitle': 'تذكّر لحظات من ألبوم ذكرياتك.',
+      'memoryRecallNote': 'نشاط استذكار داعم للتواصل العائلي فقط.',
+      'startMemoryRecall': 'ابدأ استرجاع الذكريات',
+      'whoIsThisPerson': 'من هذا الشخص؟',
+      'whereWasThisMemory': 'أين كانت هذه الذكرى؟',
+      'whatCategoryIsThisMemory': 'إلى أي فئة تنتمي هذه الذكرى؟',
+      'correct': 'إجابة صحيحة',
+      'tryAgain': 'حاول مرة أخرى',
+      'nextQuestion': 'السؤال التالي',
+      'finishExercise': 'إنهاء',
+      'recallComplete': 'اكتمل التمرين',
+      'recallScore': 'نتيجتك',
+      'notEnoughMemories': 'لا توجد ذكريات كافية بعد',
+      'addMoreMemoriesToStart': 'أضف المزيد من الذكريات لبدء هذا التمرين.',
+      'memoryRecallLoadFailed': 'تعذّر بدء استرجاع الذكريات. حاول مرة أخرى.',
     },
   };
 
@@ -453,6 +489,23 @@ class AppLocalizations {
   String get imageUnavailable => _t('imageUnavailable');
   String get memoryImage => _t('memoryImage');
   String get noImageAttached => _t('noImageAttached');
+
+  String get memoryRecall => _t('memoryRecall');
+  String get memoryRecallSubtitle => _t('memoryRecallSubtitle');
+  String get memoryRecallNote => _t('memoryRecallNote');
+  String get startMemoryRecall => _t('startMemoryRecall');
+  String get whoIsThisPerson => _t('whoIsThisPerson');
+  String get whereWasThisMemory => _t('whereWasThisMemory');
+  String get whatCategoryIsThisMemory => _t('whatCategoryIsThisMemory');
+  String get correct => _t('correct');
+  String get tryAgain => _t('tryAgain');
+  String get nextQuestion => _t('nextQuestion');
+  String get finishExercise => _t('finishExercise');
+  String get recallComplete => _t('recallComplete');
+  String get recallScore => _t('recallScore');
+  String get notEnoughMemories => _t('notEnoughMemories');
+  String get addMoreMemoriesToStart => _t('addMoreMemoriesToStart');
+  String get memoryRecallLoadFailed => _t('memoryRecallLoadFailed');
 }
 
 class _AppLocalizationsDelegate
