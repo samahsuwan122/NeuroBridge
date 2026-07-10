@@ -212,6 +212,18 @@ class AppLocalizations {
       'accuracy': 'Accuracy',
       'attentionComplete': 'Exercise complete',
       'correctCount': 'Correct',
+      // Sequence Recall exercise
+      'sequenceRecall': 'Sequence Recall',
+      'sequenceRecallSubtitle': 'Watch the sequence, then repeat it in order.',
+      'sequenceRecallNote':
+          'This activity measures game performance only and is not a medical assessment.',
+      'startSequenceRecall': 'Start',
+      'watchSequence': 'Watch the sequence',
+      'repeatSequence': 'Repeat the sequence',
+      'correctSequence': 'Correct!',
+      'wrongSequence': 'Not quite',
+      'longestSequence': 'Longest',
+      'sequenceComplete': 'Exercise complete',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -400,6 +412,17 @@ class AppLocalizations {
       'accuracy': 'الدقة',
       'attentionComplete': 'اكتمل التمرين',
       'correctCount': 'صحيح',
+      // Sequence Recall exercise
+      'sequenceRecall': 'تسلسل الذاكرة',
+      'sequenceRecallSubtitle': 'شاهد التسلسل ثم كرّره بالترتيب.',
+      'sequenceRecallNote': 'يقيس هذا النشاط أداء اللعبة فقط وليس تقييمًا طبيًا.',
+      'startSequenceRecall': 'ابدأ',
+      'watchSequence': 'شاهد التسلسل',
+      'repeatSequence': 'كرّر التسلسل',
+      'correctSequence': 'صحيح!',
+      'wrongSequence': 'ليس تمامًا',
+      'longestSequence': 'الأطول',
+      'sequenceComplete': 'اكتمل التمرين',
     },
   };
 
@@ -589,6 +612,17 @@ class AppLocalizations {
   String get accuracy => _t('accuracy');
   String get attentionComplete => _t('attentionComplete');
   String get correctCount => _t('correctCount');
+
+  String get sequenceRecall => _t('sequenceRecall');
+  String get sequenceRecallSubtitle => _t('sequenceRecallSubtitle');
+  String get sequenceRecallNote => _t('sequenceRecallNote');
+  String get startSequenceRecall => _t('startSequenceRecall');
+  String get watchSequence => _t('watchSequence');
+  String get repeatSequence => _t('repeatSequence');
+  String get correctSequence => _t('correctSequence');
+  String get wrongSequence => _t('wrongSequence');
+  String get longestSequence => _t('longestSequence');
+  String get sequenceComplete => _t('sequenceComplete');
 }
 
 class _AppLocalizationsDelegate

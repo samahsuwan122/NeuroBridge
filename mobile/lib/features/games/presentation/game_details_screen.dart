@@ -11,6 +11,7 @@ const _memoryMatchSlug = 'memory_match';
 const _memoryRecallSlug = 'memory_recall';
 const _reactionTimeSlug = 'reaction_time';
 const _attentionFocusSlug = 'attention_focus';
+const _sequenceOrderSlug = 'sequence_order';
 
 /// Game details. For playable games (Memory Match) it shows a Play button;
 /// other games show a note that game play is added in a later phase.
@@ -110,6 +111,15 @@ class GameDetailsScreen extends StatelessWidget {
                           FilledButton.icon(
                             onPressed: () => context.go(
                               '/games/play/attention-focus',
+                              extra: game,
+                            ),
+                            icon: const Icon(Icons.play_arrow),
+                            label: Text(l10n.play),
+                          )
+                        else if (game.slug == _sequenceOrderSlug)
+                          FilledButton.icon(
+                            onPressed: () => context.go(
+                              '/games/play/sequence-order',
                               extra: game,
                             ),
                             icon: const Icon(Icons.play_arrow),

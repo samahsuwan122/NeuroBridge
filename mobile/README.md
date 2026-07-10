@@ -59,6 +59,9 @@ mobile/
         attention_tap/
           application/attention_tap_controller.dart
           presentation/attention_tap_screen.dart
+        sequence_recall/
+          application/sequence_recall_controller.dart
+          presentation/sequence_recall_screen.dart
       progress/
         data/{progress_api,game_result_summary}.dart
         application/progress_controller.dart
@@ -129,6 +132,16 @@ a final summary shows the score. If there are too few usable memories it shows *
 start this exercise."* On completion it submits **game-performance-only** results via the existing
 `POST /api/v1/games/{id}/results` with metrics `exercise_type=memory_recall`, `question_count`,
 `correct_count`, `memory_entry_ids` — no diagnosis, scoring interpretation, or medical content.
+
+**Sequence Recall** is a playable working-memory exercise (game slug `sequence_order`, route
+`/games/play/sequence-order`). Each round reveals a growing sequence of colored tiles, then switches
+to input mode where the user repeats it in order; a correct repeat advances, a wrong tap ends the
+round as a mistake. After 5 rounds a summary shows **correct**, **mistakes**, **longest sequence**,
+**accuracy %**, and **rounds**, submitted as **game performance only** via
+`POST /api/v1/games/{id}/results` (`score` = correct sequences, `metrics = {exercise_type:
+"sequence_recall", round_count, correct_count, mistake_count, longest_sequence, accuracy_percent}`).
+Memory is never interpreted medically. The sequences come from an injectable `Random` and the reveal
+`Timer` lives in the screen, so tests are deterministic (they drive the controller directly).
 
 **Attention Tap** is a playable focus exercise (game slug `attention_focus`, route `/games/play/
 attention-focus`). Each round shows a grid of icons; the current **target** icon is shown, and the

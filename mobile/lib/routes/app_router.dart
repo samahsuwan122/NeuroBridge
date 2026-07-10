@@ -6,6 +6,7 @@ import '../features/games/data/game_definition.dart';
 import '../features/games/attention_tap/presentation/attention_tap_screen.dart';
 import '../features/games/memory_recall/presentation/memory_recall_screen.dart';
 import '../features/games/reaction_time/presentation/reaction_time_screen.dart';
+import '../features/games/sequence_recall/presentation/sequence_recall_screen.dart';
 import '../features/games/presentation/game_details_screen.dart';
 import '../features/games/presentation/games_screen.dart';
 import '../features/games/presentation/memory_match_screen.dart';
@@ -67,6 +68,11 @@ GoRouter createRouter(AuthController auth) {
         path: '/games/play/attention-focus',
         builder: (context, state) =>
             AttentionTapScreen(game: state.extra as GameDefinition?),
+      ),
+      GoRoute(
+        path: '/games/play/sequence-order',
+        builder: (context, state) =>
+            SequenceRecallScreen(game: state.extra as GameDefinition?),
       ),
       GoRoute(
         path: '/progress',
