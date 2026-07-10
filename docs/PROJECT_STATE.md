@@ -13,15 +13,16 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 21B (Attention Focus game) completed and committed locally. Added playable
-  `/games/play/attention-focus` — target selection with distractors across 10
-  rounds. Results are saved as **game performance only** with metrics
-  `exercise_type`, `round_count`, `correct_count`, `mistake_count`,
-  `accuracy_percent`. No diagnosis, disease prediction, dementia score, Alzheimer
-  score, medical interpretation, or treatment recommendation. **Backend was
-  untouched because `attention_focus` was already seeded.** Four exercises are now
-  playable: Memory Match, Memory Recall, Reaction Time, Attention Focus.
-- Latest local commit: `953d645 feat(mobile): add Attention Focus game`
+- Phase 21C (Sequence Recall game) completed and committed locally. Added playable
+  `/games/play/sequence-order` — the game shows a growing tile sequence and asks
+  the user to repeat it. Results are saved as **game performance only** with
+  metrics `exercise_type`, `round_count`, `correct_count`, `mistake_count`,
+  `longest_sequence`, `accuracy_percent`. No diagnosis, disease prediction,
+  dementia score, Alzheimer score, medical interpretation, or treatment
+  recommendation. **Backend was untouched because `sequence_order` was already
+  seeded.** All five seeded exercises are now playable: Memory Match, Memory
+  Recall, Reaction Time, Attention Focus, Sequence Recall.
+- Latest local commit: `5e10081 feat(mobile): add Sequence Recall game`
 - Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20/21 commits are **not
   pushed yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -57,6 +58,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 20B2: Screen polish — Games + Memory screens (styling only)
 - Phase 21A: Reaction Time playable game (mobile; backend already seeded)
 - Phase 21B: Attention Tap playable game (mobile; backend already seeded)
+- Phase 21C: Sequence Recall playable game (mobile; backend already seeded)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -69,18 +71,17 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-Phase 21 — More playable games. **Steps 21A (Reaction Time) and 21B (Attention
-Focus) are complete and committed.** Backend was **untouched** (`attention_focus`
-was already seeded). A new `features/games/attention_tap/` module adds a playable
-`/games/play/attention-focus` (wired from game details by slug): each round shows
-a grid of icons; tap the target icon (correct tap → +1, any other tap → mistake,
-every tap advances). After 10 rounds a correct/mistakes/accuracy/rounds summary;
-the result is submitted as **game performance only** (`score` = correct taps,
-`metrics: exercise_type/round_count/correct_count/mistake_count/accuracy_percent`)
-via the existing games results API. Attention is never interpreted medically.
-Deterministic/testable (injectable `Random`, no timers). **Four exercises are now
-playable** (Memory Match, Memory Recall, Reaction Time, Attention Focus). **Next
-step: Phase 21C — Sequence Recall game.**
+None in progress. **Phase 21 — More playable games is complete and committed**
+(21A Reaction Time, 21B Attention Focus, 21C Sequence Recall). Step 21C added a
+playable `/games/play/sequence-order`: each round reveals a growing tile
+sequence, then the user repeats it (correct repeat → +1, a wrong tap ends the
+round as a mistake); after 5 rounds a correct/mistakes/longest/accuracy/rounds
+summary submits **game performance only** (`score` = correct sequences,
+`metrics: exercise_type/round_count/correct_count/mistake_count/longest_sequence/
+accuracy_percent`) via the existing games results API. Memory is never interpreted
+medically. **All five seeded exercises are now playable** (Memory Match, Memory
+Recall, Reaction Time, Attention Focus, Sequence Recall). **Next step: Progress
+Analytics and final demo preparation.**
 
 ## 6. Phase 13 summary (done)
 
@@ -92,9 +93,10 @@ step: Phase 21C — Sequence Recall game.**
 
 ## 7. Next step
 
-Phase 21C — Sequence Recall game (the last seeded game, `sequence_order`).
-Optional follow-ups also remain: edit/delete/replace UI for memories, or a
-progress view per exercise. Also: the Phase 15–21 commits are committed locally
+Progress Analytics and final demo preparation — all five seeded games are now
+playable (Memory Match, Memory Recall, Reaction Time, Attention Focus, Sequence
+Recall). Optional follow-ups: edit/delete/replace UI for memories, or a
+per-exercise progress view. Also: the Phase 15–21 commits are committed locally
 but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
