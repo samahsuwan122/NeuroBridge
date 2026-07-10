@@ -56,6 +56,9 @@ mobile/
         reaction_time/
           application/reaction_time_controller.dart
           presentation/reaction_time_screen.dart
+        attention_tap/
+          application/attention_tap_controller.dart
+          presentation/attention_tap_screen.dart
       progress/
         data/{progress_api,game_result_summary}.dart
         application/progress_controller.dart
@@ -126,6 +129,15 @@ a final summary shows the score. If there are too few usable memories it shows *
 start this exercise."* On completion it submits **game-performance-only** results via the existing
 `POST /api/v1/games/{id}/results` with metrics `exercise_type=memory_recall`, `question_count`,
 `correct_count`, `memory_entry_ids` — no diagnosis, scoring interpretation, or medical content.
+
+**Attention Tap** is a playable focus exercise (game slug `attention_focus`, route `/games/play/
+attention-focus`). Each round shows a grid of icons; the current **target** icon is shown, and the
+user taps the matching icon (a correct tap raises the correct count, any other tap is a mistake, and
+every tap advances the round). After 10 rounds a summary shows **correct**, **mistakes**, **accuracy
+%**, and **rounds completed**, submitted as **game performance only** via
+`POST /api/v1/games/{id}/results` (`score` = correct taps, `metrics = {exercise_type:"attention_tap",
+round_count, correct_count, mistake_count, accuracy_percent}`). Attention is never interpreted
+medically. The grid/target come from an injectable `Random`, so tests are deterministic (no timers).
 
 **Reaction Time** is a playable speed exercise (game slug `reaction_time`, route `/games/play/
 reaction-time`). Each round shows "Wait…", then (after a random delay) "Tap now!"; the app measures

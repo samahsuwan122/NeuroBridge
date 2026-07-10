@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/games/data/game_definition.dart';
+import '../features/games/attention_tap/presentation/attention_tap_screen.dart';
 import '../features/games/memory_recall/presentation/memory_recall_screen.dart';
 import '../features/games/reaction_time/presentation/reaction_time_screen.dart';
 import '../features/games/presentation/game_details_screen.dart';
@@ -61,6 +62,11 @@ GoRouter createRouter(AuthController auth) {
         path: '/games/play/reaction-time',
         builder: (context, state) =>
             ReactionTimeScreen(game: state.extra as GameDefinition?),
+      ),
+      GoRoute(
+        path: '/games/play/attention-focus',
+        builder: (context, state) =>
+            AttentionTapScreen(game: state.extra as GameDefinition?),
       ),
       GoRoute(
         path: '/progress',

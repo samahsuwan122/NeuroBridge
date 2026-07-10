@@ -198,6 +198,20 @@ class AppLocalizations {
       'averageReaction': 'Average',
       'roundsCompleted': 'Rounds',
       'reactionComplete': 'Exercise complete',
+      // Attention Tap exercise
+      'attentionTap': 'Attention Tap',
+      'attentionTapSubtitle': 'Tap the target and ignore the rest.',
+      'attentionTapNote':
+          'This activity measures game performance only and is not a medical assessment.',
+      'startAttentionTap': 'Start',
+      'tapTheTarget': 'Tap the target',
+      'target': 'Target',
+      'correctTap': 'Correct!',
+      'missedTarget': 'That was not the target',
+      'mistake': 'Mistake',
+      'accuracy': 'Accuracy',
+      'attentionComplete': 'Exercise complete',
+      'correctCount': 'Correct',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -373,6 +387,19 @@ class AppLocalizations {
       'averageReaction': 'المتوسط',
       'roundsCompleted': 'الجولات',
       'reactionComplete': 'اكتمل التمرين',
+      // Attention Tap exercise
+      'attentionTap': 'الانتباه والنقر',
+      'attentionTapSubtitle': 'انقر على الهدف وتجاهل البقية.',
+      'attentionTapNote': 'يقيس هذا النشاط أداء اللعبة فقط وليس تقييمًا طبيًا.',
+      'startAttentionTap': 'ابدأ',
+      'tapTheTarget': 'انقر على الهدف',
+      'target': 'الهدف',
+      'correctTap': 'صحيح!',
+      'missedTarget': 'هذا ليس الهدف',
+      'mistake': 'خطأ',
+      'accuracy': 'الدقة',
+      'attentionComplete': 'اكتمل التمرين',
+      'correctCount': 'صحيح',
     },
   };
 
@@ -549,6 +576,19 @@ class AppLocalizations {
   String get averageReaction => _t('averageReaction');
   String get roundsCompleted => _t('roundsCompleted');
   String get reactionComplete => _t('reactionComplete');
+
+  String get attentionTap => _t('attentionTap');
+  String get attentionTapSubtitle => _t('attentionTapSubtitle');
+  String get attentionTapNote => _t('attentionTapNote');
+  String get startAttentionTap => _t('startAttentionTap');
+  String get tapTheTarget => _t('tapTheTarget');
+  String get target => _t('target');
+  String get correctTap => _t('correctTap');
+  String get missedTarget => _t('missedTarget');
+  String get mistake => _t('mistake');
+  String get accuracy => _t('accuracy');
+  String get attentionComplete => _t('attentionComplete');
+  String get correctCount => _t('correctCount');
 }
 
 class _AppLocalizationsDelegate
