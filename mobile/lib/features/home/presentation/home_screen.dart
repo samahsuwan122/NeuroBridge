@@ -267,7 +267,16 @@ class _SummarySection extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.patientSummary, style: theme.textTheme.titleMedium),
+                Row(
+                  children: [
+                    const IconChip(icon: Icons.favorite_border, size: 34),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(l10n.patientSummary,
+                          style: theme.textTheme.titleMedium),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 _body(context),
               ],

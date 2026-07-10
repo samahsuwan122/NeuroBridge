@@ -74,7 +74,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Padding(
           padding: const EdgeInsets.all(24),
           child: Center(
-            child: Text(l10n.noPatientProfile, textAlign: TextAlign.center),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.person_outline,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const SizedBox(height: 12),
+                Text(l10n.noPatientProfile,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
           ),
         );
       case ProfileStatus.loaded:
@@ -138,9 +149,10 @@ class _ProfileView extends StatelessWidget {
         SectionHeader(
           icon: Icons.health_and_safety_outlined,
           title: l10n.careSafetyInformation,
-          subtitle: l10n.careSafetyNote,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
+        _SafetyNote(text: l10n.careSafetyNote),
+        const SizedBox(height: 10),
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -180,6 +192,40 @@ class _ProfileView extends StatelessWidget {
             ),
           ),
         ),
+        ],
+      ),
+    );
+  }
+}
+
+/// An elegant, non-diagnostic care/safety note banner (sage-tinted).
+class _SafetyNote extends StatelessWidget {
+  const _SafetyNote({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline,
+              size: 20, color: theme.colorScheme.onSecondaryContainer),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.onSecondaryContainer),
+            ),
+          ),
         ],
       ),
     );

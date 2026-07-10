@@ -76,7 +76,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 Text(l10n.loginTitle,
                                     style: theme.textTheme.titleLarge),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 6),
+                                Container(
+                                  height: 3,
+                                  width: 44,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.softGold,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                                const SizedBox(height: 18),
                                 TextFormField(
                                   controller: _identifierController,
                                   textInputAction: TextInputAction.next,

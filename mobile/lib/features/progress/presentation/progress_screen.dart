@@ -76,7 +76,18 @@ class _ProgressScreenState extends State<ProgressScreen> {
         return Padding(
           padding: const EdgeInsets.all(24),
           child: Center(
-            child: Text(l10n.noProgressYet, textAlign: TextAlign.center),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.insights_outlined,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const SizedBox(height: 12),
+                Text(l10n.noProgressYet,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium),
+              ],
+            ),
           ),
         );
       case ProgressStatus.loaded:
