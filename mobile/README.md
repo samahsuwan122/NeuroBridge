@@ -48,11 +48,14 @@ mobile/
       games/
         data/{games_api,game_definition,memory_card,game_results_api}.dart
         application/{games_controller,memory_match_controller,game_result_controller}.dart
-        presentation/{games_screen,game_details_screen,memory_match_screen}.dart
+        presentation/{games_screen,game_details_screen,memory_match_screen,game_visuals}.dart
         memory_recall/
           data/memory_recall_question.dart
           application/memory_recall_controller.dart
           presentation/memory_recall_screen.dart
+        reaction_time/
+          application/reaction_time_controller.dart
+          presentation/reaction_time_screen.dart
       progress/
         data/{progress_api,game_result_summary}.dart
         application/progress_controller.dart
@@ -123,6 +126,16 @@ a final summary shows the score. If there are too few usable memories it shows *
 start this exercise."* On completion it submits **game-performance-only** results via the existing
 `POST /api/v1/games/{id}/results` with metrics `exercise_type=memory_recall`, `question_count`,
 `correct_count`, `memory_entry_ids` — no diagnosis, scoring interpretation, or medical content.
+
+**Reaction Time** is a playable speed exercise (game slug `reaction_time`, route `/games/play/
+reaction-time`). Each round shows "Wait…", then (after a random delay) "Tap now!"; the app measures
+the tap-to-signal time in milliseconds (tapping early is a friendly "Too soon" and is not counted).
+After 5 rounds a summary shows **best**, **average**, and **rounds completed**, and the result is
+submitted as **game performance only** via `POST /api/v1/games/{id}/results` (`score` = rounds
+completed, `metrics = {exercise_type:"reaction_time", round_count, best_reaction_ms,
+average_reaction_ms, reaction_times_ms}`). Times are never interpreted medically (no normal/abnormal,
+no diagnosis). Timing is testable: the controller is a pure state machine over an injectable clock and
+the screen owns the round `Timer`.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

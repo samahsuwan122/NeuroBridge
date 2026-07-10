@@ -78,6 +78,14 @@ const _reactionTime = GameDefinition(
   gameType: 'reaction',
   difficulty: 'easy',
 );
+// A game that is not playable yet (still shows the coming-later note).
+const _sequenceOrder = GameDefinition(
+  id: '3',
+  name: 'Sequence Order',
+  slug: 'sequence_order',
+  gameType: 'sequence',
+  difficulty: 'medium',
+);
 
 Future<void> _wrap(
   WidgetTester tester,
@@ -155,10 +163,10 @@ void main() {
     expect(find.textContaining('Difficulty'), findsWidgets);
   });
 
-  testWidgets('non-memory game details shows the coming-later note',
+  testWidgets('not-yet-playable game details shows the coming-later note',
       (tester) async {
-    await _wrap(tester, const GameDetailsScreen(game: _reactionTime));
-    expect(find.text('Reaction Time'), findsWidgets);
+    await _wrap(tester, const GameDetailsScreen(game: _sequenceOrder));
+    expect(find.text('Sequence Order'), findsWidgets);
     expect(
       find.text('Game play will be added in a later phase.'),
       findsOneWidget,
@@ -167,6 +175,15 @@ void main() {
 
   testWidgets('memory_match details shows a Play button', (tester) async {
     await _wrap(tester, const GameDetailsScreen(game: _memoryMatch));
+    expect(find.text('Play'), findsOneWidget);
+    expect(
+      find.text('Game play will be added in a later phase.'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('reaction_time details shows a Play button', (tester) async {
+    await _wrap(tester, const GameDetailsScreen(game: _reactionTime));
     expect(find.text('Play'), findsOneWidget);
     expect(
       find.text('Game play will be added in a later phase.'),

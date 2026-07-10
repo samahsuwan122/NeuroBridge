@@ -4,6 +4,7 @@ import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/games/data/game_definition.dart';
 import '../features/games/memory_recall/presentation/memory_recall_screen.dart';
+import '../features/games/reaction_time/presentation/reaction_time_screen.dart';
 import '../features/games/presentation/game_details_screen.dart';
 import '../features/games/presentation/games_screen.dart';
 import '../features/games/presentation/memory_match_screen.dart';
@@ -55,6 +56,11 @@ GoRouter createRouter(AuthController auth) {
         path: '/games/play/memory-recall',
         builder: (context, state) =>
             MemoryRecallScreen(game: state.extra as GameDefinition?),
+      ),
+      GoRoute(
+        path: '/games/play/reaction-time',
+        builder: (context, state) =>
+            ReactionTimeScreen(game: state.extra as GameDefinition?),
       ),
       GoRoute(
         path: '/progress',

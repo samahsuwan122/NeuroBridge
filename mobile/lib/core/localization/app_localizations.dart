@@ -184,6 +184,20 @@ class AppLocalizations {
       'addMoreMemoriesToStart': 'Add more memories to start this exercise.',
       'memoryRecallLoadFailed':
           'Could not start Memory Recall. Please try again.',
+      // Reaction Time exercise
+      'reactionTime': 'Reaction Time',
+      'reactionTimeSubtitle': 'Tap as fast as you can when the signal appears.',
+      'reactionTimeNote':
+          'This activity measures game performance only and is not a medical assessment.',
+      'startRound': 'Start round',
+      'waitForSignal': 'Wait…',
+      'tapNow': 'Tap now!',
+      'tooSoon': 'Too soon! Wait for the signal.',
+      'reactionTimeMs': 'Reaction time',
+      'bestReaction': 'Best',
+      'averageReaction': 'Average',
+      'roundsCompleted': 'Rounds',
+      'reactionComplete': 'Exercise complete',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -346,6 +360,19 @@ class AppLocalizations {
       'notEnoughMemories': 'لا توجد ذكريات كافية بعد',
       'addMoreMemoriesToStart': 'أضف المزيد من الذكريات لبدء هذا التمرين.',
       'memoryRecallLoadFailed': 'تعذّر بدء استرجاع الذكريات. حاول مرة أخرى.',
+      // Reaction Time exercise
+      'reactionTime': 'زمن رد الفعل',
+      'reactionTimeSubtitle': 'انقر بأسرع ما يمكن عند ظهور الإشارة.',
+      'reactionTimeNote': 'يقيس هذا النشاط أداء اللعبة فقط وليس تقييمًا طبيًا.',
+      'startRound': 'ابدأ الجولة',
+      'waitForSignal': 'انتظر…',
+      'tapNow': 'انقر الآن!',
+      'tooSoon': 'مبكرًا جدًا! انتظر الإشارة.',
+      'reactionTimeMs': 'زمن رد الفعل',
+      'bestReaction': 'الأفضل',
+      'averageReaction': 'المتوسط',
+      'roundsCompleted': 'الجولات',
+      'reactionComplete': 'اكتمل التمرين',
     },
   };
 
@@ -509,6 +536,19 @@ class AppLocalizations {
   String get notEnoughMemories => _t('notEnoughMemories');
   String get addMoreMemoriesToStart => _t('addMoreMemoriesToStart');
   String get memoryRecallLoadFailed => _t('memoryRecallLoadFailed');
+
+  String get reactionTime => _t('reactionTime');
+  String get reactionTimeSubtitle => _t('reactionTimeSubtitle');
+  String get reactionTimeNote => _t('reactionTimeNote');
+  String get startRound => _t('startRound');
+  String get waitForSignal => _t('waitForSignal');
+  String get tapNow => _t('tapNow');
+  String get tooSoon => _t('tooSoon');
+  String get reactionTimeMs => _t('reactionTimeMs');
+  String get bestReaction => _t('bestReaction');
+  String get averageReaction => _t('averageReaction');
+  String get roundsCompleted => _t('roundsCompleted');
+  String get reactionComplete => _t('reactionComplete');
 }
 
 class _AppLocalizationsDelegate
