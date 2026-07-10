@@ -13,12 +13,11 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 20A (final luxury UI polish foundation) completed and committed locally.
-  The shared `LoadingState` and `ErrorState` were refined, and Home, Game
-  Details, Memory Album, and Memory Recall received light premium polish. **No
-  API, navigation, game-result, or business logic changes** were made; the
-  backend was untouched.
-- Latest local commit: `4618f83 style(mobile): polish premium medical UI`
+- Phase 20B1 (final screen-by-screen polish) completed and committed locally.
+  **Login, Home, Progress, and Profile/Care & Safety** screens received light
+  premium polish. **No auth flow, API, navigation, result logic, or business
+  logic changes** were made; the backend was untouched.
+- Latest local commit: `90a3fd6 style(mobile): polish core presentation screens`
 - Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20 commits are **not
   pushed yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -50,6 +49,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 19A: Memory Recall cognitive game backend foundation (idempotent seed)
 - Phase 19B: Memory Recall mobile game (personalized, Memory Album questions)
 - Phase 20A: Final luxury UI polish foundation (shared states + light screen polish)
+- Phase 20B1: Screen polish — Login, Home, Progress, Profile (styling only)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -62,16 +62,14 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-Phase 20 — Final Luxury UI Polish. **Step 20A (foundation + light polish) is
-complete and committed.** Styling/layout only — no behavior, navigation, API, or
-game-result changes; no new foundation files (the existing `core/theme` +
-`EmeraldPanel`/`IconChip`/`SectionHeader` were reused). The shared
-`LoadingState`/`ErrorState` are now centered and elegant (tinted icon + clear
-retry) so every screen's loading/empty/error states are consistent; Home gained
-an "Activities" section header; Game details groups metadata/instructions in a
-card; the Memory Album empty state is a friendly icon + message; and the Memory
-Recall summary uses an emerald gradient header. Wording stays supportive and
-performance-only. **Next step: Phase 20B — Final Screen-by-Screen Polish.**
+Phase 20 — Final Luxury UI Polish. **Steps 20A and 20B1 are complete and
+committed.** 20B1 was styling/layout only — no behavior, navigation, API, or
+result-logic changes: Login gained a gold title accent; Home's summary card got a
+leading icon (on top of 20A's "Activities" header); Progress and Profile got
+elegant icon+message empty states consistent with the polished shared states; and
+the Profile care/safety note is now an elegant sage-tinted banner (moved from the
+section subtitle, still shown exactly once). Wording stays supportive and
+performance-only. **Next step: Phase 20B2 — Games and Memory screens polish.**
 
 ## 6. Phase 13 summary (done)
 
@@ -83,11 +81,11 @@ performance-only. **Next step: Phase 20B — Final Screen-by-Screen Polish.**
 
 ## 7. Next step
 
-Phase 20B — Final Screen-by-Screen Polish (continue the light premium refinement
-across the remaining screens). Optional follow-ups also remain: edit/delete/
-replace UI for memories, or a progress view for Memory Recall results. Also: the
-Phase 15/16/17/18/19/20 commits are committed locally but **not pushed** — push
-when ready.
+Phase 20B2 — Games and Memory screens polish (continue the light premium
+refinement across the remaining games/memory screens). Optional follow-ups also
+remain: edit/delete/replace UI for memories, or a progress view for Memory Recall
+results. Also: the Phase 15/16/17/18/19/20 commits are committed locally but
+**not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
