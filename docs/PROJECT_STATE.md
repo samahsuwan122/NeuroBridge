@@ -13,12 +13,13 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 18A (backend real image upload) completed and committed locally. Added
-  `POST /api/v1/memories/{memory_id}/media` (jpeg/png/webp, max 5 MB) with local
-  storage under `backend/storage/memory_uploads/` and public URLs at
-  `/media/memory_uploads/<filename>`; only the creator or an admin may
-  upload/replace. The **mobile upload UI is still deferred to Phase 18B**.
-- Latest local commit: `e27e3d2 feat(backend): add memory image upload`
+- Phase 18B (mobile image picker + upload) completed and committed locally. From
+  the Add Memory form, users can select a JPEG/PNG/WebP image up to 5 MB; the
+  form **creates the memory first, then uploads the image** (`POST /memories/{id}
+  /media`). If the image upload fails after creation, the memory is kept safely.
+  The album list shows an **"Image attached"** chip. Real image preview/display
+  is still deferred to Phase 18C.
+- Latest local commit: `b810b0a feat(mobile): upload memory images`
 - Last pushed commit: `cd2029e` — the Phase 15/16/17/18 commits are **not pushed
   yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -45,6 +46,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 17 (Step 3A): Memory Album mobile viewing (read-only list + detail)
 - Phase 17 (Step 3B): Memory Album mobile create form (POST, no upload)
 - Phase 18A: Memory Album backend real image upload (local storage + static URL)
+- Phase 18B: Memory Album mobile image picker + upload (create-then-upload)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -57,17 +59,16 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-Phase 18 — Real Image Upload for Memory Album. **Step 18A (backend) is complete
-and committed:** `POST /api/v1/memories/{memory_id}/media` accepts a
-jpeg/png/webp image (max 5 MB), stores it locally under
-`backend/storage/memory_uploads/` with a safe UUID filename, serves it read-only
-at `/media/memory_uploads/<filename>`, and sets `media_type="image"` +
-`media_url`. Only the memory's creator or an admin may upload/replace; replacing
-safely removes the old local file; an audit event (`memory_media_uploaded`) is
-recorded. Uploaded runtime images are git-ignored (only a `.gitkeep` is tracked).
-Memories remain supportive/family-engagement content only — no diagnosis,
-scoring, or interpretation. **Next step: Phase 18B — the mobile upload UI** (image
-picker + call the media endpoint); edit/delete UI is still deferred.
+Phase 18 — Real Image Upload for Memory Album. **Step 18A (backend) and Step 18B
+(mobile image picker + upload) are complete and committed.** The Add Memory form
+has a **Choose image** button (`image_picker`, mobile + web) that picks a
+JPEG/PNG/WebP up to 5 MB (validated client-side). On save it **creates the memory
+then uploads the image** (`POST /memories/{id}/media`); if the image upload fails
+after creation the memory is kept and a friendly message is shown. The album list
+shows an **"Image attached"** chip for image memories. Images are sent as
+in-memory bytes (no local path logged); no edit/delete UI yet. Memories remain
+supportive/family-engagement content only — no diagnosis, scoring, or
+interpretation. **Real image preview/display is deferred to Phase 18C.**
 
 ## 6. Phase 13 summary (done)
 
@@ -79,12 +80,11 @@ picker + call the media endpoint); edit/delete UI is still deferred.
 
 ## 7. Next step
 
-Phase 18B — the mobile upload UI for Memory Album images (image picker + call
-`POST /api/v1/memories/{memory_id}/media`, then show the uploaded image via its
-`/media/memory_uploads/<filename>` URL). Edit/delete UI for memories is also still
-deferred. Final UI polish is deferred until the core features are complete. Also:
-the Phase 15/16/17/18 commits are committed locally but **not pushed** — push when
-ready.
+Phase 18C — real image preview/display (show the uploaded image via its
+`/media/memory_uploads/<filename>` URL, e.g. on the details screen and/or list).
+Edit/delete UI for memories also remains deferred. Final UI polish is deferred
+until the core features are complete. Also: the Phase 15/16/17/18 commits are
+committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
