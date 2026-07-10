@@ -236,27 +236,56 @@ class _ImageSection extends StatelessWidget {
       builder: (context, _) {
         final selected = memories.selectedImage;
         final error = _errorText();
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            OutlinedButton.icon(
-              onPressed: memories.pickImage,
-              icon: const Icon(Icons.image_outlined),
-              label: Text(selected == null ? l10n.chooseImage : l10n.changeImage),
-            ),
-            if (selected != null) ...[
-              const SizedBox(height: 6),
-              Text('${l10n.imageSelected}: ${selected.filename}',
-                  style: theme.textTheme.bodyMedium),
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.colorScheme.outlineVariant),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.photo_camera_outlined,
+                      size: 20, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Text(l10n.memoryImage,
+                      style: theme.textTheme.titleSmall),
+                ],
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: memories.pickImage,
+                icon: const Icon(Icons.image_outlined),
+                label: Text(
+                    selected == null ? l10n.chooseImage : l10n.changeImage),
+              ),
+              if (selected != null) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.check_circle_outline,
+                        size: 18, color: theme.colorScheme.primary),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text('${l10n.imageSelected}: ${selected.filename}',
+                          style: theme.textTheme.bodyMedium),
+                    ),
+                  ],
+                ),
+              ],
+              if (error != null) ...[
+                const SizedBox(height: 8),
+                Text(error, style: TextStyle(color: theme.colorScheme.error)),
+              ],
+              const SizedBox(height: 8),
+              Text(l10n.imageRequirements,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
-            if (error != null) ...[
-              const SizedBox(height: 6),
-              Text(error,
-                  style: TextStyle(color: theme.colorScheme.error)),
-            ],
-            const SizedBox(height: 6),
-            Text(l10n.imageRequirements, style: theme.textTheme.bodySmall),
-          ],
+          ),
         );
       },
     );

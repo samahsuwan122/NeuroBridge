@@ -9,6 +9,7 @@ import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
 import '../application/games_controller.dart';
 import '../data/game_definition.dart';
+import 'game_visuals.dart';
 
 /// Cognitive games list. Tapping a game opens a details placeholder — no real
 /// game mechanics yet.
@@ -123,7 +124,7 @@ class _GameCard extends StatelessWidget {
           padding: const EdgeInsets.all(18),
           child: Row(
             children: [
-              const IconChip(icon: Icons.videogame_asset_rounded, size: 54),
+              IconChip(icon: gameIcon(game), size: 54),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(

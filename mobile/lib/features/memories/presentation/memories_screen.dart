@@ -179,12 +179,18 @@ class _MemoryCard extends StatelessWidget {
           child: Row(
             children: [
               if (memory.hasImage && imageUrl != null)
-                MemoryImageView(
-                  imageUrl: imageUrl,
-                  width: 56,
-                  height: 56,
-                  borderRadius: 14,
-                  semanticLabel: l10n.memoryImage,
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: theme.colorScheme.outlineVariant),
+                  ),
+                  child: MemoryImageView(
+                    imageUrl: imageUrl,
+                    width: 56,
+                    height: 56,
+                    borderRadius: 14,
+                    semanticLabel: l10n.memoryImage,
+                  ),
                 )
               else
                 const IconChip(icon: Icons.photo_library_rounded, size: 54),

@@ -55,8 +55,13 @@ class MemoryDetailsScreen extends StatelessWidget {
                         ),
                         if ((memory.description ?? '').isNotEmpty) ...[
                           const SizedBox(height: 16),
-                          Text(memory.description!,
-                              style: theme.textTheme.bodyLarge),
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(memory.description!,
+                                  style: theme.textTheme.bodyLarge),
+                            ),
+                          ),
                         ],
                         const SizedBox(height: 16),
                         Card(

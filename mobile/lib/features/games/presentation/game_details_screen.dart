@@ -5,6 +5,7 @@ import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/language_button.dart';
 import '../data/game_definition.dart';
+import 'game_visuals.dart';
 
 const _memoryMatchSlug = 'memory_match';
 const _memoryRecallSlug = 'memory_recall';
@@ -40,8 +41,7 @@ class GameDetailsScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            const IconChip(
-                                icon: Icons.videogame_asset_rounded, size: 56),
+                            IconChip(icon: gameIcon(game), size: 56),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Text(game.name,

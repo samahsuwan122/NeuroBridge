@@ -189,12 +189,28 @@ class _Play extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.memoryRecallNote, style: theme.textTheme.bodySmall),
-          const SizedBox(height: 12),
-          Text('${controller.currentIndex + 1} / ${controller.total}',
-              style: theme.textTheme.labelLarge
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(l10n.memoryRecallNote,
+                    style: theme.textTheme.bodySmall),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '${controller.currentIndex + 1} / ${controller.total}',
+                  style: theme.textTheme.labelLarge
+                      ?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
           if (q.memory.hasImage && imageUrl != null)
             MemoryImageView(
               imageUrl: imageUrl,
@@ -215,17 +231,26 @@ class _Play extends StatelessWidget {
                   size: 40, color: theme.colorScheme.onSurfaceVariant),
             ),
           const SizedBox(height: 16),
-          Text(_prompt(q.type), style: theme.textTheme.titleLarge),
-          const SizedBox(height: 12),
-          for (var i = 0; i < q.options.length; i++)
-            _OptionTile(
-              label: q.options[i],
-              index: i,
-              controller: controller,
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(_prompt(q.type), style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 14),
+                  for (var i = 0; i < q.options.length; i++)
+                    _OptionTile(
+                      label: q.options[i],
+                      index: i,
+                      controller: controller,
+                    ),
+                  _Feedback(controller: controller, l10n: l10n),
+                ],
+              ),
             ),
-          const SizedBox(height: 8),
-          _Feedback(controller: controller, l10n: l10n),
-          const SizedBox(height: 12),
+          ),
+          const SizedBox(height: 14),
           FilledButton.icon(
             onPressed: controller.answeredCorrectly ? controller.next : null,
             icon: Icon(controller.isLastQuestion

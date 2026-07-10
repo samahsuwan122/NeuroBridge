@@ -197,8 +197,12 @@ the shared `LoadingState`/`ErrorState` are now centered and elegant (a tinted ic
 button) so every screen's loading/empty/error states look consistent; Home gains an **"Activities"**
 section header for clearer hierarchy; Game details groups its metadata/instructions in a premium
 card; the Memory Album empty state is a friendly icon + message; and the Memory Recall summary uses
-an emerald gradient header with a gold trophy chip. All changes are **styling/layout only** — no
-behavior, navigation, API, or game-result logic changed.
+an emerald gradient header with a gold trophy chip. Login gains a gold title accent, and Progress /
+Profile get elegant empty states with a sage-tinted care/safety note banner. The games list and
+details use **per-game icons** (`game_visuals.dart`); the Add Memory image picker sits in an elegant
+framed area; Memory Album thumbnails are subtly framed; the Memory Details description is its own
+card; and the Memory Recall play view groups the question + options in a card with a progress pill.
+All changes are **styling/layout only** — no behavior, navigation, API, or game-result logic changed.
 
 ## Localization & accessibility
 
