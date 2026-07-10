@@ -13,15 +13,13 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 19B (mobile personalized Memory Recall game) completed and committed
-  locally. Added `/games/play/memory-recall`. Memory Recall generates questions
-  **only from Memory Album data entered by the user** — **no AI, no inference,
-  and no image analysis**. Results are saved as **game performance only** using
-  safe metrics: `exercise_type`, `question_count`, `correct_count`,
-  `memory_entry_ids`. No diagnosis, disease prediction, dementia score, Alzheimer
-  score, medical interpretation, or treatment recommendation was added.
-- Latest local commit: `be6f6e3 feat(mobile): add Memory Recall game`
-- Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19 commits are **not
+- Phase 20A (final luxury UI polish foundation) completed and committed locally.
+  The shared `LoadingState` and `ErrorState` were refined, and Home, Game
+  Details, Memory Album, and Memory Recall received light premium polish. **No
+  API, navigation, game-result, or business logic changes** were made; the
+  backend was untouched.
+- Latest local commit: `4618f83 style(mobile): polish premium medical UI`
+- Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20 commits are **not
   pushed yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -51,6 +49,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 18C: Memory Album image display (thumbnails + detail hero + placeholders)
 - Phase 19A: Memory Recall cognitive game backend foundation (idempotent seed)
 - Phase 19B: Memory Recall mobile game (personalized, Memory Album questions)
+- Phase 20A: Final luxury UI polish foundation (shared states + light screen polish)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -63,16 +62,16 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. **Phase 19 — Personalized Memory Exercise (Memory Recall) is
-complete and committed** (19A backend seed, 19B mobile game). The mobile game at
-`/games/play/memory-recall` loads the Memory Album and generates safe
-multiple-choice questions **only from entered fields** (person/place/category,
-other entries as distractors — no inference/AI/image analysis), gives
-Correct/Try-again feedback, shows a score summary, and submits **performance-only**
-results (`metrics: exercise_type/question_count/correct_count/memory_entry_ids`)
-via the existing games results API. Safe empty/error handling throughout. No
-diagnosis, scoring interpretation, or medical content. **Next step: Phase 20 —
-Final Luxury UI Polish.**
+Phase 20 — Final Luxury UI Polish. **Step 20A (foundation + light polish) is
+complete and committed.** Styling/layout only — no behavior, navigation, API, or
+game-result changes; no new foundation files (the existing `core/theme` +
+`EmeraldPanel`/`IconChip`/`SectionHeader` were reused). The shared
+`LoadingState`/`ErrorState` are now centered and elegant (tinted icon + clear
+retry) so every screen's loading/empty/error states are consistent; Home gained
+an "Activities" section header; Game details groups metadata/instructions in a
+card; the Memory Album empty state is a friendly icon + message; and the Memory
+Recall summary uses an emerald gradient header. Wording stays supportive and
+performance-only. **Next step: Phase 20B — Final Screen-by-Screen Polish.**
 
 ## 6. Phase 13 summary (done)
 
@@ -84,10 +83,11 @@ Final Luxury UI Polish.**
 
 ## 7. Next step
 
-Phase 20 — Final Luxury UI Polish (refine the overall look now that the core
-features are complete). Optional follow-ups also remain: edit/delete/replace UI
-for memories, or a progress view for Memory Recall results. Also: the Phase
-15/16/17/18/19 commits are committed locally but **not pushed** — push when ready.
+Phase 20B — Final Screen-by-Screen Polish (continue the light premium refinement
+across the remaining screens). Optional follow-ups also remain: edit/delete/
+replace UI for memories, or a progress view for Memory Recall results. Also: the
+Phase 15/16/17/18/19/20 commits are committed locally but **not pushed** — push
+when ready.
 
 ## 8. Medical safety rules
 
