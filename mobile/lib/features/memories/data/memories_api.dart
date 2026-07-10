@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
+
 import '../../../core/network/api_client.dart';
 import 'memory_entry.dart';
+import 'memory_image.dart';
 
-/// API layer for the Memory Album (read-only in this phase).
+/// API layer for the Memory Album.
 ///
-/// Uses authenticated GETs only. Tokens are passed per-request, never logged.
+/// Tokens are passed per-request and never logged; local file paths are never
+/// logged (images are sent as in-memory bytes).
 class MemoriesApi {
   const MemoriesApi(this._client);
 
@@ -62,5 +66,41 @@ class MemoriesApi {
 
     final res = await _client.postJson('/memories', payload, token: token);
     return MemoryEntry.fromJson((res.data as Map).cast<String, dynamic>());
+  }
+
+  /// POST /api/v1/memories/{memoryId}/media — upload a real image.
+  ///
+  /// Sends the picked image as multipart field `file` (jpeg/png/webp). Returns
+  /// the updated memory (media_type="image", media_url=/media/...). Callers
+  /// should validate type/size first; the backend also enforces both.
+  Future<MemoryEntry> uploadMemoryImage({
+    required String token,
+    required String memoryId,
+    required PickedMemoryImage image,
+  }) async {
+    final form = FormData.fromMap({
+      'file': MultipartFile.fromBytes(
+        image.bytes,
+        filename: image.filename,
+        contentType: _mediaTypeFor(image),
+      ),
+    });
+    final res = await _client.postMultipart(
+      '/memories/$memoryId/media',
+      form,
+      token: token,
+    );
+    return MemoryEntry.fromJson((res.data as Map).cast<String, dynamic>());
+  }
+
+  DioMediaType _mediaTypeFor(PickedMemoryImage image) {
+    final mt = image.mimeType?.toLowerCase();
+    final ext = image.extension;
+    if (mt == 'image/png' || ext == 'png') return DioMediaType('image', 'png');
+    if (mt == 'image/webp' || ext == 'webp') {
+      return DioMediaType('image', 'webp');
+    }
+    // Default to JPEG for jpg/jpeg (already validated as an allowed type).
+    return DioMediaType('image', 'jpeg');
   }
 }

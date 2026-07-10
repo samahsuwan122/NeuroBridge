@@ -58,7 +58,7 @@ mobile/
         application/profile_controller.dart
         presentation/profile_screen.dart
       memories/
-        data/{memories_api,memory_entry}.dart
+        data/{memories_api,memory_entry,memory_image,memory_image_picker}.dart
         application/memories_controller.dart
         presentation/{memories_screen,memory_details_screen,memory_create_screen}.dart
     routes/app_router.dart        # /login /home /games /games/details
@@ -91,9 +91,15 @@ An **Add memory** button opens a form (`/memories/new`) where a patient/family/a
 a memory via `POST /api/v1/memories` (title required; description, person, relationship, place,
 memory date `YYYY-MM-DD`, category, media type, and a media-URL/placeholder text — all optional). The
 target patient profile is resolved from the first visible `GET /api/v1/patients` profile; a missing
-profile or backend error shows a friendly message. On success the form returns to the album and the
-list refreshes. **No file upload / image picker** — real image upload is deferred to Phase 18. No
-edit/delete UI yet.
+profile or backend error shows a friendly message.
+
+The form also supports **real image upload** (via `image_picker`, mobile + web): a **Choose image**
+button picks a JPEG/PNG/WebP up to 5 MB (validated client-side, with friendly type/size errors). On
+save the app **creates the memory first** (`POST /memories`), then **uploads the image**
+(`POST /memories/{id}/media`), and returns to the album on success. If the memory is created but the
+image upload fails, the memory is kept and a friendly "you can add it later" message is shown. In the
+album list, memories with an uploaded image show an **"Image attached"** chip. No edit/delete UI yet;
+`MemoriesApi` sends the image as in-memory bytes so no local file path is logged.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

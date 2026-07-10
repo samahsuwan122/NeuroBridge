@@ -41,4 +41,19 @@ class ApiClient {
       ),
     );
   }
+
+  /// POST multipart/form-data (e.g. a file upload). The token is never logged.
+  Future<Response<dynamic>> postMultipart(
+    String path,
+    FormData data, {
+    String? token,
+  }) {
+    return _dio.post<dynamic>(
+      '${AppConfig.apiPrefix}$path',
+      data: data,
+      options: token != null
+          ? Options(headers: {'Authorization': 'Bearer $token'})
+          : null,
+    );
+  }
 }

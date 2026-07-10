@@ -147,7 +147,19 @@ class AppLocalizations {
       'cancel': 'Cancel',
       'submitting': 'Saving…',
       'memoryDateHint': 'YYYY-MM-DD',
-      'mediaUrlHint': 'Link or note (no file upload yet)',
+      'mediaUrlHint': 'Link or note (optional)',
+      // Image upload
+      'chooseImage': 'Choose image',
+      'changeImage': 'Change image',
+      'imageSelected': 'Selected image',
+      'imageRequirements': 'JPEG, PNG, or WebP up to 5 MB.',
+      'imageUploadFailed': 'Could not upload the image. Please try again.',
+      'imageUploadSuccess': 'Memory and image saved.',
+      'unsupportedImageType': 'Unsupported image type. Use JPEG, PNG, or WebP.',
+      'imageTooLarge': 'The image is too large (maximum 5 MB).',
+      'memoryCreatedImageFailed':
+          'Memory saved, but the image could not be uploaded. You can add it later.',
+      'imageAttached': 'Image attached',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -275,7 +287,19 @@ class AppLocalizations {
       'cancel': 'إلغاء',
       'submitting': 'جارٍ الحفظ…',
       'memoryDateHint': 'YYYY-MM-DD',
-      'mediaUrlHint': 'رابط أو ملاحظة (لا يوجد رفع ملفات بعد)',
+      'mediaUrlHint': 'رابط أو ملاحظة (اختياري)',
+      // Image upload
+      'chooseImage': 'اختيار صورة',
+      'changeImage': 'تغيير الصورة',
+      'imageSelected': 'الصورة المحددة',
+      'imageRequirements': 'JPEG أو PNG أو WebP حتى ٥ ميجابايت.',
+      'imageUploadFailed': 'تعذّر رفع الصورة. حاول مرة أخرى.',
+      'imageUploadSuccess': 'تم حفظ الذكرى والصورة.',
+      'unsupportedImageType': 'نوع صورة غير مدعوم. استخدم JPEG أو PNG أو WebP.',
+      'imageTooLarge': 'الصورة كبيرة جدًا (الحد الأقصى ٥ ميجابايت).',
+      'memoryCreatedImageFailed':
+          'تم حفظ الذكرى، لكن تعذّر رفع الصورة. يمكنك إضافتها لاحقًا.',
+      'imageAttached': 'صورة مرفقة',
     },
   };
 
@@ -406,6 +430,17 @@ class AppLocalizations {
   String get submitting => _t('submitting');
   String get memoryDateHint => _t('memoryDateHint');
   String get mediaUrlHint => _t('mediaUrlHint');
+
+  String get chooseImage => _t('chooseImage');
+  String get changeImage => _t('changeImage');
+  String get imageSelected => _t('imageSelected');
+  String get imageRequirements => _t('imageRequirements');
+  String get imageUploadFailed => _t('imageUploadFailed');
+  String get imageUploadSuccess => _t('imageUploadSuccess');
+  String get unsupportedImageType => _t('unsupportedImageType');
+  String get imageTooLarge => _t('imageTooLarge');
+  String get memoryCreatedImageFailed => _t('memoryCreatedImageFailed');
+  String get imageAttached => _t('imageAttached');
 }
 
 class _AppLocalizationsDelegate

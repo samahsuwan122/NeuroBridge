@@ -191,7 +191,9 @@ class _MemoryCard extends StatelessWidget {
                       children: [
                         if ((memory.category ?? '').isNotEmpty)
                           _MetaChip(label: memory.category!),
-                        if ((memory.mediaType ?? '').isNotEmpty)
+                        if (memory.mediaType == 'image')
+                          _ImageAttachedChip(label: l10n.imageAttached)
+                        else if ((memory.mediaType ?? '').isNotEmpty)
                           _MetaChip(label: memory.mediaType!),
                         if ((memory.listDateDisplay ?? '').isNotEmpty)
                           _MetaChip(label: memory.listDateDisplay!),
@@ -228,6 +230,39 @@ class _MetaChip extends StatelessWidget {
         label,
         style: theme.textTheme.labelSmall
             ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+      ),
+    );
+  }
+}
+
+/// Distinct chip shown when a memory has an uploaded image.
+class _ImageAttachedChip extends StatelessWidget {
+  const _ImageAttachedChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.image_outlined,
+              size: 14, color: theme.colorScheme.onPrimaryContainer),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w600),
+          ),
+        ],
       ),
     );
   }

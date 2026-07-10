@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +21,7 @@ import 'package:neurobridge_mobile/features/home/data/patient_api.dart';
 import 'package:neurobridge_mobile/features/memories/application/memories_controller.dart';
 import 'package:neurobridge_mobile/features/memories/data/memories_api.dart';
 import 'package:neurobridge_mobile/features/memories/data/memory_entry.dart';
+import 'package:neurobridge_mobile/features/memories/data/memory_image.dart';
 import 'package:neurobridge_mobile/features/memories/presentation/memories_screen.dart';
 import 'package:neurobridge_mobile/features/memories/presentation/memory_create_screen.dart';
 import 'package:neurobridge_mobile/features/memories/presentation/memory_details_screen.dart';
@@ -40,9 +43,10 @@ class _FakeMemories extends MemoriesController {
   final List<MemoryEntry> _memories;
 
   /// Configurable create outcome (no network in tests).
-  bool createResult = true;
+  MemorySubmitResult submitResult = MemorySubmitResult.success;
   bool createCalled = false;
   MemoryCreateStatus _createStatusValue = MemoryCreateStatus.idle;
+  PickedMemoryImage? selectedImageValue;
 
   @override
   MemoriesStatus get status => _status;
@@ -51,10 +55,12 @@ class _FakeMemories extends MemoriesController {
   @override
   MemoryCreateStatus get createStatus => _createStatusValue;
   @override
+  PickedMemoryImage? get selectedImage => selectedImageValue;
+  @override
   Future<void> load() async {}
 
   @override
-  Future<bool> createMemory({
+  Future<MemorySubmitResult> createMemory({
     required String title,
     String? description,
     String? personName,
@@ -66,12 +72,19 @@ class _FakeMemories extends MemoriesController {
     String? mediaUrl,
   }) async {
     createCalled = true;
-    _createStatusValue =
-        createResult ? MemoryCreateStatus.success : MemoryCreateStatus.error;
+    _createStatusValue = submitResult == MemorySubmitResult.createFailed
+        ? MemoryCreateStatus.error
+        : MemoryCreateStatus.success;
     notifyListeners();
-    return createResult;
+    return submitResult;
   }
 }
+
+PickedMemoryImage _sampleImage() => PickedMemoryImage(
+      bytes: Uint8List.fromList(const [1, 2, 3]),
+      filename: 'pic.png',
+      mimeType: 'image/png',
+    );
 
 ApiClient _c() => ApiClient();
 
@@ -263,7 +276,8 @@ void main() {
   });
 
   testWidgets('create failure shows a friendly error', (tester) async {
-    final fake = _FakeMemories(MemoriesStatus.empty)..createResult = false;
+    final fake = _FakeMemories(MemoriesStatus.empty)
+      ..submitResult = MemorySubmitResult.createFailed;
     await _wrap(tester, const MemoryCreateScreen(), memories: fake);
     await tester.enterText(find.widgetWithText(TextFormField, 'Title').first,
         'Family picnic');
@@ -275,6 +289,61 @@ void main() {
       find.text('Could not save the memory. Please try again.'),
       findsOneWidget,
     );
+  });
+
+  // --- Image upload (Step 18B) -----------------------------------------------
+
+  testWidgets('create form shows a Choose image button and requirements',
+      (tester) async {
+    await _wrap(tester, const MemoryCreateScreen());
+    expect(find.text('Choose image'), findsOneWidget);
+    expect(find.textContaining('up to 5 MB'), findsOneWidget);
+  });
+
+  testWidgets('selected image shows its name and Change image', (tester) async {
+    final fake = _FakeMemories(MemoriesStatus.empty)
+      ..selectedImageValue = _sampleImage();
+    await _wrap(tester, const MemoryCreateScreen(), memories: fake);
+    expect(find.text('Change image'), findsOneWidget);
+    expect(find.textContaining('pic.png'), findsOneWidget);
+  });
+
+  testWidgets('image upload failure after create shows a friendly message',
+      (tester) async {
+    final fake = _FakeMemories(MemoriesStatus.empty)
+      ..submitResult = MemorySubmitResult.imageUploadFailed
+      ..selectedImageValue = _sampleImage();
+    await _pumpRouter(tester, memories: fake, initialLocation: '/memories/new');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Title').first,
+        'Family picnic');
+    await tester.ensureVisible(find.text('Save memory'));
+    await tester.tap(find.text('Save memory'));
+    await tester.pumpAndSettle();
+    expect(fake.createCalled, isTrue);
+    // Memory kept: returned to the album with a friendly message.
+    expect(find.text('No memories yet.'), findsOneWidget);
+    expect(
+      find.textContaining('image could not be uploaded'),
+      findsOneWidget,
+    );
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('list shows an Image attached chip for image memories',
+      (tester) async {
+    final imageMemory = MemoryEntry(
+      id: 'm2',
+      title: 'Beach day',
+      mediaType: 'image',
+      mediaUrl: '/media/memory_uploads/abc.png',
+    );
+    await _wrap(
+      tester,
+      const MemoriesScreen(),
+      memories: _FakeMemories(MemoriesStatus.loaded, [imageMemory]),
+    );
+    expect(find.text('Image attached'), findsOneWidget);
   });
 
   testWidgets('Add memory button navigates to the form', (tester) async {

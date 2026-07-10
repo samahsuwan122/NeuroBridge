@@ -57,7 +57,9 @@ class _MemoryCreateScreenState extends State<MemoryCreateScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final memories = AppScope.of(context).memories;
-    final ok = await memories.createMemory(
+    final hadImage = memories.selectedImage != null;
+
+    final result = await memories.createMemory(
       title: _title.text,
       description: _description.text,
       personName: _personName.text,
@@ -69,13 +71,22 @@ class _MemoryCreateScreenState extends State<MemoryCreateScreen> {
       mediaUrl: _mediaUrl.text,
     );
     if (!mounted) return;
-    if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.memorySaved)),
-      );
-      context.go('/memories');
+    switch (result) {
+      case MemorySubmitResult.success:
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(hadImage ? l10n.imageUploadSuccess : l10n.memorySaved),
+        ));
+        context.go('/memories');
+      case MemorySubmitResult.imageUploadFailed:
+        // The memory was created; only the image failed.
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.memoryCreatedImageFailed)),
+        );
+        context.go('/memories');
+      case MemorySubmitResult.createFailed:
+        // Inline error message is shown via createStatus.
+        break;
     }
-    // On failure the inline error message is shown via createStatus.
   }
 
   @override
@@ -111,6 +122,8 @@ class _MemoryCreateScreenState extends State<MemoryCreateScreen> {
                               ? l10n.memoryTitleRequired
                               : null,
                     ),
+                    const SizedBox(height: 16),
+                    _ImageSection(memories: memories, l10n: l10n),
                     const SizedBox(height: 12),
                     _OptionalField(
                         controller: _description,
@@ -194,6 +207,58 @@ class _MemoryCreateScreenState extends State<MemoryCreateScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ImageSection extends StatelessWidget {
+  const _ImageSection({required this.memories, required this.l10n});
+
+  final MemoriesController memories;
+  final AppLocalizations l10n;
+
+  String? _errorText() {
+    switch (memories.imageError) {
+      case MemoryImageError.unsupportedType:
+        return l10n.unsupportedImageType;
+      case MemoryImageError.tooLarge:
+        return l10n.imageTooLarge;
+      case null:
+        return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AnimatedBuilder(
+      animation: memories,
+      builder: (context, _) {
+        final selected = memories.selectedImage;
+        final error = _errorText();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OutlinedButton.icon(
+              onPressed: memories.pickImage,
+              icon: const Icon(Icons.image_outlined),
+              label: Text(selected == null ? l10n.chooseImage : l10n.changeImage),
+            ),
+            if (selected != null) ...[
+              const SizedBox(height: 6),
+              Text('${l10n.imageSelected}: ${selected.filename}',
+                  style: theme.textTheme.bodyMedium),
+            ],
+            if (error != null) ...[
+              const SizedBox(height: 6),
+              Text(error,
+                  style: TextStyle(color: theme.colorScheme.error)),
+            ],
+            const SizedBox(height: 6),
+            Text(l10n.imageRequirements, style: theme.textTheme.bodySmall),
+          ],
+        );
+      },
     );
   }
 }

@@ -21,6 +21,8 @@ dependencies:
   dio: ^5.7.0
   # Secure token storage
   flutter_secure_storage: ^9.2.2
+  # Image selection (gallery) for Memory Album uploads (mobile + web)
+  image_picker: ^1.1.2
   # Internationalization utilities
   intl: any
 
