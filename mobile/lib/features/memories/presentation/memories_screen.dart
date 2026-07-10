@@ -82,8 +82,17 @@ class _MemoriesScreenState extends State<MemoriesScreen> {
               _IntroNote(l10n: l10n),
               const SizedBox(height: 16),
               _AddButton(l10n: l10n),
-              const SizedBox(height: 24),
-              Center(child: Text(l10n.noMemoriesYet)),
+              const SizedBox(height: 36),
+              Column(
+                children: [
+                  Icon(Icons.photo_library_outlined,
+                      size: 48,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  const SizedBox(height: 12),
+                  Text(l10n.noMemoriesYet,
+                      style: Theme.of(context).textTheme.titleMedium),
+                ],
+              ),
             ],
           ),
         );

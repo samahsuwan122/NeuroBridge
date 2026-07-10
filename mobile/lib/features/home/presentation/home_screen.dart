@@ -9,6 +9,7 @@ import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
+import '../../../core/widgets/section_header.dart';
 import '../../auth/application/auth_controller.dart';
 import '../application/home_controller.dart';
 
@@ -66,7 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     home: scope.home,
                     l10n: l10n,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 20),
+                  SectionHeader(
+                    icon: Icons.spa_outlined,
+                    title: l10n.activities,
+                  ),
+                  const SizedBox(height: 4),
                   ..._dashboardCards(context, l10n),
                 ],
               ),

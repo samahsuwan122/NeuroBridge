@@ -6,6 +6,7 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/storage/secure_storage_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/emerald_panel.dart';
 import '../../../../core/widgets/error_state.dart';
 import '../../../../core/widgets/language_button.dart';
 import '../../../../core/widgets/loading_state.dart';
@@ -335,12 +336,35 @@ class _Summary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.recallComplete,
-              style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
-          const SizedBox(height: 12),
-          Text('${l10n.recallScore}: ${controller.score}/${controller.total}',
-              style: theme.textTheme.titleLarge, textAlign: TextAlign.center),
-          const SizedBox(height: 12),
+          EmeraldPanel(
+            child: Column(
+              children: [
+                const IconChip(
+                  icon: Icons.emoji_events_rounded,
+                  size: 52,
+                  background: Color(0x22FFFFFF),
+                  foreground: AppColors.softGold,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  l10n.recallComplete,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineSmall
+                      ?.copyWith(color: AppColors.onHero),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${l10n.recallScore}: ${controller.score}/${controller.total}',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: AppColors.onHero,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(l10n.memoryRecallNote,
               style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
           if (submitStatus != null) ...[

@@ -23,6 +23,7 @@ class AppLocalizations {
       'appTitle': 'NeuroBridge',
       'loginSubtitle': 'Bridging memory. Connecting lives.',
       'homeSupportiveMessage': 'Small steps every day make a difference.',
+      'activities': 'Activities',
       'basicInformation': 'Basic Information',
       'loginTitle': 'Sign in',
       'emailOrPhone': 'Email or phone',
@@ -188,6 +189,7 @@ class AppLocalizations {
       'appTitle': 'نيوروبريدج',
       'loginSubtitle': 'نجسر الذاكرة، ونصل الحياة.',
       'homeSupportiveMessage': 'خطوات صغيرة كل يوم تُحدث فرقًا.',
+      'activities': 'الأنشطة',
       'basicInformation': 'المعلومات الأساسية',
       'loginTitle': 'تسجيل الدخول',
       'emailOrPhone': 'البريد الإلكتروني أو الهاتف',
@@ -353,6 +355,7 @@ class AppLocalizations {
   String get appTitle => _t('appTitle');
   String get loginSubtitle => _t('loginSubtitle');
   String get homeSupportiveMessage => _t('homeSupportiveMessage');
+  String get activities => _t('activities');
   String get basicInformation => _t('basicInformation');
   String get loginTitle => _t('loginTitle');
   String get emailOrPhone => _t('emailOrPhone');

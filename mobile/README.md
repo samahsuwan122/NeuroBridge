@@ -192,6 +192,14 @@ Shared premium building blocks live in `core/widgets/`: `EmeraldPanel` (deep-eme
 icon-chip game/result cards, richer Memory Match tiles + a gradient completion header, and
 icon-chip section headers on the Profile screen. Styling only — no behavior or medical logic changes.
 
+A light **luxury polish pass** further refines the shared building blocks and high-impact screens:
+the shared `LoadingState`/`ErrorState` are now centered and elegant (a tinted icon + a clear retry
+button) so every screen's loading/empty/error states look consistent; Home gains an **"Activities"**
+section header for clearer hierarchy; Game details groups its metadata/instructions in a premium
+card; the Memory Album empty state is a friendly icon + message; and the Memory Recall summary uses
+an emerald gradient header with a gold trophy chip. All changes are **styling/layout only** — no
+behavior, navigation, API, or game-result logic changed.
+
 ## Localization & accessibility
 
 - **Arabic 🇸🇦 and English 🇬🇧** are both supported (see `core/localization/app_localizations.dart`).

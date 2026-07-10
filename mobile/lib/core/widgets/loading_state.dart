@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// A small, centered loading indicator with an optional message.
+/// A calm, centered loading indicator with an optional message.
 class LoadingState extends StatelessWidget {
   const LoadingState({super.key, this.message});
 
@@ -8,17 +8,25 @@ class LoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          if (message != null) ...[
-            const SizedBox(height: 12),
-            Text(message!, textAlign: TextAlign.center),
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            if (message != null) ...[
+              const SizedBox(height: 14),
+              Text(
+                message!,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

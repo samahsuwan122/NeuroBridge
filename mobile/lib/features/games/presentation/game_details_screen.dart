@@ -50,19 +50,32 @@ class GameDetailsScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        _MetaRow(label: l10n.difficulty, value: game.difficulty),
-                        if (game.estimatedDurationMinutes != null)
-                          _MetaRow(
-                            label: l10n.estimatedDuration,
-                            value: '${game.estimatedDurationMinutes} ${l10n.minutes}',
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _MetaRow(
+                                    label: l10n.difficulty,
+                                    value: game.difficulty),
+                                if (game.estimatedDurationMinutes != null)
+                                  _MetaRow(
+                                    label: l10n.estimatedDuration,
+                                    value:
+                                        '${game.estimatedDurationMinutes} ${l10n.minutes}',
+                                  ),
+                                if ((game.instructions ?? '').isNotEmpty) ...[
+                                  const SizedBox(height: 12),
+                                  Text(l10n.instructions,
+                                      style: theme.textTheme.titleMedium),
+                                  const SizedBox(height: 6),
+                                  Text(game.instructions!),
+                                ],
+                              ],
+                            ),
                           ),
-                        if ((game.instructions ?? '').isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          Text(l10n.instructions,
-                              style: theme.textTheme.titleMedium),
-                          const SizedBox(height: 8),
-                          Text(game.instructions!),
-                        ],
+                        ),
                         const SizedBox(height: 24),
                         if (game.slug == _memoryMatchSlug)
                           FilledButton.icon(
