@@ -13,11 +13,13 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 20B1 (final screen-by-screen polish) completed and committed locally.
-  **Login, Home, Progress, and Profile/Care & Safety** screens received light
-  premium polish. **No auth flow, API, navigation, result logic, or business
-  logic changes** were made; the backend was untouched.
-- Latest local commit: `90a3fd6 style(mobile): polish core presentation screens`
+- Phase 20B2 (games + memory screens polish) completed and committed locally.
+  **Games list, Game Details, Memory Album, Add Memory, Memory Details, and
+  Memory Recall** received final light premium polish. **No API, navigation,
+  upload, scoring, result-submission, question-generation, or business logic
+  changes** were made; the backend was untouched. **The app is now
+  feature-complete for the graduation demo.**
+- Latest local commit: `5367e8a style(mobile): polish games and memory screens`
 - Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20 commits are **not
   pushed yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
@@ -50,6 +52,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 19B: Memory Recall mobile game (personalized, Memory Album questions)
 - Phase 20A: Final luxury UI polish foundation (shared states + light screen polish)
 - Phase 20B1: Screen polish — Login, Home, Progress, Profile (styling only)
+- Phase 20B2: Screen polish — Games + Memory screens (styling only)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -62,14 +65,15 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-Phase 20 — Final Luxury UI Polish. **Steps 20A and 20B1 are complete and
-committed.** 20B1 was styling/layout only — no behavior, navigation, API, or
-result-logic changes: Login gained a gold title accent; Home's summary card got a
-leading icon (on top of 20A's "Activities" header); Progress and Profile got
-elegant icon+message empty states consistent with the polished shared states; and
-the Profile care/safety note is now an elegant sage-tinted banner (moved from the
-section subtitle, still shown exactly once). Wording stays supportive and
-performance-only. **Next step: Phase 20B2 — Games and Memory screens polish.**
+None in progress. **Phase 20 — Final Luxury UI Polish is complete and committed**
+(20A foundation, 20B1 core screens, 20B2 games + memory screens). 20B2 was
+styling/layout only — per-game icons on the games list + details
+(`game_visuals.dart`); an elegant framed image-picker area on Add Memory; subtly
+framed Memory Album thumbnails; the Memory Details description in its own card;
+and a polished Memory Recall play view (question + options grouped in a card,
+progress shown as a pill). Wording stays supportive and performance-only. **The
+app is now feature-complete for the graduation demo. Next step: Final Demo Review
+and presentation preparation.**
 
 ## 6. Phase 13 summary (done)
 
@@ -81,11 +85,11 @@ performance-only. **Next step: Phase 20B2 — Games and Memory screens polish.**
 
 ## 7. Next step
 
-Phase 20B2 — Games and Memory screens polish (continue the light premium
-refinement across the remaining games/memory screens). Optional follow-ups also
-remain: edit/delete/replace UI for memories, or a progress view for Memory Recall
-results. Also: the Phase 15/16/17/18/19/20 commits are committed locally but
-**not pushed** — push when ready.
+Final Demo Review and presentation preparation — the app is feature-complete for
+the graduation demo (final luxury UI polish, Phase 20A–20B2, is done across all
+core screens). Optional follow-ups remain: edit/delete/replace UI for memories,
+or a progress view for Memory Recall results. Also: the Phase 15/16/17/18/19/20
+commits are committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
