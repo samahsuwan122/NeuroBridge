@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ import 'package:neurobridge_mobile/features/memories/data/memory_image.dart';
 import 'package:neurobridge_mobile/features/memories/presentation/memories_screen.dart';
 import 'package:neurobridge_mobile/features/memories/presentation/memory_create_screen.dart';
 import 'package:neurobridge_mobile/features/memories/presentation/memory_details_screen.dart';
+import 'package:neurobridge_mobile/features/memories/presentation/memory_image_view.dart';
 import 'package:neurobridge_mobile/features/profile/application/profile_controller.dart';
 import 'package:neurobridge_mobile/features/profile/data/profile_api.dart';
 import 'package:neurobridge_mobile/features/progress/application/progress_controller.dart';
@@ -378,4 +381,117 @@ void main() {
     await tester.pump(const Duration(seconds: 4));
     await tester.pumpAndSettle();
   });
+
+  // --- Image display (Step 18C) ----------------------------------------------
+
+  testWidgets('memory card with an image renders the image view',
+      (tester) async {
+    await _withMockedImages(() async {
+      await _wrap(
+        tester,
+        const MemoriesScreen(),
+        memories: _FakeMemories(MemoriesStatus.loaded, [_imageMemory()]),
+      );
+      expect(find.byType(MemoryImageView), findsOneWidget);
+    });
+  });
+
+  testWidgets('memory card without an image renders the icon placeholder',
+      (tester) async {
+    await _wrap(
+      tester,
+      const MemoriesScreen(),
+      memories: _FakeMemories(MemoriesStatus.loaded, [_sample()]),
+    );
+    expect(find.byType(MemoryImageView), findsNothing);
+  });
+
+  testWidgets('details with an image renders a large image view',
+      (tester) async {
+    await _withMockedImages(() async {
+      await _wrap(tester, MemoryDetailsScreen(memory: _imageMemory()));
+      expect(find.byType(MemoryImageView), findsOneWidget);
+    });
+  });
+
+  testWidgets('details without an image renders an elegant placeholder',
+      (tester) async {
+    await _wrap(tester, MemoryDetailsScreen(memory: _sample()));
+    expect(find.byType(MemoryImageView), findsNothing);
+    expect(find.text('No image attached'), findsOneWidget);
+  });
+}
+
+MemoryEntry _imageMemory() => MemoryEntry(
+      id: 'm2',
+      title: 'Beach day',
+      mediaType: 'image',
+      mediaUrl: '/media/memory_uploads/abc.png',
+    );
+
+/// A 1x1 PNG so mocked `Image.network` responses decode successfully.
+final List<int> _kPngBytes = <int>[
+  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
+  0x0D, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0xF8, 0xCF, 0xC0, 0x00,
+  0x00, 0x00, 0x03, 0x00, 0x01, 0x2A, 0x22, 0x4A, 0x99, 0x00, 0x00, 0x00,
+  0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+];
+
+/// Runs [body] with all `Image.network` requests served a tiny local PNG, so
+/// image tests never touch the real network.
+Future<void> _withMockedImages(Future<void> Function() body) {
+  return HttpOverrides.runZoned(
+    body,
+    createHttpClient: (context) => _FakeHttpClient(),
+  );
+}
+
+class _FakeHttpClient implements HttpClient {
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async => _FakeHttpClientRequest();
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+class _FakeHttpClientRequest implements HttpClientRequest {
+  @override
+  HttpHeaders get headers => _FakeHttpHeaders();
+  @override
+  Future<HttpClientResponse> close() async => _FakeHttpClientResponse();
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+class _FakeHttpHeaders implements HttpHeaders {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+class _FakeHttpClientResponse implements HttpClientResponse {
+  @override
+  int get statusCode => 200;
+  @override
+  int get contentLength => _kPngBytes.length;
+  @override
+  HttpClientResponseCompressionState get compressionState =>
+      HttpClientResponseCompressionState.notCompressed;
+  @override
+  StreamSubscription<List<int>> listen(
+    void Function(List<int> event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return Stream<List<int>>.fromIterable(<List<int>>[_kPngBytes]).listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
 }

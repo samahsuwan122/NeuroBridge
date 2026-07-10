@@ -83,4 +83,23 @@ class MemoryEntry {
     if (name.isNotEmpty && rel.isNotEmpty) return '$name · $rel';
     return name.isNotEmpty ? name : rel;
   }
+
+  /// True when this memory has an uploaded/linked image to display.
+  bool get hasImage => mediaType == 'image' && (mediaUrl?.isNotEmpty ?? false);
+
+  /// Full URL for the image, or null when there is none.
+  ///
+  /// - `http(s)://…` URLs are used as-is.
+  /// - Relative paths (e.g. `/media/memory_uploads/x.png`) are combined with
+  ///   [baseUrl] (the backend origin, no trailing slash) without double slashes.
+  String? resolvedImageUrl(String baseUrl) {
+    final url = mediaUrl;
+    if (url == null || url.isEmpty) return null;
+    final lower = url.toLowerCase();
+    if (lower.startsWith('http://') || lower.startsWith('https://')) return url;
+    final base =
+        baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+    final path = url.startsWith('/') ? url : '/$url';
+    return '$base$path';
+  }
 }

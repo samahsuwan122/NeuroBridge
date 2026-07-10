@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/config/app_config.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/language_button.dart';
 import '../data/memory_entry.dart';
+import 'memory_image_view.dart';
 
-/// Read-only Memory Album detail. Shows a single memory's fields. Supportive/
-/// family-engagement content only — no diagnosis, scoring, or interpretation.
-/// No editing in this phase; media is shown as placeholder text, not an image.
+/// Read-only Memory Album detail. Shows a single memory's fields and, when one
+/// exists, a large image. Supportive/family-engagement content only — no
+/// diagnosis, scoring, or interpretation. No editing in this phase.
 class MemoryDetailsScreen extends StatelessWidget {
   const MemoryDetailsScreen({super.key, this.memory});
 
@@ -38,6 +40,8 @@ class MemoryDetailsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        _HeroImage(memory: memory, l10n: l10n),
+                        const SizedBox(height: 16),
                         Row(
                           children: [
                             const IconChip(
@@ -112,6 +116,49 @@ class MemoryDetailsScreen extends StatelessWidget {
                   ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Large hero image when the memory has one, else an elegant placeholder box.
+class _HeroImage extends StatelessWidget {
+  const _HeroImage({required this.memory, required this.l10n});
+
+  final MemoryEntry memory;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final imageUrl = memory.resolvedImageUrl(AppConfig.baseUrl);
+    if (memory.hasImage && imageUrl != null) {
+      return MemoryImageView(
+        imageUrl: imageUrl,
+        width: double.infinity,
+        height: 220,
+        borderRadius: 20,
+        semanticLabel: l10n.imagePreview,
+        unavailableLabel: l10n.imageUnavailable,
+      );
+    }
+    // Elegant placeholder (no broken UI) when there is no image.
+    return Container(
+      height: 160,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.photo_outlined,
+              size: 40, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(height: 8),
+          Text(l10n.noImageAttached,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        ],
       ),
     );
   }

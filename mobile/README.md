@@ -60,7 +60,7 @@ mobile/
       memories/
         data/{memories_api,memory_entry,memory_image,memory_image_picker}.dart
         application/memories_controller.dart
-        presentation/{memories_screen,memory_details_screen,memory_create_screen}.dart
+        presentation/{memories_screen,memory_details_screen,memory_create_screen,memory_image_view}.dart
     routes/app_router.dart        # /login /home /games /games/details
                                   # /games/play/memory-match /progress /profile
                                   # /memories /memories/new /memories/details
@@ -97,9 +97,16 @@ The form also supports **real image upload** (via `image_picker`, mobile + web):
 button picks a JPEG/PNG/WebP up to 5 MB (validated client-side, with friendly type/size errors). On
 save the app **creates the memory first** (`POST /memories`), then **uploads the image**
 (`POST /memories/{id}/media`), and returns to the album on success. If the memory is created but the
-image upload fails, the memory is kept and a friendly "you can add it later" message is shown. In the
-album list, memories with an uploaded image show an **"Image attached"** chip. No edit/delete UI yet;
-`MemoriesApi` sends the image as in-memory bytes so no local file path is logged.
+image upload fails, the memory is kept and a friendly "you can add it later" message is shown. No
+edit/delete UI yet; `MemoriesApi` sends the image as in-memory bytes so no local file path is logged.
+
+Uploaded images are **displayed** across the album: `MemoryEntry.resolvedImageUrl(baseUrl)` turns the
+backend's relative `media_url` (`/media/memory_uploads/<file>`) into a full URL (external `http(s)`
+URLs are used as-is), and a reusable `MemoryImageView` renders it with rounded corners, a loading
+spinner, and a graceful error placeholder. The list card shows a **rounded thumbnail** (falling back
+to the icon chip when there is no image) alongside the "Image attached" chip; the details screen
+shows a **large hero image** (or an elegant "No image attached" placeholder). Images are personal
+memory content only — no analysis or interpretation.
 
 **Memory Match** is the first playable exercise. Its details screen shows a **Play** button; other
 games still show "Game play will be added in a later phase." On completion the result is

@@ -160,6 +160,10 @@ class AppLocalizations {
       'memoryCreatedImageFailed':
           'Memory saved, but the image could not be uploaded. You can add it later.',
       'imageAttached': 'Image attached',
+      'imagePreview': 'Image preview',
+      'imageUnavailable': 'Image unavailable',
+      'memoryImage': 'Memory image',
+      'noImageAttached': 'No image attached',
     },
     'ar': {
       'appTitle': 'نيوروبريدج',
@@ -300,6 +304,10 @@ class AppLocalizations {
       'memoryCreatedImageFailed':
           'تم حفظ الذكرى، لكن تعذّر رفع الصورة. يمكنك إضافتها لاحقًا.',
       'imageAttached': 'صورة مرفقة',
+      'imagePreview': 'معاينة الصورة',
+      'imageUnavailable': 'الصورة غير متاحة',
+      'memoryImage': 'صورة الذكرى',
+      'noImageAttached': 'لا توجد صورة مرفقة',
     },
   };
 
@@ -441,6 +449,10 @@ class AppLocalizations {
   String get imageTooLarge => _t('imageTooLarge');
   String get memoryCreatedImageFailed => _t('memoryCreatedImageFailed');
   String get imageAttached => _t('imageAttached');
+  String get imagePreview => _t('imagePreview');
+  String get imageUnavailable => _t('imageUnavailable');
+  String get memoryImage => _t('memoryImage');
+  String get noImageAttached => _t('noImageAttached');
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/app_scope.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/error_state.dart';
@@ -9,6 +10,7 @@ import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
 import '../application/memories_controller.dart';
 import '../data/memory_entry.dart';
+import 'memory_image_view.dart';
 
 /// Memory Album list (read-only). Supportive/family-engagement content only —
 /// no diagnosis, scoring, or medical interpretation. No create/edit here yet.
@@ -157,6 +159,7 @@ class _MemoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final imageUrl = memory.resolvedImageUrl(AppConfig.baseUrl);
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: InkWell(
@@ -166,7 +169,16 @@ class _MemoryCard extends StatelessWidget {
           padding: const EdgeInsets.all(18),
           child: Row(
             children: [
-              const IconChip(icon: Icons.photo_library_rounded, size: 54),
+              if (memory.hasImage && imageUrl != null)
+                MemoryImageView(
+                  imageUrl: imageUrl,
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  semanticLabel: l10n.memoryImage,
+                )
+              else
+                const IconChip(icon: Icons.photo_library_rounded, size: 54),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
