@@ -52,6 +52,18 @@ DEFAULT_GAMES: List[Dict[str, Any]] = [
         "description": "Recall and repeat sequences to exercise working memory.",
         "instructions": "Watch the sequence, then repeat it in the same order.",
     },
+    {
+        # Personalized reminiscence exercise built on the patient's Memory Album.
+        # Supportive family-recall activity only — not a diagnosis or a medical
+        # test; results are game performance only.
+        "slug": "memory_recall",
+        "name": "Memory Recall",
+        "game_type": "recall",
+        "difficulty": "easy",
+        "estimated_duration_minutes": 5,
+        "description": "Personalized recall exercise based on the patient's Memory Album.",
+        "instructions": "Look at each memory and answer a few supportive questions about it.",
+    },
 ]
 
 DEFAULT_GAME_SLUGS: List[str] = [g["slug"] for g in DEFAULT_GAMES]

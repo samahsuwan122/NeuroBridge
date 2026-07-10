@@ -149,6 +149,71 @@ def test_seed_games_is_idempotent(db_session):
     assert count == len(DEFAULT_GAME_SLUGS)
 
 
+# --- Memory Recall (Phase 19A) ----------------------------------------------
+
+
+def test_seed_includes_memory_recall_idempotently(db_session):
+    assert "memory_recall" in DEFAULT_GAME_SLUGS
+    seed_games(db_session)
+    game = db_session.execute(
+        select(GameDefinition).where(GameDefinition.slug == "memory_recall")
+    ).scalar_one()
+    assert game.name == "Memory Recall"
+    assert game.active is True
+    # No diagnostic/medical wording in the seeded game text.
+    text = f"{game.name} {game.description} {game.instructions}".lower()
+    for bad in ("diagnosis", "disease", "dementia", "alzheimer", "interpretation"):
+        assert bad not in text
+    # Re-seeding preserves it (idempotent).
+    assert "memory_recall" in seed_games(db_session)["skipped"]
+
+
+def test_games_list_includes_memory_recall(client, db_session, user_factory, seeded_roles):
+    seed_games(db_session)
+    user_factory(email="patient@example.test", roles=("patient",))
+    headers = _login(client, "patient@example.test")
+    resp = client.get("/api/v1/games", headers=headers)
+    assert resp.status_code == 200
+    slugs = {g["slug"] for g in resp.json()["games"]}
+    assert "memory_recall" in slugs
+
+
+def test_patient_submits_memory_recall_result(client, admin_headers, db_session, user_factory):
+    seed_games(db_session)
+    _, profile = _create_patient(client, admin_headers, user_factory, "p@example.test")
+    headers = _login(client, "p@example.test")
+    game = next(
+        g
+        for g in client.get("/api/v1/games", headers=headers).json()["games"]
+        if g["slug"] == "memory_recall"
+    )
+
+    body = {
+        "patient_profile_id": profile["id"],
+        "score": 3,
+        "max_score": 3,
+        "completed": True,
+        # Safe gameplay metadata only — no medical score or interpretation.
+        "metrics": {
+            "exercise_type": "memory_recall",
+            "question_count": 3,
+            "correct_count": 3,
+            "memory_entry_ids": [],
+        },
+    }
+    resp = client.post(
+        f"/api/v1/games/{game['id']}/results", headers=headers, json=body
+    )
+    assert resp.status_code == 201, resp.text
+    data = resp.json()
+    assert data["score"] == 3
+    assert data["metrics"]["exercise_type"] == "memory_recall"
+    # Result is performance-only; no diagnostic fields are present.
+    forbidden = {"diagnosis", "disease", "dementia", "alzheimer", "interpretation"}
+    for key in data:
+        assert not any(bad in key.lower() for bad in forbidden)
+
+
 # --- results: submission -----------------------------------------------------
 
 
