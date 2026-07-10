@@ -13,14 +13,15 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 20B2 (games + memory screens polish) completed and committed locally.
-  **Games list, Game Details, Memory Album, Add Memory, Memory Details, and
-  Memory Recall** received final light premium polish. **No API, navigation,
-  upload, scoring, result-submission, question-generation, or business logic
-  changes** were made; the backend was untouched. **The app is now
-  feature-complete for the graduation demo.**
-- Latest local commit: `5367e8a style(mobile): polish games and memory screens`
-- Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20 commits are **not
+- Phase 21A (Reaction Time game) completed and committed locally. Added playable
+  `/games/play/reaction-time` — the game measures tap reaction time across 5
+  rounds. Results are saved as **game performance only** with metrics
+  `exercise_type`, `round_count`, `best_reaction_ms`, `average_reaction_ms`,
+  `reaction_times_ms`. No diagnosis, disease prediction, dementia score, Alzheimer
+  score, medical interpretation, or treatment recommendation. **Backend was
+  untouched because `reaction_time` was already seeded.**
+- Latest local commit: `ca717bd feat(mobile): add Reaction Time game`
+- Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20/21 commits are **not
   pushed yet** (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -53,6 +54,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 20A: Final luxury UI polish foundation (shared states + light screen polish)
 - Phase 20B1: Screen polish — Login, Home, Progress, Profile (styling only)
 - Phase 20B2: Screen polish — Games + Memory screens (styling only)
+- Phase 21A: Reaction Time playable game (mobile; backend already seeded)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -65,15 +67,18 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. **Phase 20 — Final Luxury UI Polish is complete and committed**
-(20A foundation, 20B1 core screens, 20B2 games + memory screens). 20B2 was
-styling/layout only — per-game icons on the games list + details
-(`game_visuals.dart`); an elegant framed image-picker area on Add Memory; subtly
-framed Memory Album thumbnails; the Memory Details description in its own card;
-and a polished Memory Recall play view (question + options grouped in a card,
-progress shown as a pill). Wording stays supportive and performance-only. **The
-app is now feature-complete for the graduation demo. Next step: Final Demo Review
-and presentation preparation.**
+Phase 21 — More playable games. **Step 21A (Reaction Time, mobile) is complete
+and committed.** Backend was **untouched** (`reaction_time` was already seeded).
+A new `features/games/reaction_time/` module adds a playable
+`/games/play/reaction-time` (wired from game details by slug): wait for the
+signal, tap fast, 5 rounds, then a best/average/rounds summary; the result is
+submitted as **game performance only** (`score` = rounds completed,
+`metrics: exercise_type/round_count/best_reaction_ms/average_reaction_ms/
+reaction_times_ms`) via the existing games results API. Times are never
+interpreted medically (no normal/abnormal, no diagnosis). Timing is testable
+(pure controller + injectable clock; screen owns the `Timer`). Three exercises
+are now playable (Memory Match, Memory Recall, Reaction Time). **Next step:
+Phase 21B — Attention Tap game.**
 
 ## 6. Phase 13 summary (done)
 
@@ -85,10 +90,9 @@ and presentation preparation.**
 
 ## 7. Next step
 
-Final Demo Review and presentation preparation — the app is feature-complete for
-the graduation demo (final luxury UI polish, Phase 20A–20B2, is done across all
-core screens). Optional follow-ups remain: edit/delete/replace UI for memories,
-or a progress view for Memory Recall results. Also: the Phase 15/16/17/18/19/20
+Phase 21B — Attention Tap game (another playable exercise; `attention_focus` is
+already seeded). Optional follow-ups also remain: Sequence Order, edit/delete/
+replace UI for memories, or a progress view per exercise. Also: the Phase 15–21
 commits are committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
