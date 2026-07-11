@@ -13,6 +13,19 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
+- **Phase 29 Module 1 (Family Portal Foundation) completed and committed
+  locally.** The **`web/`** app now serves **two role-based portals** from one
+  shared sign-in: **doctor/therapist users route to the clinical dashboard**, and
+  **family/caregiver users route to the family dashboard** (any other signed-in
+  role sees a clear "no web access" message; patients use the mobile app).
+  Implemented for family: family login support, linked patient card, recent
+  activity, games performance summary, memory album view, an **encouragement
+  placeholder** (no messaging endpoint exists yet), and a **family safety note**.
+  It **reuses existing backend APIs read-only** (`patients`, `games`,
+  `games/results`, `memories`, scoped to the family's linked patient).
+  **Backend, mobile, website, database, and migrations were untouched**, and the
+  **Doctor Portal remains working** unchanged. Safety wording stays supportive,
+  performance-only — **not a medical diagnosis and not a medical assessment**.
 - **Phase 28 (Doctor Portal Foundation) completed and committed locally.** The
   **`web/`** folder now contains the clinical **web dashboard foundation**
   (React + Vite + TypeScript) for doctors/therapists. Implemented: doctor login,
@@ -87,6 +100,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 25: NeuroBridge ecosystem roadmap (docs)
 - Phase 26: Landing Website foundation (`website/`; dependency-free static site)
 - Phase 28: Doctor Portal foundation (`web/`; React + Vite clinical dashboard)
+- Phase 29 Module 1: Family Portal foundation (`web/`; family/caregiver dashboard)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -135,8 +149,9 @@ states unchanged. **Next step: Phase 22B — Family / Doctor Progress Review.**
 
 ## 7. Next step
 
-**Phase 29 (Family Portal)** or **Phase 30 (Admin Dashboard)** per
-`docs/NEUROBRIDGE_ROADMAP.md`. The Doctor Portal foundation (Phase 28) and public
+**Phase 30 (Admin Dashboard)** or **Phase 32 (Reports)** per
+`docs/NEUROBRIDGE_ROADMAP.md`, depending on project priority. The Family Portal
+foundation (Phase 29 Module 1), Doctor Portal foundation (Phase 28), and public
 landing website (Phase 26) are done;
 the patient app remains feature-complete (5 playable exercises, Memory Album,
 Progress Analytics, 10 language directions) and visually polished. Remaining
