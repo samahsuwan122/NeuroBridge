@@ -13,18 +13,16 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 21C (Sequence Recall game) completed and committed locally. Added playable
-  `/games/play/sequence-order` — the game shows a growing tile sequence and asks
-  the user to repeat it. Results are saved as **game performance only** with
-  metrics `exercise_type`, `round_count`, `correct_count`, `mistake_count`,
-  `longest_sequence`, `accuracy_percent`. No diagnosis, disease prediction,
-  dementia score, Alzheimer score, medical interpretation, or treatment
-  recommendation. **Backend was untouched because `sequence_order` was already
-  seeded.** All five seeded exercises are now playable: Memory Match, Memory
-  Recall, Reaction Time, Attention Focus, Sequence Recall.
-- Latest local commit: `5e10081 feat(mobile): add Sequence Recall game`
-- Last pushed commit: `cd2029e` — the Phase 15/16/17/18/19/20/21 commits are **not
-  pushed yet** (`origin/main` is behind local `main`).
+- Phase 22A (Progress Analytics Dashboard) completed and committed locally.
+  Progress now shows **performance summary cards, latest activity, game
+  breakdown, and recent activity**. Analytics are calculated from existing result
+  data only. **No backend, API, database, game-result saving, or business logic
+  changes** were made. Progress analytics are **performance summaries only, not a
+  medical assessment**; no diagnosis, disease prediction, dementia score,
+  Alzheimer score, medical interpretation, or treatment recommendation.
+- Latest local commit: `9846f31 feat(mobile): add progress analytics dashboard`
+- Last pushed commit: `cd2029e` — the Phase 15–22 commits are **not pushed yet**
+  (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
 ## 3. Completed phases summary
@@ -59,6 +57,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 21A: Reaction Time playable game (mobile; backend already seeded)
 - Phase 21B: Attention Tap playable game (mobile; backend already seeded)
 - Phase 21C: Sequence Recall playable game (mobile; backend already seeded)
+- Phase 22A: Progress analytics dashboard (mobile; performance summaries only)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -71,17 +70,15 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. **Phase 21 — More playable games is complete and committed**
-(21A Reaction Time, 21B Attention Focus, 21C Sequence Recall). Step 21C added a
-playable `/games/play/sequence-order`: each round reveals a growing tile
-sequence, then the user repeats it (correct repeat → +1, a wrong tap ends the
-round as a mistake); after 5 rounds a correct/mistakes/longest/accuracy/rounds
-summary submits **game performance only** (`score` = correct sequences,
-`metrics: exercise_type/round_count/correct_count/mistake_count/longest_sequence/
-accuracy_percent`) via the existing games results API. Memory is never interpreted
-medically. **All five seeded exercises are now playable** (Memory Match, Memory
-Recall, Reaction Time, Attention Focus, Sequence Recall). **Next step: Progress
-Analytics and final demo preparation.**
+Phase 22 — Progress Analytics. **Step 22A (dashboard) is complete and committed.**
+Mobile-only, **no backend/API/result-logic changes** (analytics are pure
+client-side computations over existing results). The Progress screen is now a
+premium **performance analytics dashboard**: `ProgressAnalytics.from(results)`
+derives total exercises, completed count, best and average score %, latest
+activity, and a per-game breakdown; the UI shows summary cards, a Game breakdown
+section, and a Recent activity list. Everything is **performance-only** — no
+diagnosis, cognitive level, or normal/abnormal wording. Loading/empty/error
+states unchanged. **Next step: Phase 22B — Family / Doctor Progress Review.**
 
 ## 6. Phase 13 summary (done)
 
@@ -93,11 +90,9 @@ Analytics and final demo preparation.**
 
 ## 7. Next step
 
-Progress Analytics and final demo preparation — all five seeded games are now
-playable (Memory Match, Memory Recall, Reaction Time, Attention Focus, Sequence
-Recall). Optional follow-ups: edit/delete/replace UI for memories, or a
-per-exercise progress view. Also: the Phase 15–21 commits are committed locally
-but **not pushed** — push when ready.
+Phase 22B — Family / Doctor Progress Review. Optional follow-ups also remain:
+edit/delete/replace UI for memories, or charts/trends on the dashboard. Also: the
+Phase 15–22 commits are committed locally but **not pushed** — push when ready.
 
 ## 8. Medical safety rules
 
