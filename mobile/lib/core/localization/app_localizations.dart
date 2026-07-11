@@ -1,9 +1,16 @@
 import 'package:flutter/widgets.dart';
 
-/// Minimal, self-contained localization for English and Arabic.
-///
-/// Arabic ('ar') is a right-to-left language; Flutter applies RTL automatically
-/// via GlobalWidgetsLocalizations when the active locale is Arabic.
+/// A supported UI language (code + native display name).
+class AppLanguage {
+  const AppLanguage(this.code, this.name);
+  final String code;
+  final String name;
+}
+
+/// Self-contained localization for 10 languages. Only Arabic ('ar') is
+/// right-to-left; Flutter applies direction automatically via
+/// GlobalWidgetsLocalizations from the active locale. English is the fallback
+/// for any string not yet translated in a given language.
 class AppLocalizations {
   const AppLocalizations(this.locale);
 
@@ -16,7 +23,32 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations> delegate =
       _AppLocalizationsDelegate();
 
-  static const List<Locale> supportedLocales = [Locale('en'), Locale('ar')];
+  /// The supported languages, in display order (native names).
+  static const List<AppLanguage> supportedLanguages = [
+    AppLanguage('ar', 'العربية'),
+    AppLanguage('en', 'English'),
+    AppLanguage('fr', 'Français'),
+    AppLanguage('es', 'Español'),
+    AppLanguage('de', 'Deutsch'),
+    AppLanguage('tr', 'Türkçe'),
+    AppLanguage('pt', 'Português'),
+    AppLanguage('it', 'Italiano'),
+    AppLanguage('hi', 'हिन्दी'),
+    AppLanguage('id', 'Bahasa Indonesia'),
+  ];
+
+  static const List<Locale> supportedLocales = [
+    Locale('ar'),
+    Locale('en'),
+    Locale('fr'),
+    Locale('es'),
+    Locale('de'),
+    Locale('tr'),
+    Locale('pt'),
+    Locale('it'),
+    Locale('hi'),
+    Locale('id'),
+  ];
 
   static const Map<String, Map<String, String>> _values = {
     'en': {
@@ -37,6 +69,7 @@ class AppLocalizations {
       'rolesLabel': 'Roles',
       'fieldRequired': 'This field is required.',
       'languageToggle': 'العربية',
+      'language': 'Language',
       // Dashboard cards
       'todayTherapy': "Today's Therapy",
       'todayTherapyDesc': 'Your therapy activities for today.',
@@ -255,6 +288,7 @@ class AppLocalizations {
       'rolesLabel': 'الأدوار',
       'fieldRequired': 'هذا الحقل مطلوب.',
       'languageToggle': 'English',
+      'language': 'اللغة',
       // Dashboard cards
       'todayTherapy': 'جلسة اليوم',
       'todayTherapyDesc': 'أنشطة العلاج الخاصة بك اليوم.',
@@ -447,6 +481,552 @@ class AppLocalizations {
       'longestSequence': 'الأطول',
       'sequenceComplete': 'اكتمل التمرين',
     },
+    // Curated translations for the main screens; any key not present here
+    // falls back to English via _t().
+    'fr': {
+      'loginTitle': 'Se connecter',
+      'emailOrPhone': 'E-mail ou téléphone',
+      'password': 'Mot de passe',
+      'loginButton': 'Se connecter',
+      'loginSubtitle': 'Relier la mémoire. Connecter les vies.',
+      'homeTitle': 'Accueil',
+      'welcome': 'Bienvenue',
+      'logoutButton': 'Se déconnecter',
+      'todayTherapy': 'Thérapie du jour',
+      'cognitiveGames': 'Jeux cognitifs',
+      'gamesTitle': 'Jeux cognitifs',
+      'progress': 'Progrès',
+      'reminders': 'Rappels',
+      'myProfile': 'Mon profil',
+      'familySupport': 'Soutien familial',
+      'memoryAlbum': 'Album de souvenirs',
+      'activities': 'Activités',
+      'comingSoon': 'Bientôt disponible',
+      'patientSummary': 'Résumé du patient',
+      'retry': 'Réessayer',
+      'cancel': 'Annuler',
+      'play': 'Jouer',
+      'playAgain': 'Rejouer',
+      'notProvided': 'Non fourni',
+      'difficulty': 'Difficulté',
+      'instructions': 'Instructions',
+      'minutes': 'min',
+      'gameDetails': 'Détails du jeu',
+      'addMemory': 'Ajouter un souvenir',
+      'saveMemory': 'Enregistrer le souvenir',
+      'memoryDetails': 'Détails du souvenir',
+      'chooseImage': 'Choisir une image',
+      'imageAttached': 'Image jointe',
+      'noMemoriesYet': "Aucun souvenir pour l'instant.",
+      'performanceSummary': 'Résumé des performances',
+      'totalExercises': 'Total des exercices',
+      'completedExercises': 'Terminés',
+      'bestPerformance': 'Meilleur',
+      'averagePerformance': 'Moyenne',
+      'latestActivity': 'Dernière activité',
+      'gameBreakdown': 'Détail par jeu',
+      'recentActivity': 'Activité récente',
+      'noProgressYet':
+          'Pas encore de résultats. Jouez à un jeu pour voir vos progrès ici.',
+      'basicInformation': 'Informations de base',
+      'careSafetyInformation': 'Informations de soin et de sécurité',
+      'allergies': 'Allergies',
+      'currentMedications': 'Médicaments actuels',
+      'bloodType': 'Groupe sanguin',
+      'fullName': 'Nom complet',
+      'email': 'E-mail',
+      'phone': 'Téléphone',
+      'language': 'Langue',
+      'startMemoryRecall': 'Commencer',
+      'careSafetyNote':
+          "Ce sont uniquement des informations de soin et de sécurité, pas un diagnostic médical.",
+      'memoryAlbumNote':
+          'Les souvenirs servent uniquement au lien familial et à des activités de rappel bienveillantes.',
+      'progressAnalyticsNote':
+          "Résumés de performance des exercices uniquement, pas une évaluation médicale.",
+      'reactionTimeNote':
+          "Cette activité mesure uniquement la performance de jeu et n'est pas une évaluation médicale.",
+      'attentionTapNote':
+          "Cette activité mesure uniquement la performance de jeu et n'est pas une évaluation médicale.",
+      'sequenceRecallNote':
+          "Cette activité mesure uniquement la performance de jeu et n'est pas une évaluation médicale.",
+    },
+    'es': {
+      'loginTitle': 'Iniciar sesión',
+      'emailOrPhone': 'Correo o teléfono',
+      'password': 'Contraseña',
+      'loginButton': 'Iniciar sesión',
+      'loginSubtitle': 'Unir la memoria. Conectar vidas.',
+      'homeTitle': 'Inicio',
+      'welcome': 'Bienvenido',
+      'logoutButton': 'Cerrar sesión',
+      'todayTherapy': 'Terapia de hoy',
+      'cognitiveGames': 'Juegos cognitivos',
+      'gamesTitle': 'Juegos cognitivos',
+      'progress': 'Progreso',
+      'reminders': 'Recordatorios',
+      'myProfile': 'Mi perfil',
+      'familySupport': 'Apoyo familiar',
+      'memoryAlbum': 'Álbum de recuerdos',
+      'activities': 'Actividades',
+      'comingSoon': 'Próximamente',
+      'patientSummary': 'Resumen del paciente',
+      'retry': 'Reintentar',
+      'cancel': 'Cancelar',
+      'play': 'Jugar',
+      'playAgain': 'Jugar de nuevo',
+      'notProvided': 'No proporcionado',
+      'difficulty': 'Dificultad',
+      'instructions': 'Instrucciones',
+      'minutes': 'min',
+      'gameDetails': 'Detalles del juego',
+      'addMemory': 'Añadir recuerdo',
+      'saveMemory': 'Guardar recuerdo',
+      'memoryDetails': 'Detalles del recuerdo',
+      'chooseImage': 'Elegir imagen',
+      'imageAttached': 'Imagen adjunta',
+      'noMemoriesYet': 'Aún no hay recuerdos.',
+      'performanceSummary': 'Resumen de rendimiento',
+      'totalExercises': 'Ejercicios totales',
+      'completedExercises': 'Completados',
+      'bestPerformance': 'Mejor',
+      'averagePerformance': 'Promedio',
+      'latestActivity': 'Última actividad',
+      'gameBreakdown': 'Desglose por juego',
+      'recentActivity': 'Actividad reciente',
+      'noProgressYet':
+          'Aún no hay resultados. Juega para ver tu progreso aquí.',
+      'basicInformation': 'Información básica',
+      'careSafetyInformation': 'Información de cuidado y seguridad',
+      'allergies': 'Alergias',
+      'currentMedications': 'Medicamentos actuales',
+      'bloodType': 'Grupo sanguíneo',
+      'fullName': 'Nombre completo',
+      'email': 'Correo electrónico',
+      'phone': 'Teléfono',
+      'language': 'Idioma',
+      'startMemoryRecall': 'Comenzar',
+      'careSafetyNote':
+          'Solo son datos de cuidado y seguridad, no un diagnóstico médico.',
+      'memoryAlbumNote':
+          'Los recuerdos son solo para la conexión familiar y actividades de recuerdo de apoyo.',
+      'progressAnalyticsNote':
+          'Solo resúmenes de rendimiento de los ejercicios, no una evaluación médica.',
+      'reactionTimeNote':
+          'Esta actividad mide solo el rendimiento del juego y no es una evaluación médica.',
+      'attentionTapNote':
+          'Esta actividad mide solo el rendimiento del juego y no es una evaluación médica.',
+      'sequenceRecallNote':
+          'Esta actividad mide solo el rendimiento del juego y no es una evaluación médica.',
+    },
+    'de': {
+      'loginTitle': 'Anmelden',
+      'emailOrPhone': 'E-Mail oder Telefon',
+      'password': 'Passwort',
+      'loginButton': 'Anmelden',
+      'loginSubtitle': 'Erinnerung verbinden. Leben verbinden.',
+      'homeTitle': 'Startseite',
+      'welcome': 'Willkommen',
+      'logoutButton': 'Abmelden',
+      'todayTherapy': 'Heutige Therapie',
+      'cognitiveGames': 'Kognitive Spiele',
+      'gamesTitle': 'Kognitive Spiele',
+      'progress': 'Fortschritt',
+      'reminders': 'Erinnerungen',
+      'myProfile': 'Mein Profil',
+      'familySupport': 'Familienunterstützung',
+      'memoryAlbum': 'Erinnerungsalbum',
+      'activities': 'Aktivitäten',
+      'comingSoon': 'Demnächst',
+      'patientSummary': 'Patientenübersicht',
+      'retry': 'Erneut versuchen',
+      'cancel': 'Abbrechen',
+      'play': 'Spielen',
+      'playAgain': 'Nochmal spielen',
+      'notProvided': 'Nicht angegeben',
+      'difficulty': 'Schwierigkeit',
+      'instructions': 'Anweisungen',
+      'minutes': 'Min.',
+      'gameDetails': 'Spieldetails',
+      'addMemory': 'Erinnerung hinzufügen',
+      'saveMemory': 'Erinnerung speichern',
+      'memoryDetails': 'Erinnerungsdetails',
+      'chooseImage': 'Bild auswählen',
+      'imageAttached': 'Bild angehängt',
+      'noMemoriesYet': 'Noch keine Erinnerungen.',
+      'performanceSummary': 'Leistungsübersicht',
+      'totalExercises': 'Übungen insgesamt',
+      'completedExercises': 'Abgeschlossen',
+      'bestPerformance': 'Beste',
+      'averagePerformance': 'Durchschnitt',
+      'latestActivity': 'Letzte Aktivität',
+      'gameBreakdown': 'Aufschlüsselung nach Spiel',
+      'recentActivity': 'Letzte Aktivitäten',
+      'noProgressYet':
+          'Noch keine Ergebnisse. Spiele ein Spiel, um deinen Fortschritt hier zu sehen.',
+      'basicInformation': 'Grundinformationen',
+      'careSafetyInformation': 'Pflege- und Sicherheitsinformationen',
+      'allergies': 'Allergien',
+      'currentMedications': 'Aktuelle Medikamente',
+      'bloodType': 'Blutgruppe',
+      'fullName': 'Vollständiger Name',
+      'email': 'E-Mail',
+      'phone': 'Telefon',
+      'language': 'Sprache',
+      'startMemoryRecall': 'Starten',
+      'careSafetyNote':
+          'Dies sind nur Pflege- und Sicherheitsangaben, keine medizinische Diagnose.',
+      'memoryAlbumNote':
+          'Erinnerungen dienen nur der familiären Verbindung und unterstützenden Erinnerungsaktivitäten.',
+      'progressAnalyticsNote':
+          'Nur Leistungsübersichten der Übungen, keine medizinische Beurteilung.',
+      'reactionTimeNote':
+          'Diese Aktivität misst nur die Spielleistung und ist keine medizinische Beurteilung.',
+      'attentionTapNote':
+          'Diese Aktivität misst nur die Spielleistung und ist keine medizinische Beurteilung.',
+      'sequenceRecallNote':
+          'Diese Aktivität misst nur die Spielleistung und ist keine medizinische Beurteilung.',
+    },
+    'tr': {
+      'loginTitle': 'Giriş yap',
+      'emailOrPhone': 'E-posta veya telefon',
+      'password': 'Şifre',
+      'loginButton': 'Giriş yap',
+      'loginSubtitle': 'Belleği köprüle. Hayatları bağla.',
+      'homeTitle': 'Ana sayfa',
+      'welcome': 'Hoş geldiniz',
+      'logoutButton': 'Çıkış yap',
+      'todayTherapy': 'Bugünkü terapi',
+      'cognitiveGames': 'Bilişsel oyunlar',
+      'gamesTitle': 'Bilişsel oyunlar',
+      'progress': 'İlerleme',
+      'reminders': 'Hatırlatıcılar',
+      'myProfile': 'Profilim',
+      'familySupport': 'Aile desteği',
+      'memoryAlbum': 'Anı albümü',
+      'activities': 'Etkinlikler',
+      'comingSoon': 'Yakında',
+      'patientSummary': 'Hasta özeti',
+      'retry': 'Yeniden dene',
+      'cancel': 'İptal',
+      'play': 'Oyna',
+      'playAgain': 'Tekrar oyna',
+      'notProvided': 'Belirtilmemiş',
+      'difficulty': 'Zorluk',
+      'instructions': 'Talimatlar',
+      'minutes': 'dk',
+      'gameDetails': 'Oyun ayrıntıları',
+      'addMemory': 'Anı ekle',
+      'saveMemory': 'Anıyı kaydet',
+      'memoryDetails': 'Anı ayrıntıları',
+      'chooseImage': 'Görsel seç',
+      'imageAttached': 'Görsel eklendi',
+      'noMemoriesYet': 'Henüz anı yok.',
+      'performanceSummary': 'Performans özeti',
+      'totalExercises': 'Toplam egzersiz',
+      'completedExercises': 'Tamamlanan',
+      'bestPerformance': 'En iyi',
+      'averagePerformance': 'Ortalama',
+      'latestActivity': 'Son etkinlik',
+      'gameBreakdown': 'Oyun dökümü',
+      'recentActivity': 'Son etkinlikler',
+      'noProgressYet':
+          'Henüz sonuç yok. İlerlemenizi burada görmek için bir oyun oynayın.',
+      'basicInformation': 'Temel bilgiler',
+      'careSafetyInformation': 'Bakım ve güvenlik bilgileri',
+      'allergies': 'Alerjiler',
+      'currentMedications': 'Mevcut ilaçlar',
+      'bloodType': 'Kan grubu',
+      'fullName': 'Ad soyad',
+      'email': 'E-posta',
+      'phone': 'Telefon',
+      'language': 'Dil',
+      'startMemoryRecall': 'Başla',
+      'careSafetyNote':
+          'Bunlar yalnızca bakım ve güvenlik bilgileridir, tıbbi teşhis değildir.',
+      'memoryAlbumNote':
+          'Anılar yalnızca aile bağı ve destekleyici hatırlama etkinlikleri içindir.',
+      'progressAnalyticsNote':
+          'Yalnızca egzersiz performans özetleri, tıbbi değerlendirme değildir.',
+      'reactionTimeNote':
+          'Bu etkinlik yalnızca oyun performansını ölçer ve tıbbi bir değerlendirme değildir.',
+      'attentionTapNote':
+          'Bu etkinlik yalnızca oyun performansını ölçer ve tıbbi bir değerlendirme değildir.',
+      'sequenceRecallNote':
+          'Bu etkinlik yalnızca oyun performansını ölçer ve tıbbi bir değerlendirme değildir.',
+    },
+    'pt': {
+      'loginTitle': 'Entrar',
+      'emailOrPhone': 'E-mail ou telefone',
+      'password': 'Senha',
+      'loginButton': 'Entrar',
+      'loginSubtitle': 'Unindo a memória. Conectando vidas.',
+      'homeTitle': 'Início',
+      'welcome': 'Bem-vindo',
+      'logoutButton': 'Sair',
+      'todayTherapy': 'Terapia de hoje',
+      'cognitiveGames': 'Jogos cognitivos',
+      'gamesTitle': 'Jogos cognitivos',
+      'progress': 'Progresso',
+      'reminders': 'Lembretes',
+      'myProfile': 'Meu perfil',
+      'familySupport': 'Apoio familiar',
+      'memoryAlbum': 'Álbum de memórias',
+      'activities': 'Atividades',
+      'comingSoon': 'Em breve',
+      'patientSummary': 'Resumo do paciente',
+      'retry': 'Tentar novamente',
+      'cancel': 'Cancelar',
+      'play': 'Jogar',
+      'playAgain': 'Jogar novamente',
+      'notProvided': 'Não informado',
+      'difficulty': 'Dificuldade',
+      'instructions': 'Instruções',
+      'minutes': 'min',
+      'gameDetails': 'Detalhes do jogo',
+      'addMemory': 'Adicionar memória',
+      'saveMemory': 'Salvar memória',
+      'memoryDetails': 'Detalhes da memória',
+      'chooseImage': 'Escolher imagem',
+      'imageAttached': 'Imagem anexada',
+      'noMemoriesYet': 'Ainda não há memórias.',
+      'performanceSummary': 'Resumo de desempenho',
+      'totalExercises': 'Total de exercícios',
+      'completedExercises': 'Concluídos',
+      'bestPerformance': 'Melhor',
+      'averagePerformance': 'Média',
+      'latestActivity': 'Última atividade',
+      'gameBreakdown': 'Detalhamento por jogo',
+      'recentActivity': 'Atividade recente',
+      'noProgressYet':
+          'Ainda não há resultados. Jogue para ver seu progresso aqui.',
+      'basicInformation': 'Informações básicas',
+      'careSafetyInformation': 'Informações de cuidado e segurança',
+      'allergies': 'Alergias',
+      'currentMedications': 'Medicamentos atuais',
+      'bloodType': 'Tipo sanguíneo',
+      'fullName': 'Nome completo',
+      'email': 'E-mail',
+      'phone': 'Telefone',
+      'language': 'Idioma',
+      'startMemoryRecall': 'Começar',
+      'careSafetyNote':
+          'São apenas informações de cuidado e segurança, não um diagnóstico médico.',
+      'memoryAlbumNote':
+          'As memórias servem apenas para a conexão familiar e atividades de recordação de apoio.',
+      'progressAnalyticsNote':
+          'Apenas resumos de desempenho dos exercícios, não uma avaliação médica.',
+      'reactionTimeNote':
+          'Esta atividade mede apenas o desempenho do jogo e não é uma avaliação médica.',
+      'attentionTapNote':
+          'Esta atividade mede apenas o desempenho do jogo e não é uma avaliação médica.',
+      'sequenceRecallNote':
+          'Esta atividade mede apenas o desempenho do jogo e não é uma avaliação médica.',
+    },
+    'it': {
+      'loginTitle': 'Accedi',
+      'emailOrPhone': 'Email o telefono',
+      'password': 'Password',
+      'loginButton': 'Accedi',
+      'loginSubtitle': 'Unire la memoria. Collegare le vite.',
+      'homeTitle': 'Home',
+      'welcome': 'Benvenuto',
+      'logoutButton': 'Esci',
+      'todayTherapy': 'Terapia di oggi',
+      'cognitiveGames': 'Giochi cognitivi',
+      'gamesTitle': 'Giochi cognitivi',
+      'progress': 'Progressi',
+      'reminders': 'Promemoria',
+      'myProfile': 'Il mio profilo',
+      'familySupport': 'Supporto familiare',
+      'memoryAlbum': 'Album dei ricordi',
+      'activities': 'Attività',
+      'comingSoon': 'Prossimamente',
+      'patientSummary': 'Riepilogo del paziente',
+      'retry': 'Riprova',
+      'cancel': 'Annulla',
+      'play': 'Gioca',
+      'playAgain': 'Gioca di nuovo',
+      'notProvided': 'Non fornito',
+      'difficulty': 'Difficoltà',
+      'instructions': 'Istruzioni',
+      'minutes': 'min',
+      'gameDetails': 'Dettagli del gioco',
+      'addMemory': 'Aggiungi ricordo',
+      'saveMemory': 'Salva ricordo',
+      'memoryDetails': 'Dettagli del ricordo',
+      'chooseImage': 'Scegli immagine',
+      'imageAttached': 'Immagine allegata',
+      'noMemoriesYet': 'Ancora nessun ricordo.',
+      'performanceSummary': 'Riepilogo delle prestazioni',
+      'totalExercises': 'Esercizi totali',
+      'completedExercises': 'Completati',
+      'bestPerformance': 'Migliore',
+      'averagePerformance': 'Media',
+      'latestActivity': 'Ultima attività',
+      'gameBreakdown': 'Dettaglio per gioco',
+      'recentActivity': 'Attività recente',
+      'noProgressYet':
+          'Ancora nessun risultato. Gioca per vedere qui i tuoi progressi.',
+      'basicInformation': 'Informazioni di base',
+      'careSafetyInformation': 'Informazioni di cura e sicurezza',
+      'allergies': 'Allergie',
+      'currentMedications': 'Farmaci attuali',
+      'bloodType': 'Gruppo sanguigno',
+      'fullName': 'Nome completo',
+      'email': 'Email',
+      'phone': 'Telefono',
+      'language': 'Lingua',
+      'startMemoryRecall': 'Inizia',
+      'careSafetyNote':
+          'Sono solo informazioni di cura e sicurezza, non una diagnosi medica.',
+      'memoryAlbumNote':
+          'I ricordi servono solo al legame familiare e ad attività di richiamo di supporto.',
+      'progressAnalyticsNote':
+          'Solo riepiloghi delle prestazioni degli esercizi, non una valutazione medica.',
+      'reactionTimeNote':
+          'Questa attività misura solo le prestazioni di gioco e non è una valutazione medica.',
+      'attentionTapNote':
+          'Questa attività misura solo le prestazioni di gioco e non è una valutazione medica.',
+      'sequenceRecallNote':
+          'Questa attività misura solo le prestazioni di gioco e non è una valutazione medica.',
+    },
+    'hi': {
+      'loginTitle': 'साइन इन करें',
+      'emailOrPhone': 'ईमेल या फ़ोन',
+      'password': 'पासवर्ड',
+      'loginButton': 'साइन इन करें',
+      'loginSubtitle': 'स्मृति को जोड़ना। जीवन को जोड़ना।',
+      'homeTitle': 'होम',
+      'welcome': 'स्वागत है',
+      'logoutButton': 'लॉग आउट',
+      'todayTherapy': 'आज की थेरेपी',
+      'cognitiveGames': 'संज्ञानात्मक खेल',
+      'gamesTitle': 'संज्ञानात्मक खेल',
+      'progress': 'प्रगति',
+      'reminders': 'अनुस्मारक',
+      'myProfile': 'मेरी प्रोफ़ाइल',
+      'familySupport': 'पारिवारिक सहायता',
+      'memoryAlbum': 'स्मृति एल्बम',
+      'activities': 'गतिविधियाँ',
+      'comingSoon': 'जल्द आ रहा है',
+      'patientSummary': 'रोगी सारांश',
+      'retry': 'पुनः प्रयास करें',
+      'cancel': 'रद्द करें',
+      'play': 'खेलें',
+      'playAgain': 'फिर से खेलें',
+      'notProvided': 'उपलब्ध नहीं',
+      'difficulty': 'कठिनाई',
+      'instructions': 'निर्देश',
+      'minutes': 'मिनट',
+      'gameDetails': 'खेल विवरण',
+      'addMemory': 'स्मृति जोड़ें',
+      'saveMemory': 'स्मृति सहेजें',
+      'memoryDetails': 'स्मृति विवरण',
+      'chooseImage': 'छवि चुनें',
+      'imageAttached': 'छवि संलग्न',
+      'noMemoriesYet': 'अभी तक कोई स्मृति नहीं।',
+      'performanceSummary': 'प्रदर्शन सारांश',
+      'totalExercises': 'कुल अभ्यास',
+      'completedExercises': 'पूर्ण',
+      'bestPerformance': 'सर्वश्रेष्ठ',
+      'averagePerformance': 'औसत',
+      'latestActivity': 'नवीनतम गतिविधि',
+      'gameBreakdown': 'खेल विश्लेषण',
+      'recentActivity': 'हाल की गतिविधि',
+      'noProgressYet':
+          'अभी तक कोई परिणाम नहीं। अपनी प्रगति यहाँ देखने के लिए कोई खेल खेलें।',
+      'basicInformation': 'बुनियादी जानकारी',
+      'careSafetyInformation': 'देखभाल और सुरक्षा जानकारी',
+      'allergies': 'एलर्जी',
+      'currentMedications': 'वर्तमान दवाएँ',
+      'bloodType': 'रक्त समूह',
+      'fullName': 'पूरा नाम',
+      'email': 'ईमेल',
+      'phone': 'फ़ोन',
+      'language': 'भाषा',
+      'startMemoryRecall': 'शुरू करें',
+      'careSafetyNote':
+          'ये केवल देखभाल और सुरक्षा संबंधी जानकारी हैं, कोई चिकित्सीय निदान नहीं।',
+      'memoryAlbumNote':
+          'यादें केवल पारिवारिक जुड़ाव और सहायक स्मरण गतिविधियों के लिए हैं।',
+      'progressAnalyticsNote':
+          'केवल अभ्यास प्रदर्शन का सारांश, कोई चिकित्सीय मूल्यांकन नहीं।',
+      'reactionTimeNote':
+          'यह गतिविधि केवल खेल प्रदर्शन मापती है और यह कोई चिकित्सीय मूल्यांकन नहीं है।',
+      'attentionTapNote':
+          'यह गतिविधि केवल खेल प्रदर्शन मापती है और यह कोई चिकित्सीय मूल्यांकन नहीं है।',
+      'sequenceRecallNote':
+          'यह गतिविधि केवल खेल प्रदर्शन मापती है और यह कोई चिकित्सीय मूल्यांकन नहीं है।',
+    },
+    'id': {
+      'loginTitle': 'Masuk',
+      'emailOrPhone': 'Email atau telepon',
+      'password': 'Kata sandi',
+      'loginButton': 'Masuk',
+      'loginSubtitle': 'Menjembatani ingatan. Menghubungkan kehidupan.',
+      'homeTitle': 'Beranda',
+      'welcome': 'Selamat datang',
+      'logoutButton': 'Keluar',
+      'todayTherapy': 'Terapi hari ini',
+      'cognitiveGames': 'Permainan kognitif',
+      'gamesTitle': 'Permainan kognitif',
+      'progress': 'Kemajuan',
+      'reminders': 'Pengingat',
+      'myProfile': 'Profil saya',
+      'familySupport': 'Dukungan keluarga',
+      'memoryAlbum': 'Album kenangan',
+      'activities': 'Aktivitas',
+      'comingSoon': 'Segera hadir',
+      'patientSummary': 'Ringkasan pasien',
+      'retry': 'Coba lagi',
+      'cancel': 'Batal',
+      'play': 'Main',
+      'playAgain': 'Main lagi',
+      'notProvided': 'Tidak tersedia',
+      'difficulty': 'Tingkat kesulitan',
+      'instructions': 'Petunjuk',
+      'minutes': 'mnt',
+      'gameDetails': 'Detail permainan',
+      'addMemory': 'Tambah kenangan',
+      'saveMemory': 'Simpan kenangan',
+      'memoryDetails': 'Detail kenangan',
+      'chooseImage': 'Pilih gambar',
+      'imageAttached': 'Gambar terlampir',
+      'noMemoriesYet': 'Belum ada kenangan.',
+      'performanceSummary': 'Ringkasan performa',
+      'totalExercises': 'Total latihan',
+      'completedExercises': 'Selesai',
+      'bestPerformance': 'Terbaik',
+      'averagePerformance': 'Rata-rata',
+      'latestActivity': 'Aktivitas terbaru',
+      'gameBreakdown': 'Rincian permainan',
+      'recentActivity': 'Aktivitas terkini',
+      'noProgressYet':
+          'Belum ada hasil. Mainkan permainan untuk melihat kemajuan Anda di sini.',
+      'basicInformation': 'Informasi dasar',
+      'careSafetyInformation': 'Informasi perawatan dan keselamatan',
+      'allergies': 'Alergi',
+      'currentMedications': 'Obat saat ini',
+      'bloodType': 'Golongan darah',
+      'fullName': 'Nama lengkap',
+      'email': 'Email',
+      'phone': 'Telepon',
+      'language': 'Bahasa',
+      'startMemoryRecall': 'Mulai',
+      'careSafetyNote':
+          'Ini hanya informasi perawatan dan keselamatan, bukan diagnosis medis.',
+      'memoryAlbumNote':
+          'Kenangan hanya untuk hubungan keluarga dan aktivitas mengingat yang mendukung.',
+      'progressAnalyticsNote':
+          'Hanya ringkasan performa latihan, bukan penilaian medis.',
+      'reactionTimeNote':
+          'Aktivitas ini hanya mengukur performa permainan dan bukan penilaian medis.',
+      'attentionTapNote':
+          'Aktivitas ini hanya mengukur performa permainan dan bukan penilaian medis.',
+      'sequenceRecallNote':
+          'Aktivitas ini hanya mengukur performa permainan dan bukan penilaian medis.',
+    },
   };
 
   String _t(String key) =>
@@ -469,6 +1049,7 @@ class AppLocalizations {
   String get rolesLabel => _t('rolesLabel');
   String get fieldRequired => _t('fieldRequired');
   String get languageToggle => _t('languageToggle');
+  String get language => _t('language');
 
   String get todayTherapy => _t('todayTherapy');
   String get todayTherapyDesc => _t('todayTherapyDesc');
@@ -664,8 +1245,9 @@ class _AppLocalizationsDelegate
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) =>
-      const ['en', 'ar'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => const [
+        'ar', 'en', 'fr', 'es', 'de', 'tr', 'pt', 'it', 'hi', 'id',
+      ].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) async =>

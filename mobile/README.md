@@ -213,7 +213,7 @@ Android emulator → `10.0.2.2:8000`). Override with
 - Reminders
 - Progress
 - Notifications
-- Arabic / English language switch
+- Multi-language switch (10 languages)
 
 ## Family / caregiver features (planned)
 
@@ -248,11 +248,30 @@ All changes are **styling/layout only** — no behavior, navigation, API, or gam
 
 ## Localization & accessibility
 
-- **Arabic 🇸🇦 and English 🇬🇧** are both supported (see `core/localization/app_localizations.dart`).
-- **Right-to-left (RTL)** layout is applied automatically for Arabic via `GlobalWidgetsLocalizations`.
-  A language toggle in the app bar switches between English and Arabic at runtime.
+Localization is part of NeuroBridge's global accessibility/readiness. **10 languages** are supported
+(see `core/localization/app_localizations.dart`):
+
+| Code | Language | Direction |
+| --- | --- | --- |
+| `ar` | العربية (Arabic) | **RTL** |
+| `en` | English | LTR |
+| `fr` | Français | LTR |
+| `es` | Español | LTR |
+| `de` | Deutsch | LTR |
+| `tr` | Türkçe | LTR |
+| `pt` | Português | LTR |
+| `it` | Italiano | LTR |
+| `hi` | हिन्दी (Hindi) | LTR |
+| `id` | Bahasa Indonesia | LTR |
+
+- **Arabic uses right-to-left (RTL)**; English, French, Spanish, German, Turkish, Portuguese,
+  Italian, Hindi, and Indonesian use **left-to-right (LTR)**. Direction is applied automatically from
+  the active locale via `GlobalWidgetsLocalizations`.
+- A **language picker** in the app bar (`LanguageButton`, a bottom sheet listing all 10 native names)
+  switches language at runtime. English is the fallback for any string not yet translated in a given
+  language.
 - The patient experience is designed to be **elderly-friendly**: large buttons, simple labels,
-  high contrast, simple navigation, and minimal on-screen clutter (expanded in later phases).
+  high contrast, simple navigation, and minimal on-screen clutter.
 
 ## Safety reminder
 
