@@ -119,6 +119,26 @@ export function SafetyNote({ compact = false }: { compact?: boolean }) {
   );
 }
 
+// ---- Family safety note (family boundary) ----------------------------------
+export function FamilySafetyNote() {
+  return (
+    <div className="safety">
+      <span className="safety__mark" aria-hidden="true">
+        ♥
+      </span>
+      <p>
+        <strong>Supportive view only.</strong> This is a{" "}
+        <strong>supportive progress view</strong> showing{" "}
+        <strong>activity performance only</strong> and{" "}
+        <strong>care and safety information only</strong>. It is{" "}
+        <strong>not a medical diagnosis and not a medical assessment</strong>.
+        For any medical concerns, please{" "}
+        <strong>contact the care team</strong>.
+      </p>
+    </div>
+  );
+}
+
 // ---- States ----------------------------------------------------------------
 export function Spinner({ label = "Loading…" }: { label?: string }) {
   return (

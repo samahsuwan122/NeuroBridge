@@ -677,6 +677,31 @@ a {
   padding-top: 0.7rem;
 }
 
+/* Family encouragement placeholder (disabled — no backend endpoint yet) */
+.encourage__input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--gold-soft);
+  background: rgba(255, 255, 255, 0.6);
+  font: inherit;
+  color: var(--muted);
+  resize: vertical;
+  margin-bottom: 0.7rem;
+}
+.encourage__row {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+.encourage__row .ai-placeholder__note {
+  border-top: 0;
+  padding-top: 0;
+  flex: 1;
+  min-width: 220px;
+}
+
 /* ---------- Care grid ---------- */
 .care-grid {
   display: grid;

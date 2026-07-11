@@ -15,20 +15,38 @@ roles.
 > [`../mobile/README.md`](../mobile/README.md). This folder is also separate from
 > the public marketing site in [`../website/`](../website/).
 
-## Current state — Phase 28: Doctor Portal foundation
+## Current state
 
-The **Doctor Portal** foundation is implemented as a read-only, non-diagnostic
-clinical view for doctors and therapists:
+The web app serves **two role-based portals** from one shared sign-in. After
+login, role-based routing picks the portal: doctors/therapists → clinical
+dashboard; families/caregivers → family dashboard; any other signed-in role → a
+clear "no web access" message (patients use the mobile app).
 
-- **Login** — sign in with a doctor/therapist account (clinical-only gate).
+### Phase 28 — Doctor Portal foundation
+
+A read-only, non-diagnostic clinical view for doctors and therapists:
+
 - **Dashboard overview** — assigned-patient count, recorded sessions, completion
   rate, recent activity.
 - **Patients list** — assigned patients only (role-scoped), with search.
 - **Patient detail** — progress summary, sessions, per-exercise performance,
   memory album review, an AI-summary placeholder, and care details.
 
-Charts are lightweight CSS bars (no chart dependency). The AI section is a
-**clearly-labeled placeholder** — no AI backend endpoint exists yet.
+### Phase 29 (Module 1) — Family Portal foundation
+
+A read-only, supportive view for families/caregivers of their linked patient:
+
+- **Family dashboard** — linked patient card, activity summary, recent sessions,
+  games performance, and memory album view.
+- **Encouragement** — a clearly-labeled placeholder (no messaging endpoint
+  exists yet).
+- **Family safety note** — supportive view only, activity performance only, not
+  a medical diagnosis and not a medical assessment; contact the care team for
+  medical concerns.
+
+Charts are lightweight CSS bars (no chart dependency). All AI/encouragement
+sections are **clearly-labeled placeholders** — no such backend endpoints exist
+yet.
 
 ## Stack
 
@@ -61,10 +79,11 @@ Configure the API base URL with `web/.env` if the backend is not on
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-### Demo clinician (local dev only)
+### Demo accounts (local dev only)
 
-- Email: `doctor.demo@neurobridge.local`
-- Password: `Demo12345!`
+- Clinician: `doctor.demo@neurobridge.local` (or `therapist.demo@…`)
+- Family: `family.demo@neurobridge.local`
+- Password (all): `Demo12345!`
 
 (Seed with `python -m app.scripts.seed_demo_data` in the backend.)
 
@@ -80,12 +99,14 @@ npm run preview    # preview the production build
 ## Backend APIs reused (read-only)
 
 - `POST /api/v1/auth/login`, `GET /api/v1/auth/me`, `POST /api/v1/auth/logout`
-- `GET /api/v1/patients`, `GET /api/v1/patients/{id}` (doctor/therapist see
-  assigned patients only)
-- `GET /api/v1/games`, `GET /api/v1/games/results?patient_profile_id=`
-- `GET /api/v1/memories`
+- `GET /api/v1/patients`, `GET /api/v1/patients/{id}` — role-scoped: doctors/
+  therapists see assigned patients; families see their linked patient(s).
+- `GET /api/v1/games`, `GET /api/v1/games/results?patient_profile_id=` —
+  results are role-scoped the same way.
+- `GET /api/v1/memories` — role-scoped (families see their linked patient's).
 
-No backend endpoints were added or changed for this foundation.
+Both the Doctor and Family portals reuse the same read-only endpoints; the
+backend enforces role scoping. No backend endpoints were added or changed.
 
 ## Planned features (later phases)
 

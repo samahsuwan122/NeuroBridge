@@ -25,6 +25,7 @@ interface AuthContextValue {
   roles: string[];
   loading: boolean;
   isClinician: boolean;
+  isFamily: boolean;
   login: (emailOrPhone: string, password: string) => Promise<string[]>;
   logout: () => void;
 }
@@ -81,10 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const isClinician = roles.includes("doctor") || roles.includes("therapist");
+  const isFamily = roles.includes("family");
 
   return (
     <AuthContext.Provider
-      value={{ user, roles, loading, isClinician, login, logout }}
+      value={{ user, roles, loading, isClinician, isFamily, login, logout }}
     >
       {children}
     </AuthContext.Provider>

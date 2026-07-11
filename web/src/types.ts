@@ -20,6 +20,16 @@ export interface Assignment {
   updated_at: string;
 }
 
+export interface FamilyLink {
+  id: string;
+  patient_profile_id: string;
+  family_user_id: string;
+  relationship?: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PatientProfile {
   id: string;
   user_id: string;
@@ -37,6 +47,7 @@ export interface PatientProfile {
   preferred_communication?: string | null;
   caregiver_notes?: string | null;
   assignments: Assignment[];
+  family_links?: FamilyLink[];
   created_at: string;
   updated_at: string;
 }

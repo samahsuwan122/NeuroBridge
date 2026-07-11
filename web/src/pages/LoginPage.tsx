@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { ApiError, setToken } from "../api/client";
+import { ApiError } from "../api/client";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -16,17 +16,10 @@ export function LoginPage() {
     setError(null);
     setBusy(true);
     try {
-      const roles = await login(emailOrPhone.trim(), password);
-      const isClinician = roles.includes("doctor") || roles.includes("therapist");
-      if (!isClinician) {
-        // Not a doctor/therapist — this portal is clinical only.
-        setToken(null);
-        setError(
-          "This portal is for doctors and therapists. Patients and families use the NeuroBridge mobile app.",
-        );
-        setBusy(false);
-        return;
-      }
+      // Both the clinical (doctor/therapist) and family portals share this
+      // sign-in. Role-based routing decides which dashboard to show; an
+      // unsupported role lands on a clear access message (see App routing).
+      await login(emailOrPhone.trim(), password);
       navigate("/", { replace: true });
     } catch (err) {
       const message =
@@ -51,14 +44,14 @@ export function LoginPage() {
             <strong>
               NeuroBridge
             </strong>
-            <span>Clinical Dashboard</span>
+            <span>Care Team &amp; Family Portal</span>
           </div>
         </div>
-        <h1>Doctor &amp; therapist sign in</h1>
+        <h1>Sign in</h1>
         <p className="login__lead">
-          Review assigned patients, cognitive exercise performance, memory album
-          entries, and AI-assisted summaries — a supportive, non-diagnostic
-          clinical view.
+          For the care team and families. Doctors and therapists open the
+          clinical dashboard; families open a supportive view of their linked
+          patient&apos;s journey — a non-diagnostic, performance-only experience.
         </p>
 
         <form className="login__form" onSubmit={onSubmit}>
@@ -69,7 +62,7 @@ export function LoginPage() {
               autoComplete="username"
               value={emailOrPhone}
               onChange={(e) => setEmailOrPhone(e.target.value)}
-              placeholder="doctor.demo@neurobridge.local"
+              placeholder="you@neurobridge.local"
               required
             />
           </label>
@@ -93,7 +86,9 @@ export function LoginPage() {
         </form>
 
         <p className="login__hint">
-          Demo clinician: <code>doctor.demo@neurobridge.local</code> ·{" "}
+          Demo clinician: <code>doctor.demo@neurobridge.local</code>
+          <br />
+          Demo family: <code>family.demo@neurobridge.local</code> ·{" "}
           <code>Demo12345!</code>
         </p>
       </div>
@@ -105,10 +100,10 @@ export function LoginPage() {
           </span>
           <h2>A shared, continuous view of the care journey</h2>
           <ul className="ticks">
-            <li>Assigned patients only, with role-based access</li>
-            <li>Performance-only progress and session history</li>
-            <li>Memory album review for supportive recall</li>
-            <li>AI-assisted summaries, pending your review</li>
+            <li>Care team: assigned patients, with role-based access</li>
+            <li>Families: your linked patient&apos;s supportive journey</li>
+            <li>Performance-only progress and memory album for recall</li>
+            <li>Non-diagnostic by design — never a medical assessment</li>
           </ul>
           <p className="login__aside-note">
             Not a diagnostic medical system. Not a medical assessment.
