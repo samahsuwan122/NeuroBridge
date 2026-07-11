@@ -13,17 +13,15 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 23A (Global 10-Language Support) completed and committed locally.
-  Supported languages: **Arabic, English, French, Spanish, German, Turkish,
-  Portuguese, Italian, Hindi, Indonesian**. Arabic uses **RTL**; the other nine
-  use **LTR**. The language selector now shows all 10 native language names, and
-  missing translated keys fall back to English. **Backend was untouched**; no
-  API, auth, business logic, game mechanics, or result-saving changes. Safety
-  wording remains **performance-only and non-diagnostic**.
-- The `frontend-design` skill install files (`.agents/`, `.claude/`,
-  `skills-lock.json`) are **still uncommitted** and should be handled separately.
-- Latest local commit: `ebb8ada feat(mobile): add global localization support`
-- Last pushed commit: `cd2029e` — the Phase 15–23 commits are **not pushed yet**
+- Phase 24A (Final Design Upgrade) completed and committed locally. Refined the
+  shared **premium theme foundation**: improved cards, primary buttons, heading
+  rhythm, and `EmeraldPanel` styling. The polish **propagates across Login, Home,
+  Games, Memory Album, Progress, Profile, and all game screens**. **No backend,
+  API, business logic, auth logic, localization logic, game mechanics, or
+  result-saving changes**; RTL/LTR and 10-language support remain safe. The
+  `frontend-design` skill files remain **local and ignored by Git**.
+- Latest local commit: `99c7c78 style(mobile): refine premium design foundation`
+- Last pushed commit: `cd2029e` — the Phase 15–24 commits are **not pushed yet**
   (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -61,6 +59,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 21C: Sequence Recall playable game (mobile; backend already seeded)
 - Phase 22A: Progress analytics dashboard (mobile; performance summaries only)
 - Phase 23A: Global 10-language support (mobile; ar RTL + 9 LTR, English fallback)
+- Phase 24A: Final design upgrade (mobile; shared theme + EmeraldPanel polish)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -73,18 +72,17 @@ platform. **Not a diagnostic medical system.**
 
 ## 5. Current working feature
 
-None in progress. **Phase 23A — Global 10-Language Support is complete and
-committed.** Mobile-only; **backend untouched**; no business-logic, API,
-game-mechanics, auth, or result-saving changes. Localization expanded from ar/en
-to **10 languages**: ar العربية (**RTL**), en English, fr Français, es Español,
-de Deutsch, tr Türkçe, pt Português, it Italiano, hi हिन्दी, id Bahasa Indonesia
-— the last nine use **LTR**. `AppLocalizations` has `AppLanguage` +
-`supportedLanguages` + `supportedLocales`(10) + curated per-locale maps (English
-fallback for untranslated keys); the app-bar `LanguageButton` is a bottom-sheet
-picker of all 10 native names. Safety notes are negated, performance-only
-statements — no new medical claims. **Next step: skill-install hygiene review
-(handle `.agents/`, `.claude/`, `skills-lock.json` separately) or final design
-upgrade.**
+None in progress. **Phase 24A — Final Design Upgrade is complete and committed.**
+Mobile-only styling of the shared theme foundation (`core/theme/app_theme.dart`,
+`core/widgets/emerald_panel.dart`): cards now have a crisp hairline edge + softer
+deeper shadow, primary emerald buttons get a subtle lift, heading rhythm is
+tightened via line-height (no `letterSpacing`, to protect Arabic/Devanagari
+shaping), and the `EmeraldPanel` hero gains a thin champagne-gold hairline frame.
+Because these are shared pieces, the polish propagates to **all 13 high-impact
+screens** at once. **No behavior/API/logic/localization changes**; RTL/LTR and
+the 10 languages remain safe. The `frontend-design` skill guidance was applied
+from its local `SKILL.md` (the skill is Git-ignored). **Next step: final demo
+review and graduation presentation preparation.**
 
 ## 5b. Previous feature
 
@@ -108,12 +106,11 @@ states unchanged. **Next step: Phase 22B — Family / Doctor Progress Review.**
 
 ## 7. Next step
 
-Skill-install hygiene review — the `frontend-design` skill install files
-(`.agents/`, `.claude/`, `skills-lock.json`) are untracked and should be committed
-separately or added to `.gitignore` — not part of any feature. After that: a
-final design upgrade, or Phase 22B (Family / Doctor Progress Review). Optional
-follow-ups also remain: edit/delete/replace UI for memories, or charts/trends on
-the dashboard. Also: the Phase 15–23 commits are committed locally but **not
+Final demo review and graduation presentation preparation — the app is
+feature-complete (5 playable exercises, Memory Album, Progress Analytics, 10
+languages) and visually polished. Optional follow-ups remain: Phase 22B (Family /
+Doctor Progress Review), edit/delete/replace UI for memories, or charts/trends on
+the dashboard. Also: the Phase 15–24 commits are committed locally but **not
 pushed** — push when ready.
 
 ## 8. Medical safety rules
