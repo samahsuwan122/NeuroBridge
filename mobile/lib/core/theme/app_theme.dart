@@ -57,16 +57,23 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: AppColors.warmWhite,
-        elevation: 2,
-        shadowColor: const Color(0x1A0F5C4C),
+        elevation: 3,
+        shadowColor: const Color(0x140B4A3F),
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        // A crisp hairline edge + soft shadow reads as premium, not flat.
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Color(0x120B4A3F)),
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(56),
           backgroundColor: AppColors.deepEmerald,
           foregroundColor: AppColors.warmWhite,
+          // A subtle lift gives primary actions depth.
+          elevation: 1,
+          shadowColor: const Color(0x330B4A3F),
           textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
@@ -105,19 +112,26 @@ class AppTheme {
         color: AppColors.warmStone,
         thickness: 1,
       ),
+      // Tighter display rhythm for headings (line-height only — no letter
+      // spacing, which would break Arabic/Devanagari glyph shaping).
       textTheme: text.copyWith(
         headlineMedium: text.headlineMedium?.copyWith(
           fontWeight: FontWeight.w700,
           color: AppColors.deepEmerald,
+          height: 1.15,
         ),
         headlineSmall: text.headlineSmall?.copyWith(
           fontWeight: FontWeight.w700,
           color: AppColors.deepEmerald,
+          height: 1.15,
         ),
-        titleLarge: text.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+        titleLarge: text.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          height: 1.2,
+        ),
         titleMedium: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-        bodyLarge: text.bodyLarge?.copyWith(fontSize: 16.5, height: 1.35),
-        bodyMedium: text.bodyMedium?.copyWith(fontSize: 15, height: 1.35),
+        bodyLarge: text.bodyLarge?.copyWith(fontSize: 16.5, height: 1.4),
+        bodyMedium: text.bodyMedium?.copyWith(fontSize: 15, height: 1.4),
       ),
     );
   }

@@ -25,11 +25,15 @@ class EmeraldPanel extends StatelessWidget {
           colors: [AppColors.heroStart, AppColors.heroEnd],
         ),
         borderRadius: BorderRadius.circular(24),
+        // A thin champagne-gold hairline frames the emerald hero (accent only).
+        border: Border.all(
+          color: AppColors.softGold.withValues(alpha: 0.35),
+        ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x330A4034),
-            blurRadius: 24,
-            offset: Offset(0, 10),
+            color: Color(0x3D0A4034),
+            blurRadius: 28,
+            offset: Offset(0, 12),
           ),
         ],
       ),
