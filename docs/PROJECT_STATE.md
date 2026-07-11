@@ -13,15 +13,17 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- Phase 22A (Progress Analytics Dashboard) completed and committed locally.
-  Progress now shows **performance summary cards, latest activity, game
-  breakdown, and recent activity**. Analytics are calculated from existing result
-  data only. **No backend, API, database, game-result saving, or business logic
-  changes** were made. Progress analytics are **performance summaries only, not a
-  medical assessment**; no diagnosis, disease prediction, dementia score,
-  Alzheimer score, medical interpretation, or treatment recommendation.
-- Latest local commit: `9846f31 feat(mobile): add progress analytics dashboard`
-- Last pushed commit: `cd2029e` — the Phase 15–22 commits are **not pushed yet**
+- Phase 23A (Global 10-Language Support) completed and committed locally.
+  Supported languages: **Arabic, English, French, Spanish, German, Turkish,
+  Portuguese, Italian, Hindi, Indonesian**. Arabic uses **RTL**; the other nine
+  use **LTR**. The language selector now shows all 10 native language names, and
+  missing translated keys fall back to English. **Backend was untouched**; no
+  API, auth, business logic, game mechanics, or result-saving changes. Safety
+  wording remains **performance-only and non-diagnostic**.
+- The `frontend-design` skill install files (`.agents/`, `.claude/`,
+  `skills-lock.json`) are **still uncommitted** and should be handled separately.
+- Latest local commit: `ebb8ada feat(mobile): add global localization support`
+- Last pushed commit: `cd2029e` — the Phase 15–23 commits are **not pushed yet**
   (`origin/main` is behind local `main`).
 - Working tree is clean (after this docs commit).
 
@@ -58,6 +60,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 21B: Attention Tap playable game (mobile; backend already seeded)
 - Phase 21C: Sequence Recall playable game (mobile; backend already seeded)
 - Phase 22A: Progress analytics dashboard (mobile; performance summaries only)
+- Phase 23A: Global 10-language support (mobile; ar RTL + 9 LTR, English fallback)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -69,6 +72,21 @@ platform. **Not a diagnostic medical system.**
 `python -m app.scripts.seed_demo_data`.)
 
 ## 5. Current working feature
+
+None in progress. **Phase 23A — Global 10-Language Support is complete and
+committed.** Mobile-only; **backend untouched**; no business-logic, API,
+game-mechanics, auth, or result-saving changes. Localization expanded from ar/en
+to **10 languages**: ar العربية (**RTL**), en English, fr Français, es Español,
+de Deutsch, tr Türkçe, pt Português, it Italiano, hi हिन्दी, id Bahasa Indonesia
+— the last nine use **LTR**. `AppLocalizations` has `AppLanguage` +
+`supportedLanguages` + `supportedLocales`(10) + curated per-locale maps (English
+fallback for untranslated keys); the app-bar `LanguageButton` is a bottom-sheet
+picker of all 10 native names. Safety notes are negated, performance-only
+statements — no new medical claims. **Next step: skill-install hygiene review
+(handle `.agents/`, `.claude/`, `skills-lock.json` separately) or final design
+upgrade.**
+
+## 5b. Previous feature
 
 Phase 22 — Progress Analytics. **Step 22A (dashboard) is complete and committed.**
 Mobile-only, **no backend/API/result-logic changes** (analytics are pure
@@ -90,9 +108,13 @@ states unchanged. **Next step: Phase 22B — Family / Doctor Progress Review.**
 
 ## 7. Next step
 
-Phase 22B — Family / Doctor Progress Review. Optional follow-ups also remain:
-edit/delete/replace UI for memories, or charts/trends on the dashboard. Also: the
-Phase 15–22 commits are committed locally but **not pushed** — push when ready.
+Skill-install hygiene review — the `frontend-design` skill install files
+(`.agents/`, `.claude/`, `skills-lock.json`) are untracked and should be committed
+separately or added to `.gitignore` — not part of any feature. After that: a
+final design upgrade, or Phase 22B (Family / Doctor Progress Review). Optional
+follow-ups also remain: edit/delete/replace UI for memories, or charts/trends on
+the dashboard. Also: the Phase 15–23 commits are committed locally but **not
+pushed** — push when ready.
 
 ## 8. Medical safety rules
 
