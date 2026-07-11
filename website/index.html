@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NeuroBridge AI — an AI-powered cognitive rehabilitation ecosystem connecting patients, families, and care teams. Supportive activities, memory album, and performance summaries. Not a diagnostic medical system." />
+  <meta name="theme-color" content="#0B3D34" />
+  <title>NeuroBridge AI — AI-Powered Cognitive Rehabilitation Ecosystem</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230E4D42'/><path d='M28 68V32h8l20 26V32h8v36h-8L36 42v26z' fill='%23D9BE86'/></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 1. Navigation bar -->
+  <header class="nav" id="top">
+    <div class="container nav__inner">
+      <a class="brand" href="#top" aria-label="NeuroBridge AI home">
+        <span class="brand__mark" aria-hidden="true">NB</span>
+        <span class="brand__text">NeuroBridge <span class="brand__ai">AI</span></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="#solution">Solution</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="#ai">AI Engine</a>
+        <a href="#games">Exercises</a>
+        <a href="#security">Security</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn btn--gold nav__cta" href="#contact">Request a demo</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 2. Hero section -->
+    <section class="hero" id="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <div class="hero__copy reveal">
+          <span class="eyebrow">AI-Powered Cognitive Rehabilitation Ecosystem</span>
+          <h1>Bridging memory.<br />Connecting lives.</h1>
+          <p class="lead">
+            NeuroBridge AI connects patients, families, and care teams around one
+            structured, day-by-day support journey — with accessible daily
+            activities, a shared progress view, and AI assistance that always
+            stays within safe, professionally-reviewed boundaries.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--gold" href="#ecosystem">Explore the ecosystem</a>
+            <a class="btn btn--ghost" href="#games">See the exercises</a>
+          </div>
+          <p class="hero__note">
+            A final-year academic prototype. Not a diagnostic medical system.
+          </p>
+        </div>
+
+        <div class="hero__panel glass reveal" aria-hidden="false">
+          <div class="hero__panel-head">
+            <span class="dot"></span> Live in the mobile app
+          </div>
+          <ul class="hero__stats">
+            <li><strong>5</strong><span>Cognitive exercises</span></li>
+            <li><strong>10</strong><span>Language directions</span></li>
+            <li><strong>5</strong><span>Platform roles</span></li>
+          </ul>
+          <div class="hero__chips">
+            <span class="chip">Patient App</span>
+            <span class="chip">Memory Album</span>
+            <span class="chip">Progress Analytics</span>
+            <span class="chip">RBAC · JWT</span>
+            <span class="chip">Audit Logs</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Problem section -->
+    <section class="section" id="problem">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">The gap</span>
+          <h2>Cognitive support is fragmented and hard to follow day to day</h2>
+          <p class="section__sub">
+            Care often happens in occasional appointments, while the everyday
+            effort goes unstructured and unseen.
+          </p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card reveal">
+            <div class="ic" aria-hidden="true">📅</div>
+            <h3>Limited daily follow-up</h3>
+            <p>The day-to-day between appointments is largely unobserved and unsupported.</p>
+          </article>
+          <article class="card reveal">
+            <div class="ic" aria-hidden="true">🧩</div>
+            <h3>Disconnected experiences</h3>
+            <p>Patient, family, and doctor each hold a fragment, with no shared continuous view.</p>
+          </article>
+          <article class="card reveal">
+            <div class="ic" aria-hidden="true">📶</div>
+            <h3>Weak progress visibility</h3>
+            <p>It is hard to see, in plain language, how daily activity is trending over time.</p>
+          </article>
+          <article class="card reveal">
+            <div class="ic" aria-hidden="true">🗂️</div>
+            <h3>Unstructured training</h3>
+            <p>Practice activities are ad hoc, rarely organized into progressive categories.</p>
+          </article>
+          <article class="card reveal">
+            <div class="ic" aria-hidden="true">🛟</div>
+            <h3>Need for safe AI support</h3>
+            <p>AI can help — but only within strict, reviewed limits, never as an autonomous authority.</p>
+          </article>
+          <article class="card reveal">
+            <div class="ic" aria-hidden="true">🤝</div>
+            <h3>Families left outside</h3>
+            <p>Caregivers want to help and encourage, but lack a simple, connected way in.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Solution section -->
+    <section class="section section--tint" id="solution">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">The approach</span>
+          <h2>One connected ecosystem, built around a supportive daily journey</h2>
+          <p class="section__sub">
+            Consistent daily activities, a shared multi-role view, structured
+            training categories, clear performance summaries, and AI that stays
+            supportive and pending professional review.
+          </p>
+        </div>
+        <div class="grid grid--4">
+          <article class="card card--solid reveal">
+            <div class="ic" aria-hidden="true">🔁</div>
+            <h3>Structured daily activities</h3>
+            <p>Progressive categories replace ad-hoc practice with a clear routine.</p>
+          </article>
+          <article class="card card--solid reveal">
+            <div class="ic" aria-hidden="true">👁️</div>
+            <h3>Shared, continuous view</h3>
+            <p>Patient, family, and care team see one connected picture over time.</p>
+          </article>
+          <article class="card card--solid reveal">
+            <div class="ic" aria-hidden="true">📈</div>
+            <h3>Plain-language progress</h3>
+            <p>Performance-only summaries make trends easy to read and share.</p>
+          </article>
+          <article class="card card--solid reveal">
+            <div class="ic" aria-hidden="true">🧠</div>
+            <h3>Safe AI assistance</h3>
+            <p>Supportive suggestions and summaries — always pending doctor/therapist review.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Product ecosystem section -->
+    <section class="section" id="ecosystem">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">The platform</span>
+          <h2>A multi-module, multi-role ecosystem</h2>
+          <p class="section__sub">
+            Not a single screen — a connected platform where each module serves a
+            role with clear, enforced boundaries.
+          </p>
+        </div>
+        <div class="grid grid--3">
+          <article class="module reveal">
+            <header><h3>Patient Mobile App</h3><span class="badge badge--live">Available now</span></header>
+            <p>Simple, accessible daily activities, memory album, reminders, and progress.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>AI Core</h3><span class="badge badge--plan">Roadmap</span></header>
+            <p>Supportive activity suggestions and performance summaries, pending review.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Doctor Portal</h3><span class="badge badge--plan">Roadmap</span></header>
+            <p>Assigned-patient oversight, session planning, and an AI review queue.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Family Portal</h3><span class="badge badge--plan">Roadmap</span></header>
+            <p>Follow linked-patient progress, encourage, and contribute memories.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Admin Dashboard</h3><span class="badge badge--plan">Roadmap</span></header>
+            <p>Manage users, centers, content, analytics, notifications, and audit logs.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Reports Engine</h3><span class="badge badge--plan">Roadmap</span></header>
+            <p>Patient, family, and doctor reports with charts and PDF export.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Landing Website</h3><span class="badge badge--live">Available now</span></header>
+            <p>Public presentation of the vision, modules, and value.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Security Layer</h3><span class="badge badge--live">In place</span></header>
+            <p>JWT auth, RBAC, password hashing, and audit logging across the platform.</p>
+          </article>
+          <article class="module reveal">
+            <header><h3>Cloud Deployment</h3><span class="badge badge--plan">Roadmap</span></header>
+            <p>Cloud-ready hosting and storage with future CI/CD.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. AI engine section -->
+    <section class="section section--dark" id="ai">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow eyebrow--gold">The AI engine</span>
+          <h2>AI-assisted support — never a clinician replacement</h2>
+          <p class="section__sub section__sub--light">
+            The AI Core proposes supportive activity suggestions and plain-language
+            performance summaries. Every output is a recommendation that stays
+            <strong>pending until a doctor or therapist reviews it</strong>.
+          </p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card card--glassdark reveal">
+            <h3>Supportive suggestions</h3>
+            <p>AI-assisted activity recommendations based on game performance only.</p>
+          </article>
+          <article class="card card--glassdark reveal">
+            <h3>Performance summaries</h3>
+            <p>Plain-language summaries of recent activity — not a medical assessment.</p>
+          </article>
+          <article class="card card--glassdark reveal">
+            <h3>Doctor review queue</h3>
+            <p>Every suggestion lands as pending and is only activated after review.</p>
+          </article>
+        </div>
+        <div class="notice reveal">
+          <strong>Safety boundary.</strong> AI-generated support recommendation.
+          Not a medical diagnosis and not a medical assessment. Requires review by
+          a qualified doctor or therapist. NeuroBridge AI does not diagnose,
+          predict, score, or treat any condition.
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Cognitive games section -->
+    <section class="section section--tint" id="games">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">Cognitive exercises</span>
+          <h2>Five supportive exercises, live in the mobile app</h2>
+          <p class="section__sub">
+            Each exercise measures <strong>game performance only</strong> — score,
+            duration, and completion — never a medical assessment.
+          </p>
+        </div>
+        <div class="grid grid--5">
+          <article class="exercise reveal"><span class="exercise__ic">🃏</span><h3>Memory Match</h3><p>Match pairs to practice short-term memory.</p></article>
+          <article class="exercise reveal"><span class="exercise__ic">🖼️</span><h3>Memory Recall</h3><p>Recall moments from the personal Memory Album.</p></article>
+          <article class="exercise reveal"><span class="exercise__ic">⚡</span><h3>Reaction Time</h3><p>Tap quickly when the signal appears.</p></article>
+          <article class="exercise reveal"><span class="exercise__ic">🎯</span><h3>Attention Focus</h3><p>Tap the target and ignore the rest.</p></article>
+          <article class="exercise reveal"><span class="exercise__ic">🔢</span><h3>Sequence Recall</h3><p>Watch a sequence, then repeat it in order.</p></article>
+        </div>
+        <div class="section__head section__head--left reveal" style="margin-top:2.5rem">
+          <h3 class="mini-title">Organized into progressive categories</h3>
+        </div>
+        <div class="pills reveal">
+          <span class="pill">Memory</span>
+          <span class="pill">Attention</span>
+          <span class="pill">Language</span>
+          <span class="pill">Logic</span>
+          <span class="pill">Executive Function</span>
+          <span class="pill">Visual</span>
+          <span class="pill">Daily Activities</span>
+          <span class="pill">Reaction</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Patient app section -->
+    <section class="section" id="patient">
+      <div class="container split">
+        <div class="split__copy reveal">
+          <span class="eyebrow">Patient mobile app</span>
+          <h2>Simple, accessible, and supportive</h2>
+          <p class="section__sub">
+            Built mobile-first with large buttons and an elderly-friendly layout.
+            Arabic screens support right-to-left; ten language directions are
+            supported in the app.
+          </p>
+          <ul class="ticks">
+            <li>Daily supportive activities and gentle goals</li>
+            <li>Memory Album of photos and stories</li>
+            <li>Medication and appointment reminders</li>
+            <li>Performance-only progress analytics</li>
+            <li>Multi-language, RTL-safe interface</li>
+          </ul>
+          <span class="badge badge--live">Available now</span>
+        </div>
+        <div class="split__visual reveal" aria-hidden="true">
+          <div class="phone glass">
+            <div class="phone__bar"></div>
+            <div class="phone__hero">Welcome back</div>
+            <div class="phone__row"><span>Today's session</span><b>Start</b></div>
+            <div class="phone__row"><span>Cognitive games</span><b>5</b></div>
+            <div class="phone__row"><span>Memory Album</span><b>Open</b></div>
+            <div class="phone__row"><span>Progress</span><b>View</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Doctor portal section -->
+    <section class="section section--tint" id="doctor">
+      <div class="container split split--reverse">
+        <div class="split__copy reveal">
+          <span class="eyebrow">Doctor &amp; therapist portal</span>
+          <h2>Clinical oversight, not automation of judgment <span class="badge badge--plan">Roadmap</span></h2>
+          <p class="section__sub">
+            A web portal for assigned patients only, with performance-only
+            overviews and a supportive session builder.
+          </p>
+          <ul class="ticks">
+            <li>Assigned-patient dashboard and session history</li>
+            <li>Performance summaries and exportable reports</li>
+            <li>Appointments and family-note review</li>
+            <li>AI session builder — every AI draft stays pending until approved</li>
+          </ul>
+        </div>
+        <div class="split__visual reveal" aria-hidden="true">
+          <div class="board glass">
+            <div class="board__head">Assigned patients</div>
+            <div class="board__item"><span>Patient overview</span><em>Performance only</em></div>
+            <div class="board__item"><span>AI review queue</span><em>Pending</em></div>
+            <div class="board__item"><span>Session plan</span><em>Draft</em></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Family portal section -->
+    <section class="section" id="family">
+      <div class="container split">
+        <div class="split__copy reveal">
+          <span class="eyebrow">Family &amp; caregiver portal</span>
+          <h2>Stay connected and contribute <span class="badge badge--plan">Roadmap</span></h2>
+          <p class="section__sub">
+            Scoped strictly to linked patients — connection and encouragement,
+            never clinical controls.
+          </p>
+          <ul class="ticks">
+            <li>Follow linked-patient progress and session completion</li>
+            <li>Send simple encouragement</li>
+            <li>Upload memories, photos, and audio</li>
+            <li>Add family notes and view appointments</li>
+          </ul>
+        </div>
+        <div class="split__visual reveal" aria-hidden="true">
+          <div class="board glass">
+            <div class="board__head">Linked patient</div>
+            <div class="board__item"><span>This week</span><em>On track</em></div>
+            <div class="board__item"><span>Add a memory</span><em>Photo · Audio</em></div>
+            <div class="board__item"><span>Encourage</span><em>Send</em></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Admin dashboard section -->
+    <section class="section section--tint" id="admin">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">Admin dashboard</span>
+          <h2>Run the platform with full oversight <span class="badge badge--plan">Roadmap</span></h2>
+          <p class="section__sub">
+            Manage the ecosystem — without performing clinical review, which stays
+            with doctors and therapists.
+          </p>
+        </div>
+        <div class="pills pills--wrap reveal">
+          <span class="pill">Users</span>
+          <span class="pill">Doctors</span>
+          <span class="pill">Centers</span>
+          <span class="pill">Games</span>
+          <span class="pill">Sessions</span>
+          <span class="pill">Analytics</span>
+          <span class="pill">Reports</span>
+          <span class="pill">Feedback</span>
+          <span class="pill">Content</span>
+          <span class="pill">Notifications</span>
+          <span class="pill">System settings</span>
+          <span class="pill">Audit logs</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Reports and analytics section -->
+    <section class="section" id="reports">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">Reports &amp; analytics</span>
+          <h2>Readable, performance-only reporting</h2>
+          <p class="section__sub">
+            Clear summaries and trends — never a clinical score or medical
+            interpretation.
+          </p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card reveal"><div class="ic" aria-hidden="true">🗓️</div><h3>Weekly &amp; monthly</h3><p>Plain-language performance summaries over time.</p></article>
+          <article class="card reveal"><div class="ic" aria-hidden="true">📊</div><h3>Charts &amp; trends</h3><p>Visual, performance-only activity trends.</p></article>
+          <article class="card reveal"><div class="ic" aria-hidden="true">📄</div><h3>PDF export</h3><p>Shareable reports for family and the care team.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Security and privacy section -->
+    <section class="section section--dark" id="security">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow eyebrow--gold">Security &amp; privacy</span>
+          <h2>Protecting sensitive data by design</h2>
+          <p class="section__sub section__sub--light">
+            Security is a first-class requirement, enforced at the API layer.
+          </p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card card--glassdark reveal"><h3>JWT authentication</h3><p>Access tokens with refresh tokens.</p></article>
+          <article class="card card--glassdark reveal"><h3>Role-based access</h3><p>Patient, family, doctor, therapist, and admin scopes.</p></article>
+          <article class="card card--glassdark reveal"><h3>Password hashing</h3><p>Stored only as bcrypt/Argon2 hashes — never plain text.</p></article>
+          <article class="card card--glassdark reveal"><h3>Audit logs</h3><p>Login, profile updates, notes, reports, and AI review.</p></article>
+          <article class="card card--glassdark reveal"><h3>Scoped data access</h3><p>Families see linked patients; doctors see assigned patients.</p></article>
+          <article class="card card--glassdark reveal"><h3>Secure file uploads</h3><p>Validated type and size for memory-album media.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Research / academic prototype section -->
+    <section class="section section--tint" id="research">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow">Academic prototype</span>
+          <h2>A final-year software engineering project</h2>
+          <p class="section__sub">
+            NeuroBridge AI is built to academic-quality standards with clean,
+            modular architecture and realistic MVP delivery.
+          </p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card card--solid reveal"><div class="ic" aria-hidden="true">🎓</div><h3>Prototype, not a device</h3><p>A research/education prototype — not a certified medical product.</p></article>
+          <article class="card card--solid reveal"><div class="ic" aria-hidden="true">🧱</div><h3>Modular by domain</h3><p>Auth, patients, games, memory, reports, AI, and audit, cleanly separated.</p></article>
+          <article class="card card--solid reveal"><div class="ic" aria-hidden="true">🧭</div><h3>Roadmap-driven</h3><p>A phased plan toward Doctor, Family, Admin, AI, Reports, and Cloud.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. FAQ section -->
+    <section class="section" id="faq">
+      <div class="container container--narrow">
+        <div class="section__head reveal">
+          <span class="eyebrow">FAQ</span>
+          <h2>Common questions</h2>
+        </div>
+        <div class="faq reveal">
+          <details>
+            <summary>Does NeuroBridge AI diagnose any condition?</summary>
+            <p>No. NeuroBridge AI is not a diagnostic medical system. It does not diagnose, predict, score, or treat any condition. Exercises measure game performance only.</p>
+          </details>
+          <details>
+            <summary>What does the AI actually do?</summary>
+            <p>The AI provides AI-assisted support: supportive activity recommendations and plain-language performance summaries. Every output is not a medical diagnosis and not a medical assessment, and requires review by a qualified doctor or therapist.</p>
+          </details>
+          <details>
+            <summary>Does the AI make clinical decisions on its own?</summary>
+            <p>No. AI suggestions stay pending until a doctor or therapist reviews them, and clinical judgment always stays with qualified professionals.</p>
+          </details>
+          <details>
+            <summary>What is available today?</summary>
+            <p>The patient mobile app is live with five cognitive exercises, a Memory Album, and progress analytics, on a multi-role architecture with RBAC, JWT, and audit logs, and ten language directions.</p>
+          </details>
+          <details>
+            <summary>What is planned next?</summary>
+            <p>The roadmap adds the Doctor Portal, Family Portal, Admin Dashboard, AI Core, Reports Engine, and cloud deployment.</p>
+          </details>
+          <details>
+            <summary>How is sensitive data protected?</summary>
+            <p>Through JWT authentication, role-based access control, password hashing, audit logging, and role-scoped data access.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. Contact CTA -->
+    <section class="cta" id="contact">
+      <div class="container cta__inner reveal">
+        <h2>See the NeuroBridge AI ecosystem</h2>
+        <p>Request a walkthrough of the mobile app, the architecture, and the roadmap.</p>
+        <div class="cta__actions">
+          <a class="btn btn--gold" href="mailto:hello@neurobridge.ai">Request a demo</a>
+          <a class="btn btn--ghost btn--ghost-light" href="#ecosystem">Explore modules</a>
+        </div>
+        <p class="cta__note">Academic prototype · Not a diagnostic medical system</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 17. Footer -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="brand__mark" aria-hidden="true">NB</span>
+        <div>
+          <strong>NeuroBridge <span class="brand__ai">AI</span></strong>
+          <p>AI-Powered Cognitive Rehabilitation Ecosystem</p>
+        </div>
+      </div>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="#solution">Solution</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="#ai">AI Engine</a>
+        <a href="#games">Exercises</a>
+        <a href="#security">Security</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+    <div class="container footer__legal">
+      <p>
+        NeuroBridge AI is a final-year academic prototype and <strong>not a
+        diagnostic medical system</strong>. AI output is an AI-assisted support
+        recommendation — not a medical diagnosis and not a medical assessment —
+        and requires review by a qualified doctor or therapist.
+      </p>
+      <p class="footer__copy">© 2026 NeuroBridge AI · Academic project</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
