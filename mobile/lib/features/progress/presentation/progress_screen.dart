@@ -7,8 +7,10 @@ import '../../../core/widgets/emerald_panel.dart';
 import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
+import '../../../core/widgets/section_header.dart';
 import '../application/progress_controller.dart';
 import '../data/game_result_summary.dart';
+import '../data/progress_analytics.dart';
 
 /// Patient progress: a list of saved cognitive-exercise results.
 ///
@@ -91,20 +93,183 @@ class _ProgressScreenState extends State<ProgressScreen> {
           ),
         );
       case ProgressStatus.loaded:
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text(l10n.progressSubtitle,
-                style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 4),
-            Text(l10n.performanceOnlyProgressNote,
-                style: Theme.of(context).textTheme.bodySmall),
-            const SizedBox(height: 12),
-            for (final result in progress.results)
-              _ResultCard(result: result, l10n: l10n),
-          ],
-        );
+        return _Dashboard(results: progress.results, l10n: l10n);
     }
+  }
+}
+
+/// A premium, performance-only analytics dashboard: summary cards, a per-game
+/// breakdown, and recent activity. No diagnosis or medical interpretation.
+class _Dashboard extends StatelessWidget {
+  const _Dashboard({required this.results, required this.l10n});
+
+  final List<GameResultSummary> results;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final a = ProgressAnalytics.from(results);
+    final recent = results.take(8).toList();
+
+    String pct(int? v) => v == null ? '—' : '$v%';
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Text(l10n.performanceSummary, style: theme.textTheme.titleMedium),
+        const SizedBox(height: 4),
+        Text(l10n.progressAnalyticsNote, style: theme.textTheme.bodySmall),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            Expanded(
+              child: _SummaryCard(
+                  icon: Icons.fitness_center,
+                  label: l10n.totalExercises,
+                  value: '${a.totalExercises}'),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _SummaryCard(
+                  icon: Icons.check_circle_outline,
+                  label: l10n.completedExercises,
+                  value: '${a.completedExercises}'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _SummaryCard(
+                  icon: Icons.emoji_events_outlined,
+                  label: l10n.bestPerformance,
+                  value: pct(a.bestPercent)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _SummaryCard(
+                  icon: Icons.show_chart,
+                  label: l10n.averagePerformance,
+                  value: pct(a.averagePercent)),
+            ),
+          ],
+        ),
+        if (a.latestTitle != null) ...[
+          const SizedBox(height: 12),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  const IconChip(icon: Icons.history, size: 44),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.latestActivity,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant)),
+                        const SizedBox(height: 2),
+                        Text(a.latestTitle!, style: theme.textTheme.titleMedium),
+                        if ((a.latestDate ?? '').isNotEmpty)
+                          Text(a.latestDate!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+        const SizedBox(height: 20),
+        SectionHeader(icon: Icons.bar_chart, title: l10n.gameBreakdown),
+        const SizedBox(height: 10),
+        for (final b in a.breakdown) _BreakdownCard(breakdown: b, l10n: l10n),
+        const SizedBox(height: 20),
+        SectionHeader(icon: Icons.access_time, title: l10n.recentActivity),
+        const SizedBox(height: 10),
+        for (final result in recent) _ResultCard(result: result, l10n: l10n),
+      ],
+    );
+  }
+}
+
+class _SummaryCard extends StatelessWidget {
+  const _SummaryCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconChip(icon: icon, size: 38),
+            const SizedBox(height: 10),
+            Text(value, style: theme.textTheme.headlineSmall),
+            const SizedBox(height: 2),
+            Text(label,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BreakdownCard extends StatelessWidget {
+  const _BreakdownCard({required this.breakdown, required this.l10n});
+
+  final GameBreakdown breakdown;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final best = breakdown.bestPercent == null
+        ? l10n.noResultsYet
+        : '${l10n.bestPerformance}: ${breakdown.bestPercent}%';
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            const IconChip(icon: Icons.videogame_asset_rounded, size: 40),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(breakdown.title, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 2),
+                  Text(best,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant)),
+                ],
+              ),
+            ),
+            _StatPill(label: l10n.completedExercises, value: '${breakdown.count}'),
+          ],
+        ),
+      ),
+    );
   }
 }
 

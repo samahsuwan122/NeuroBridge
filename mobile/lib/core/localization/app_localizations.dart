@@ -96,6 +96,18 @@ class AppLocalizations {
       'date': 'Date',
       'performanceOnlyProgressNote':
           'These are cognitive exercise results (game performance only), not a medical assessment.',
+      // Progress analytics
+      'performanceSummary': 'Performance summary',
+      'progressAnalyticsNote':
+          'Exercise performance summaries only, not a medical assessment.',
+      'totalExercises': 'Total exercises',
+      'completedExercises': 'Completed',
+      'bestPerformance': 'Best',
+      'averagePerformance': 'Average',
+      'latestActivity': 'Latest activity',
+      'gameBreakdown': 'Game breakdown',
+      'recentActivity': 'Recent activity',
+      'noResultsYet': 'No results yet.',
       // Profile
       'profileSubtitle': 'Your basic profile information.',
       'loadingProfile': 'Loading your profile…',
@@ -301,6 +313,17 @@ class AppLocalizations {
       'date': 'التاريخ',
       'performanceOnlyProgressNote':
           'هذه نتائج تمارين إدراكية (أداء اللعبة فقط)، وليست تقييمًا طبيًا.',
+      // Progress analytics
+      'performanceSummary': 'ملخص الأداء',
+      'progressAnalyticsNote': 'ملخصات أداء التمارين فقط، وليست تقييمًا طبيًا.',
+      'totalExercises': 'إجمالي التمارين',
+      'completedExercises': 'مكتملة',
+      'bestPerformance': 'الأفضل',
+      'averagePerformance': 'المتوسط',
+      'latestActivity': 'أحدث نشاط',
+      'gameBreakdown': 'تفصيل الألعاب',
+      'recentActivity': 'النشاط الأخير',
+      'noResultsYet': 'لا توجد نتائج بعد.',
       // Profile
       'profileSubtitle': 'معلومات ملفك الأساسية.',
       'loadingProfile': 'جارٍ تحميل ملفك…',
@@ -503,6 +526,17 @@ class AppLocalizations {
   String get notCompleted => _t('notCompleted');
   String get date => _t('date');
   String get performanceOnlyProgressNote => _t('performanceOnlyProgressNote');
+
+  String get performanceSummary => _t('performanceSummary');
+  String get progressAnalyticsNote => _t('progressAnalyticsNote');
+  String get totalExercises => _t('totalExercises');
+  String get completedExercises => _t('completedExercises');
+  String get bestPerformance => _t('bestPerformance');
+  String get averagePerformance => _t('averagePerformance');
+  String get latestActivity => _t('latestActivity');
+  String get gameBreakdown => _t('gameBreakdown');
+  String get recentActivity => _t('recentActivity');
+  String get noResultsYet => _t('noResultsYet');
 
   String get profileSubtitle => _t('profileSubtitle');
   String get loadingProfile => _t('loadingProfile');

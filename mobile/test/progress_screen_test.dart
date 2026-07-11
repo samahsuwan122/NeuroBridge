@@ -90,6 +90,14 @@ Future<void> _wrap(
   }
 }
 
+/// Use a tall viewport so the whole (lazy) dashboard builds in one screen.
+void _tallView(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1200, 3000);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
 GameResultSummary _sampleResult() => GameResultSummary(
       gameId: 'g1',
       gameTitle: 'Memory Match',
@@ -112,13 +120,36 @@ void main() {
   });
 
   testWidgets('progress shows a saved result card', (tester) async {
+    _tallView(tester);
     await _wrap(
       tester,
       _FakeProgress(ProgressStatus.loaded, [_sampleResult()]),
     );
-    expect(find.text('Memory Match'), findsOneWidget);
-    expect(find.textContaining('6/6'), findsOneWidget); // score/max
+    // Title appears in the latest card, game breakdown, and recent card.
+    expect(find.text('Memory Match'), findsWidgets);
+    expect(find.textContaining('6/6'), findsOneWidget); // recent result card
     expect(find.textContaining('Completed'), findsWidgets);
+  });
+
+  testWidgets('dashboard shows the performance summary cards', (tester) async {
+    await _wrap(
+      tester,
+      _FakeProgress(ProgressStatus.loaded, [_sampleResult()]),
+    );
+    expect(find.text('Performance summary'), findsOneWidget);
+    expect(find.text('Total exercises'), findsOneWidget);
+    expect(find.textContaining('100%'), findsWidgets); // best/average %
+  });
+
+  testWidgets('dashboard shows game breakdown and recent activity',
+      (tester) async {
+    _tallView(tester);
+    await _wrap(
+      tester,
+      _FakeProgress(ProgressStatus.loaded, [_sampleResult()]),
+    );
+    expect(find.text('Game breakdown'), findsOneWidget);
+    expect(find.text('Recent activity'), findsOneWidget);
   });
 
   testWidgets('progress error state shows a retry button', (tester) async {

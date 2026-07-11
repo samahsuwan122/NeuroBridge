@@ -87,10 +87,14 @@ type, mobility needs, vision/hearing needs, preferred communication, caregiver n
 "care/safety only, not a diagnosis" note. It deliberately omits `medical_center_id`, `notes`, and
 anything diagnostic. Safe loading/empty/error+retry states; no editing in this phase.
 
-The home **Progress** card opens a **Progress screen** (`/progress`) that lists the patient's saved
-results from `GET /api/v1/games/results`, joined with `GET /api/v1/games` for game titles (fallback to
-id). Each card shows game title, score/max, duration, completed, date, and moves/mistakes — **game
-performance only**, not a medical assessment. Safe loading/empty/error+retry states; no charts.
+The home **Progress** card opens a **performance analytics dashboard** (`/progress`) built from the
+patient's saved results (`GET /api/v1/games/results`, joined with `GET /api/v1/games` for titles).
+`ProgressAnalytics.from(results)` computes, client-side and **performance-only**: total exercises,
+completed count, best and average score %, latest activity, and a per-game breakdown. The screen
+shows summary cards, a **Game breakdown** section, and a **Recent activity** list of result cards
+(score/max, duration, completed, date, moves/mistakes). It is **not a medical assessment** — no
+diagnosis, cognitive level, or normal/abnormal wording. Safe loading/empty/error+retry states; no
+backend or API changes.
 
 The home **Memory Album** card opens a read-only **Memory Album** (`/memories`) that lists the
 caller's visible memories from `GET /api/v1/memories` (role-scoped by the backend). Each card shows
