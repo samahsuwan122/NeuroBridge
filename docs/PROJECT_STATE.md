@@ -13,10 +13,24 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
-- **Phase 26 (Landing Website Foundation) completed and committed locally.** A
+- **Phase 28 (Doctor Portal Foundation) completed and committed locally.** The
+  **`web/`** folder now contains the clinical **web dashboard foundation**
+  (React + Vite + TypeScript) for doctors/therapists. Implemented: doctor login,
+  dashboard overview, patients list, patient detail, progress summary, recent
+  activity, cognitive games performance, memory album review, an **AI summary
+  placeholder**, and a shared safety note. It **reuses existing backend APIs
+  read-only** where possible (`auth`, `patients`, `games`, `games/results`,
+  `memories`); **no backend, API, database, mobile, or website feature changes**
+  were made. **AI is described only as AI-assisted supportive review, pending
+  doctor/therapist review** — not a medical diagnosis and not a medical
+  assessment. Separation of concerns holds: **`web/`** = clinical dashboard,
+  **`website/`** = public landing site, **`mobile/`** = patient mobile app.
+- **Branding standardized:** the official product name is **NeuroBridge** (no
+  longer "NeuroBridge AI"); AI remains only as a feature/module/descriptor. The
+  roadmap file is now `docs/NEUROBRIDGE_ROADMAP.md`.
+- **Phase 26 (Landing Website Foundation)** remains complete: a
   new **`website/`** folder holds a startup-grade public landing site for
-  NeuroBridge. **`web/` remains reserved** for future doctor/therapist/admin
-  dashboards (React + Vite) and was untouched. The stack is a **dependency-free
+  NeuroBridge. The stack is a **dependency-free
   static HTML/CSS/vanilla JS** foundation (no build step, no `node_modules`).
   Implemented sections: nav, hero, problem, solution, ecosystem, AI engine,
   cognitive games, patient app, doctor portal, family portal, admin dashboard,
@@ -72,6 +86,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 24B: Expanded localization coverage (mobile; pt/tr/de full UI key set)
 - Phase 25: NeuroBridge ecosystem roadmap (docs)
 - Phase 26: Landing Website foundation (`website/`; dependency-free static site)
+- Phase 28: Doctor Portal foundation (`web/`; React + Vite clinical dashboard)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
 
@@ -120,8 +135,9 @@ states unchanged. **Next step: Phase 22B — Family / Doctor Progress Review.**
 
 ## 7. Next step
 
-**Phase 27 (Patient App 2.0)** or **Phase 28 (Doctor Portal foundation)** per
-`docs/NEUROBRIDGE_ROADMAP.md`. The public landing website (Phase 26) is done;
+**Phase 29 (Family Portal)** or **Phase 30 (Admin Dashboard)** per
+`docs/NEUROBRIDGE_ROADMAP.md`. The Doctor Portal foundation (Phase 28) and public
+landing website (Phase 26) are done;
 the patient app remains feature-complete (5 playable exercises, Memory Album,
 Progress Analytics, 10 language directions) and visually polished. Remaining
 localization languages (fr/es/it/hi/id) can be completed in a later pass.
