@@ -1,4 +1,4 @@
-/* NeuroBridge AI — landing website
+/* NeuroBridge — landing website
    Progressive enhancement only. With JavaScript disabled, all content remains
    fully visible and the page stays usable. */
 (function () {

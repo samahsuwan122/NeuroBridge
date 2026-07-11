@@ -15,7 +15,7 @@ platform. **Not a diagnostic medical system.**
 
 - **Phase 26 (Landing Website Foundation) completed and committed locally.** A
   new **`website/`** folder holds a startup-grade public landing site for
-  NeuroBridge AI. **`web/` remains reserved** for future doctor/therapist/admin
+  NeuroBridge. **`web/` remains reserved** for future doctor/therapist/admin
   dashboards (React + Vite) and was untouched. The stack is a **dependency-free
   static HTML/CSS/vanilla JS** foundation (no build step, no `node_modules`).
   Implemented sections: nav, hero, problem, solution, ecosystem, AI engine,
@@ -29,7 +29,7 @@ platform. **Not a diagnostic medical system.**
 - Preceding recent commits: **Phase 24B** expanded mobile localization coverage
   (pt/tr/de gained the full visible UI key set; en/ar already complete;
   fr/es/it/hi/id still planned for a later pass) and **Phase 25** added
-  `docs/NEUROBRIDGE_AI_ROADMAP.md` (ecosystem roadmap).
+  `docs/NEUROBRIDGE_ROADMAP.md` (ecosystem roadmap).
 - A local stash `stash@{0}` ("wip phase 24b partial game localization") remains
   **untouched** (not restored).
 - Commits are **not pushed yet** (`origin/main` is behind local `main`).
@@ -70,7 +70,7 @@ platform. **Not a diagnostic medical system.**
 - Phase 23A: Global 10-language support (mobile; ar RTL + 9 LTR, English fallback)
 - Phase 24A: Final design upgrade (mobile; shared theme + EmeraldPanel polish)
 - Phase 24B: Expanded localization coverage (mobile; pt/tr/de full UI key set)
-- Phase 25: NeuroBridge AI ecosystem roadmap (docs)
+- Phase 25: NeuroBridge ecosystem roadmap (docs)
 - Phase 26: Landing Website foundation (`website/`; dependency-free static site)
 
 ## 4. Demo login (LOCAL DEV ONLY — fake accounts)
@@ -121,7 +121,7 @@ states unchanged. **Next step: Phase 22B — Family / Doctor Progress Review.**
 ## 7. Next step
 
 **Phase 27 (Patient App 2.0)** or **Phase 28 (Doctor Portal foundation)** per
-`docs/NEUROBRIDGE_AI_ROADMAP.md`. The public landing website (Phase 26) is done;
+`docs/NEUROBRIDGE_ROADMAP.md`. The public landing website (Phase 26) is done;
 the patient app remains feature-complete (5 playable exercises, Memory Album,
 Progress Analytics, 10 language directions) and visually polished. Remaining
 localization languages (fr/es/it/hi/id) can be completed in a later pass.

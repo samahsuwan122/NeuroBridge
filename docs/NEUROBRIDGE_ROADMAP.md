@@ -1,4 +1,4 @@
-# NeuroBridge AI — Roadmap & Ecosystem Architecture
+# NeuroBridge — Roadmap & Ecosystem Architecture
 
 **AI-Powered Cognitive Rehabilitation Ecosystem**
 
@@ -6,7 +6,7 @@ _Strategic roadmap document. Phase 25._
 _Status: planning / vision. This file is documentation only — it does not change
 any code, API, database, or behavior._
 
-> **Medical safety notice.** NeuroBridge AI is **not** a diagnostic medical
+> **Medical safety notice.** NeuroBridge is **not** a diagnostic medical
 > system. Nothing in this roadmap describes diagnosing, predicting, scoring, or
 > treating any disease or condition. All AI output is an **AI-assisted support
 > recommendation — not a medical diagnosis and not a medical assessment — and
@@ -17,7 +17,7 @@ any code, API, database, or behavior._
 
 ## 1. Executive Vision
 
-NeuroBridge AI is **not** just a mobile app, and **not** just a set of memory
+NeuroBridge is **not** just a mobile app, and **not** just a set of memory
 games. It is an **AI-powered cognitive rehabilitation ecosystem** that connects
 the patient, the family, the doctor, and the care center around one shared,
 structured, day-by-day support journey.
@@ -63,7 +63,7 @@ gaps:
   professionally-reviewed boundaries**, never as an autonomous medical
   authority.
 
-NeuroBridge AI addresses these gaps with a connected ecosystem: consistent daily
+NeuroBridge addresses these gaps with a connected ecosystem: consistent daily
 activities, a shared multi-role view, structured training categories, clear
 performance summaries, and AI assistance that always stays **supportive and
 pending review**.
@@ -380,7 +380,7 @@ every step.
 
 ## 15. Graduation Differentiation
 
-Why NeuroBridge AI is stronger than a typical student app:
+Why NeuroBridge is stronger than a typical student app:
 
 - **Ecosystem approach.** A connected platform (website, mobile app, portals,
   dashboards, AI, reports), not a single screen.
@@ -405,6 +405,6 @@ platform vision** — safe, structured, connected, and well-documented.
 ---
 
 _This is a strategic planning document only. It introduces no medical claims:
-NeuroBridge AI does not diagnose, predict, score, or treat any condition. All AI
+NeuroBridge does not diagnose, predict, score, or treat any condition. All AI
 output is an AI-assisted support recommendation — not a medical diagnosis and not
 a medical assessment — and requires review by a qualified doctor or therapist._

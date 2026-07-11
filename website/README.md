@@ -1,6 +1,6 @@
-# NeuroBridge AI — Landing Website
+# NeuroBridge — Landing Website
 
-The public landing website for **NeuroBridge AI**, an AI-powered cognitive
+The public landing website for **NeuroBridge**, an AI-powered cognitive
 rehabilitation ecosystem. It presents the vision, product modules, cognitive
 exercises, safe-AI boundaries, security posture, and roadmap.
 
@@ -78,7 +78,7 @@ node check.js   # if present; see repository notes
 
 ## Content & safety
 
-NeuroBridge AI is **not a diagnostic medical system**. The copy makes no claim
+NeuroBridge is **not a diagnostic medical system**. The copy makes no claim
 to diagnose, predict disease, or treat any condition, and never says AI replaces
 doctors. AI is described only as **AI-assisted support** — supportive activity
 recommendations and performance summaries that are **not a medical diagnosis and

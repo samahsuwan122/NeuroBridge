@@ -1,4 +1,4 @@
-/* NeuroBridge AI — landing website structure & safety check.
+/* NeuroBridge — landing website structure & safety check.
    Dependency-free (Node core only). Verifies the landing page contains every
    required section and the required medical-safety wording, and contains none
    of the forbidden medical-claim terms.
