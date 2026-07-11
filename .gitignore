@@ -83,3 +83,8 @@ backend/storage/*
 !backend/storage/memory_uploads/
 backend/storage/memory_uploads/*
 !backend/storage/memory_uploads/.gitkeep
+
+# --- Local AI/agent tooling ---
+.agents/
+.claude/
+skills-lock.json
