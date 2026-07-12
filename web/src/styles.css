@@ -702,6 +702,98 @@ a {
   min-width: 220px;
 }
 
+/* Family memory contribution form */
+.mform {
+  margin: 0.2rem 0 1.2rem;
+}
+.mform__note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: rgba(217, 190, 134, 0.12);
+  border: 1px solid var(--gold-soft);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  margin: 0 0 1rem;
+}
+.mform__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+.mform__full {
+  grid-column: 1 / -1;
+}
+.mform label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.mform input,
+.mform textarea {
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font: inherit;
+  color: var(--ink);
+}
+.mform input:focus,
+.mform textarea:focus {
+  outline: 2px solid var(--emerald-600);
+  outline-offset: 1px;
+}
+.mform textarea {
+  resize: vertical;
+}
+.mform__req {
+  color: #b3641f;
+}
+.mform__hint {
+  color: var(--muted);
+  font-weight: 500;
+}
+.mform__error {
+  margin-top: 0.8rem;
+  background: #fbeae6;
+  border: 1px solid #f0c3b8;
+  color: #9a3a2f;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+.mform__actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+/* Success / partial-success banner */
+.banner {
+  border-radius: 12px;
+  padding: 0.7rem 0.95rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.banner--ok {
+  background: #cdeede;
+  border: 1px solid #a7dcc4;
+  color: #0c4a3c;
+}
+.banner--warn {
+  background: rgba(217, 190, 134, 0.2);
+  border: 1px solid var(--gold-soft);
+  color: #7a5c1c;
+}
+
+@media (max-width: 620px) {
+  .mform__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Care grid ---------- */
 .care-grid {
   display: grid;

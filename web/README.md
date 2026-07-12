@@ -34,10 +34,15 @@ A read-only, non-diagnostic clinical view for doctors and therapists:
 
 ### Phase 29 (Module 1) — Family Portal foundation
 
-A read-only, supportive view for families/caregivers of their linked patient:
+A supportive view for families/caregivers of their linked patient:
 
 - **Family dashboard** — linked patient card, activity summary, recent sessions,
   games performance, and memory album view.
+- **Memory contribution** — families can add a supportive memory for their
+  linked patient (title, description, person, relationship, place, date,
+  category, optional image). Uses `POST /memories` then, if an image was chosen,
+  `POST /memories/{id}/media`; if the image upload fails the memory is kept and a
+  clear non-blocking message is shown. The album refreshes via `GET /memories`.
 - **Encouragement** — a clearly-labeled placeholder (no messaging endpoint
   exists yet).
 - **Family safety note** — supportive view only, activity performance only, not

@@ -13,6 +13,7 @@ import {
   StatCard,
 } from "../components/ui";
 import { MemoryGrid } from "../components/MemoryGrid";
+import { MemoryForm } from "../components/MemoryForm";
 import {
   formatDate,
   formatDateTime,
@@ -39,6 +40,10 @@ export function FamilyDashboardPage() {
   const [games, setGames] = useState<GameDefinition[]>([]);
   const [results, setResults] = useState<GameResult[]>([]);
   const [memories, setMemories] = useState<MemoryEntry[]>([]);
+  const [formOpen, setFormOpen] = useState(false);
+  const [banner, setBanner] = useState<
+    { tone: "ok" | "warn"; text: string } | null
+  >(null);
 
   // The linked patient (foundation: the first linked patient).
   const patient = patients[0] ?? null;
@@ -130,6 +135,32 @@ export function FamilyDashboardPage() {
     );
     return link?.relationship ?? null;
   }, [patient, user]);
+
+  // Refresh just the album after a contribution (GET /memories, scoped).
+  const refreshMemories = async (patientId: string) => {
+    try {
+      const m = await api<MemoryListResponse>("/memories?limit=200");
+      setMemories(m.memories.filter((x) => x.patient_profile_id === patientId));
+    } catch {
+      // Keep the existing list; the page can be reloaded to retry.
+    }
+  };
+
+  const handleSaved = async (
+    patientId: string,
+    info: { imageFailed: boolean },
+  ) => {
+    setFormOpen(false);
+    setBanner(
+      info.imageFailed
+        ? {
+            tone: "warn",
+            text: "Memory saved, but the image could not be uploaded. You can add it later.",
+          }
+        : { tone: "ok", text: "Memory saved and added to the album." },
+    );
+    await refreshMemories(patientId);
+  };
 
   if (loading) return <Spinner label="Loading your family view…" />;
   if (error) return <ErrorState message={error} onRetry={load} />;
@@ -244,15 +275,38 @@ export function FamilyDashboardPage() {
             </Card>
           </div>
 
-          {/* Memory album */}
+          {/* Memory album + contribution */}
           <Card>
             <SectionHeader
               eyebrow="Memory album"
               title="Cherished memories"
-              action={<Badge tone="gold">Family-contributed</Badge>}
+              action={
+                <button
+                  className="btn btn--gold btn--sm"
+                  onClick={() => {
+                    setBanner(null);
+                    setFormOpen((v) => !v);
+                  }}
+                >
+                  {formOpen ? "Close" : "＋ Add memory"}
+                </button>
+              }
             />
+
+            {banner && (
+              <div className={`banner banner--${banner.tone}`}>{banner.text}</div>
+            )}
+
+            {formOpen && (
+              <MemoryForm
+                patientId={patient.id}
+                onCancel={() => setFormOpen(false)}
+                onSaved={(info) => handleSaved(patient.id, info)}
+              />
+            )}
+
             {memories.length === 0 ? (
-              <EmptyState message="No memory album entries yet." />
+              <EmptyState message="No memory album entries yet. Add the first supportive memory for family recall." />
             ) : (
               <MemoryGrid memories={memories} />
             )}
