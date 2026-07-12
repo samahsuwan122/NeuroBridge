@@ -13,6 +13,20 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
+- **Phase 29 Module 1B (Family Memory Contribution) completed locally.**
+  Family/caregiver users can now **add supportive memories for their linked
+  patient** from the Family Portal (title, description, person, relationship,
+  place, date, category, optional image). It **reuses existing backend memory
+  create and media upload APIs** (`POST /memories`, then `POST /memories/{id}/media`
+  for images) — **no backend changes**. **Optional JPEG/PNG/WebP image upload**
+  is supported (≤ 5 MB). If the **image upload fails after the memory is created,
+  the memory is kept and a clear non-blocking warning is shown**; the **album
+  refreshes after saving** (`GET /memories`). **Backend, mobile, website,
+  database, and migrations were untouched.** Safety wording stays **supportive
+  memory contribution only — not a medical diagnosis and not a medical
+  assessment**. Note: **`web/.env.local` is local only and must not be committed**
+  (already covered by the `.env.*` gitignore rule). The local stash remains
+  **untouched**.
 - **Phase 29 Module 1 (Family Portal Foundation) completed and committed
   locally.** The **`web/`** app now serves **two role-based portals** from one
   shared sign-in: **doctor/therapist users route to the clinical dashboard**, and
