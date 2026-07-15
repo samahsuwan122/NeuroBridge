@@ -13,6 +13,84 @@ platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
 
+- **Phase 29 Module 1F (Family Appointments Booking upgrade) completed
+  locally.** Appointments are now a **real booking workflow**. Backend adds a
+  `provider_availability_slots` model + migration (`0008`) and extends
+  `appointments` with `provider_user_id`, `availability_slot_id`,
+  `appointment_mode` (in_person/online), `location`, `meeting_url`. New APIs:
+  `GET /providers` (doctors/therapists), `GET /providers/{id}/availability`
+  (open slots), `POST /appointments` (book a provider + slot for the linked
+  patient), `GET /appointments` (role-scoped), and `PATCH /appointments/{id}/status`.
+  **RBAC (strict):** linked family can book only for the linked patient;
+  unlinked family and patients cannot book; a patient can view own; a
+  doctor/therapist can view appointments where they are the **provider or
+  assigned** clinician and can **update status** for those only; unrelated
+  clinicians are blocked; admin all; no public access. Booking **consumes** the
+  slot; **cancelling reopens** it; **status is backend-controlled**. The Family
+  `/appointments` page is a 3-step flow (choose provider → choose slot with
+  In-person/Online + location/online note → reason → submit) plus a history
+  table (provider, date/time, mode, where, status, reason). The **Doctor Portal**
+  gains a functional **Appointments** page (no "Soon"): providers/assigned
+  clinicians see relevant requests and Approve / Complete / Cancel them.
+  `seed_demo_data` adds **6 demo slots** (Demo Doctor + Demo Therapist, in-person
+  and online, next few days; idempotent). Safety wording is coordination-only
+  (**appointment request / care coordination / in-person or online session /
+  contact the care team / for urgent concerns contact local emergency
+  services**) — non-diagnostic. **Patient-mobile appointment card is deferred**
+  (mobile untouched this step; the API is ready). `website/` untouched; stash
+  untouched; Family Encouragement and Family Memory Contribution still work.
+- **Phase 29 Modules 1D + 1E (Family Appointments + Family Reports) completed
+  locally.** **All visible Family Portal sidebar items are now functional** with
+  dedicated pages — **Overview (`/`), Encouragement (`/encouragement`),
+  Appointments (`/appointments`), Reports (`/reports`)** — and **no "Soon"
+  badges or placeholder/disabled items remain**. The Dashboard stays an overview
+  only.
+  - **Module 1D — Family Appointments:** new backend `appointments` model +
+    migration (`0007`) and `/api/v1/appointments` API (`GET`/`POST`). RBAC:
+    **family creates/views only for a linked patient; patient views own;
+    doctor/therapist view assigned; admin all; no public access; unlinked family
+    blocked; audit-logged**. Validation: preferred date required, reason required
+    (trimmed, non-empty, ≤ 500), preferred time optional; **status is
+    backend-controlled (defaults to `pending`) — the family cannot set it**. A
+    doctor status-update/approval workflow (`PATCH /status`) is **deferred** and
+    documented. Web `/appointments` page: request form (loading/success/error)
+    + history with status badges + empty state; safe note (**coordination only,
+    not emergency care; for urgent concerns contact the care team or local
+    emergency services**).
+  - **Module 1E — Family Reports:** web `/reports` page composed from existing
+    data (games/results, memories, encouragements, appointments, patient
+    profile) — summary cards, per-exercise breakdown, recent activity, memory /
+    encouragement / appointment summaries, and a working **Print report**
+    action (browser print via a print stylesheet). **No new report backend, no
+    fake analytics.** Wording is **performance-only, not a medical diagnosis and
+    not a medical assessment**.
+  - **Deferred (no UI, no fake controls):** patient-mobile appointment view and
+    the Doctor-Portal appointment list are deferred this step (the backend GET
+    already supports both roles). **Voice/audio encouragement remains deferred**
+    as a future Module 1 enhancement — no upload buttons or disabled voice
+    placeholders exist.
+  - **Scope of changes:** backend (appointments model/migration/API/tests) + web
+    (2 new pages, sidebar, routes, types, CSS, README) + docs. **Mobile untouched
+    this step. `website/` untouched. Stash untouched. Doctor Portal, family
+    memory contribution, and family/patient encouragement all still work.**
+- **Phase 29 Module 1C (Family Encouragement, end-to-end + page alignment)
+  completed locally.** Family/caregiver users send supportive text messages to
+  their linked patient; the patient sees them on the mobile Patient Home. Backend
+  adds a `family_encouragements` model + migration (`0006`) and an
+  `/api/v1/encouragements` API (RBAC: **family can send only to a linked
+  patient; patient can view own messages; no public access**; audit-logged). In
+  the web Family Portal, **Encouragement is now a dedicated `/encouragement`
+  page** (title, safety note, 300-char text form with loading/success/error
+  states, message history, empty state); the **Family Dashboard stays an overview
+  only** (linked patient, recent activity, games performance, memory album,
+  safety note) with a **small encouragement preview + "Open encouragement"
+  link**. The sidebar **Encouragement** item is a real nav link (no "Soon"
+  badge). **Text encouragement is the only visible feature — voice/audio
+  encouragement is planned as the next Module 1 sub-step and has no UI yet (no
+  fake or disabled voice controls are shown).** Safety wording: family
+  encouragement / supportive message / emotional support / **not medical advice /
+  not a medical diagnosis / not a medical assessment**. `website/` untouched;
+  stash untouched.
 - **Phase 29 Module 1B (Family Memory Contribution) completed locally.**
   Family/caregiver users can now **add supportive memories for their linked
   patient** from the Family Portal (title, description, person, relationship,
