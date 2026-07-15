@@ -11,6 +11,7 @@ import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../auth/application/auth_controller.dart';
+import '../../encouragements/application/encouragement_controller.dart';
 import '../application/home_controller.dart';
 
 const _patientRole = 'patient';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final roles = scope.auth.user?.roles ?? const <String>[];
       if (roles.contains(_patientRole) || roles.contains(_familyRole)) {
         scope.home.load();
+        scope.encouragements?.load();
       }
     });
   }
@@ -67,6 +69,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     home: scope.home,
                     l10n: l10n,
                   ),
+                  if (scope.encouragements != null) ...[
+                    const SizedBox(height: 16),
+                    _EncouragementSection(
+                      auth: scope.auth,
+                      controller: scope.encouragements!,
+                      l10n: l10n,
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   SectionHeader(
                     icon: Icons.spa_outlined,
@@ -318,6 +328,99 @@ class _SummarySection extends StatelessWidget {
                 '${l10n.emergencyContact}: ${summary.emergencyContactDisplay}',
               ),
             ],
+          ],
+        );
+    }
+  }
+}
+
+/// Shows the family encouragement messages received by the patient. Family
+/// support content only — never medical advice, diagnosis, or assessment.
+class _EncouragementSection extends StatelessWidget {
+  const _EncouragementSection({
+    required this.auth,
+    required this.controller,
+    required this.l10n,
+  });
+
+  final AuthController auth;
+  final EncouragementController controller;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final roles = auth.user?.roles ?? const <String>[];
+    final isPatientOrFamily =
+        roles.contains(_patientRole) || roles.contains(_familyRole);
+    if (!isPatientOrFamily) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const IconChip(
+                        icon: Icons.volunteer_activism, size: 34),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(l10n.familyEncouragement,
+                          style: theme.textTheme.titleMedium),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.encouragementNote,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
+                const SizedBox(height: 12),
+                _body(context),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    switch (controller.status) {
+      case EncouragementStatus.initial:
+      case EncouragementStatus.loading:
+        return const LoadingState();
+      case EncouragementStatus.error:
+        return ErrorState(
+          message: l10n.networkError,
+          retryLabel: l10n.retry,
+          onRetry: controller.load,
+        );
+      case EncouragementStatus.empty:
+        return Text(l10n.noEncouragementYet);
+      case EncouragementStatus.loaded:
+        final theme = Theme.of(context);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final item in controller.items)
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer
+                      .withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(item.message, style: theme.textTheme.bodyMedium),
+              ),
           ],
         );
     }

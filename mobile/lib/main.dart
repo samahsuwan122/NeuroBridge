@@ -7,6 +7,8 @@ import 'core/storage/secure_storage_service.dart';
 import 'features/auth/application/auth_controller.dart';
 import 'features/auth/data/auth_api.dart';
 import 'features/auth/data/auth_repository.dart';
+import 'features/encouragements/application/encouragement_controller.dart';
+import 'features/encouragements/data/encouragements_api.dart';
 import 'features/games/application/game_result_controller.dart';
 import 'features/games/application/games_controller.dart';
 import 'features/games/data/game_results_api.dart';
@@ -46,6 +48,10 @@ Future<void> main() async {
     PatientApi(apiClient),
     storage,
   );
+  final encouragementController = EncouragementController(
+    EncouragementsApi(apiClient),
+    storage,
+  );
 
   // Resolve initial auth state from any stored token before the first frame.
   await authController.bootstrap();
@@ -60,6 +66,7 @@ Future<void> main() async {
       progress: progressController,
       profile: profileController,
       memories: memoriesController,
+      encouragements: encouragementController,
     ),
   );
 }

@@ -84,6 +84,10 @@ class AppLocalizations {
       'memoryAlbumDesc': 'Photos and stories from your life.',
       'familySupport': 'Family Support',
       'familySupportDesc': 'Stay connected with your caregivers.',
+      'familyEncouragement': 'Family Encouragement',
+      'noEncouragementYet': 'No encouragement messages yet.',
+      'encouragementNote':
+          'Supportive messages from your family. Not medical advice.',
       'comingSoon': 'Coming soon',
       // Patient summary
       'patientSummary': 'Patient summary',
@@ -303,6 +307,9 @@ class AppLocalizations {
       'memoryAlbumDesc': 'صور وقصص من حياتك.',
       'familySupport': 'دعم العائلة',
       'familySupportDesc': 'ابقَ على تواصل مع مقدّمي الرعاية.',
+      'familyEncouragement': 'تشجيع العائلة',
+      'noEncouragementYet': 'لا توجد رسائل تشجيع بعد.',
+      'encouragementNote': 'رسائل داعمة من عائلتك. ليست نصيحة طبية.',
       'comingSoon': 'قريبًا',
       // Patient summary
       'patientSummary': 'ملخص المريض',
@@ -1490,6 +1497,9 @@ class AppLocalizations {
   String get memoryAlbumDesc => _t('memoryAlbumDesc');
   String get familySupport => _t('familySupport');
   String get familySupportDesc => _t('familySupportDesc');
+  String get familyEncouragement => _t('familyEncouragement');
+  String get noEncouragementYet => _t('noEncouragementYet');
+  String get encouragementNote => _t('encouragementNote');
   String get comingSoon => _t('comingSoon');
 
   String get patientSummary => _t('patientSummary');

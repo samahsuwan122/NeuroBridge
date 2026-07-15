@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../features/auth/application/auth_controller.dart';
+import '../features/encouragements/application/encouragement_controller.dart';
 import '../features/games/application/game_result_controller.dart';
 import '../features/games/application/games_controller.dart';
 import '../features/home/application/home_controller.dart';
@@ -21,6 +22,7 @@ class AppScope extends InheritedWidget {
     required this.progress,
     required this.profile,
     required this.memories,
+    this.encouragements,
     required super.child,
   });
 
@@ -32,6 +34,10 @@ class AppScope extends InheritedWidget {
   final ProgressController progress;
   final ProfileController profile;
   final MemoriesController memories;
+
+  /// Optional: patient-facing family encouragements. Null in tests that do not
+  /// exercise this feature (the home screen then hides the section).
+  final EncouragementController? encouragements;
 
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
@@ -48,5 +54,6 @@ class AppScope extends InheritedWidget {
       gameResults != oldWidget.gameResults ||
       progress != oldWidget.progress ||
       profile != oldWidget.profile ||
-      memories != oldWidget.memories;
+      memories != oldWidget.memories ||
+      encouragements != oldWidget.encouragements;
 }
