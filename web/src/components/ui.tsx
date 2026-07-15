@@ -26,12 +26,18 @@ export function Card({
   children,
   className = "",
   as: Tag = "div",
+  id,
 }: {
   children: ReactNode;
   className?: string;
   as?: "div" | "article" | "section";
+  id?: string;
 }) {
-  return <Tag className={`card ${className}`}>{children}</Tag>;
+  return (
+    <Tag className={`card ${className}`} id={id}>
+      {children}
+    </Tag>
+  );
 }
 
 // ---- Stat card -------------------------------------------------------------

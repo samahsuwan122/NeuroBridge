@@ -43,15 +43,55 @@ A supportive view for families/caregivers of their linked patient:
   category, optional image). Uses `POST /memories` then, if an image was chosen,
   `POST /memories/{id}/media`; if the image upload fails the memory is kept and a
   clear non-blocking message is shown. The album refreshes via `GET /memories`.
-- **Encouragement** — a clearly-labeled placeholder (no messaging endpoint
-  exists yet).
+- **Encouragement** — a dedicated **`/encouragement`** page to send a short
+  supportive message to the linked patient and see recent messages (the
+  dashboard keeps only a small preview + "Open encouragement" link), via
+  `POST` / `GET /encouragements` (family support only). The patient sees these in
+  the mobile app (Patient Home).
+- **Appointments** — a dedicated **`/appointments`** booking flow: choose a
+  provider (doctor/therapist), pick an available slot (in-person or online with
+  location/online note), add a reason, and submit a request for the linked
+  patient. History shows provider, date/time, mode, where, status, reason. Uses
+  `GET /providers`, `GET /providers/{id}/availability`, `POST`/`GET
+  /appointments`. Coordination only — not emergency care. The **Doctor Portal**
+  `/appointments` page lets providers/assigned clinicians update status
+  (`PATCH /appointments/{id}/status`). A **doctor-directory** view (search,
+  role/governorate/mode/specialty filters, provider cards, and a
+  **`/providers/:id`** profile page) reads rich provider data (specialty,
+  governorate/city, demo rating, demo contact, photo) from `GET /providers`.
+  Each provider card shows a clearly-labeled **demo contact** number.
+- **Provider inquiry chat** — a real two-way conversation. From a provider card
+  (**Send inquiry**) or the provider profile page (`/providers/:id#inquiry`), a
+  linked family member starts a **non-urgent care-coordination** thread
+  (`POST /provider-messages`). The addressed doctor/therapist opens the thread in
+  the Doctor Portal **Appointments** inbox and **replies**
+  (`POST /provider-messages/{id}/replies`); the family sees the reply and can
+  follow up in the same thread. A dedicated family **`/messages`** page lists all
+  conversations with unread badges; opening a thread marks its replies read
+  (`PATCH /provider-messages/{id}/read`). The family sidebar shows an **in-app
+  unread badge** (polled from `GET /provider-messages/unread-count` every 30s —
+  in-app only, **no browser/push notifications**). Chat bubbles, sender, and time
+  render like a clinic messenger. Non-urgent only — not emergency care.
+
+  > **Demo providers & photos.** All providers are **local graduation-demo data,
+  > not real clinicians** — names, ratings, and the demo contact numbers (e.g.
+  > `+970-59-410-2301`) are **fake demo values only**, seeded per provider and
+  > never real phone numbers. Provider **photos are uploaded by an admin via
+  > Swagger** (`POST /api/v1/providers/{id}/photo`, admin-only, JPEG/PNG/WebP ≤ 5
+  > MB); files are stored in **`backend/storage/provider_photos/`** (git-ignored)
+  > and the database keeps only the `photo_url`. Cards/profile fall back to an
+  > initials avatar when no photo exists.
+- **Reports** — a dedicated **`/reports`** page: a performance-only family
+  summary (sessions, completion, best/average, memories, encouragements,
+  appointment requests, per-exercise breakdown) with a **Print report** action
+  (browser print; a print stylesheet hides the app chrome). Composed from
+  existing data — no new report backend.
 - **Family safety note** — supportive view only, activity performance only, not
   a medical diagnosis and not a medical assessment; contact the care team for
   medical concerns.
 
-Charts are lightweight CSS bars (no chart dependency). All AI/encouragement
-sections are **clearly-labeled placeholders** — no such backend endpoints exist
-yet.
+Charts are lightweight CSS bars (no chart dependency). The Doctor Portal AI
+section remains a **clearly-labeled placeholder** — no AI backend exists yet.
 
 ## Stack
 
@@ -109,9 +149,24 @@ npm run preview    # preview the production build
 - `GET /api/v1/games`, `GET /api/v1/games/results?patient_profile_id=` —
   results are role-scoped the same way.
 - `GET /api/v1/memories` — role-scoped (families see their linked patient's).
+- `GET` / `POST /api/v1/encouragements` — family encouragement messages
+  (family/admin create for a linked patient; role-scoped listing).
+- `GET` / `POST /api/v1/appointments` — family appointment requests
+  (family/admin create for a linked patient; role-scoped listing; status is
+  backend-controlled, defaults to `pending`).
+- `GET` / `POST /api/v1/provider-messages` — non-urgent provider inquiry threads
+  (family/admin create for a linked patient, addressed to a provider; providers
+  read inquiries addressed to them; role-scoped listing with reply preview +
+  unread count).
+- `GET /api/v1/provider-messages/{id}` — a full thread (inquiry + replies).
+- `POST /api/v1/provider-messages/{id}/replies` — reply in a thread (addressed
+  provider, family sender, or admin).
+- `PATCH /api/v1/provider-messages/{id}/read` — mark the thread's replies read.
+- `GET /api/v1/provider-messages/unread-count` — in-app unread reply count.
 
-Both the Doctor and Family portals reuse the same read-only endpoints; the
-backend enforces role scoping. No backend endpoints were added or changed.
+The portals reuse the same role-scoped endpoints; the backend enforces scoping.
+The `encouragements` and `appointments` endpoints were added (each with model,
+migration, and tests) for the Family Portal features.
 
 ## Planned features (later phases)
 

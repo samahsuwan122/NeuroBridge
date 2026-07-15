@@ -120,3 +120,125 @@ export interface MemoryListResponse {
   total: number;
   memories: MemoryEntry[];
 }
+
+export interface Encouragement {
+  id: string;
+  patient_profile_id: string;
+  sender_user_id: string;
+  message: string;
+  created_at: string;
+}
+
+export interface EncouragementListResponse {
+  success: boolean;
+  total: number;
+  encouragements: Encouragement[];
+}
+
+export interface Appointment {
+  id: string;
+  patient_profile_id: string;
+  requester_user_id: string;
+  provider_user_id?: string | null;
+  provider_name?: string | null;
+  preferred_date: string;
+  preferred_time?: string | null;
+  appointment_mode: string;
+  location?: string | null;
+  meeting_url?: string | null;
+  reason: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AppointmentListResponse {
+  success: boolean;
+  total: number;
+  appointments: Appointment[];
+}
+
+export interface Provider {
+  provider_user_id: string;
+  full_name: string;
+  role: string;
+  specialty?: string | null;
+  bio_short?: string | null;
+  clinic_name?: string | null;
+  governorate?: string | null;
+  city?: string | null;
+  location?: string | null;
+  experience_label?: string | null;
+  phone_number_demo?: string | null;
+  photo_url?: string | null;
+  rating_average?: number | null;
+  rating_count?: number | null;
+  available_slot_count: number;
+  in_person_available: boolean;
+  online_available: boolean;
+  next_available_date?: string | null;
+}
+
+export interface ProviderListResponse {
+  success: boolean;
+  providers: Provider[];
+}
+
+export interface ProviderMessage {
+  id: string;
+  provider_user_id: string;
+  sender_user_id: string;
+  patient_profile_id: string;
+  message: string;
+  status: string;
+  created_at: string;
+  provider_name?: string | null;
+  sender_name?: string | null;
+  patient_name?: string | null;
+  latest_reply_preview?: string | null;
+  latest_reply_at?: string | null;
+  unread_reply_count?: number;
+}
+
+export interface ProviderMessageReply {
+  id: string;
+  provider_message_id: string;
+  sender_user_id: string;
+  sender_name?: string | null;
+  body: string;
+  created_at: string;
+  read_at?: string | null;
+}
+
+export interface ProviderMessageThread extends ProviderMessage {
+  replies: ProviderMessageReply[];
+}
+
+export interface ProviderMessageListResponse {
+  success: boolean;
+  total: number;
+  limit: number;
+  offset: number;
+  messages: ProviderMessage[];
+}
+
+export interface UnreadCountResponse {
+  success?: boolean;
+  unread_count: number;
+}
+
+export interface AvailabilitySlot {
+  id: string;
+  provider_user_id: string;
+  slot_date: string;
+  start_time: string;
+  end_time: string;
+  appointment_mode: string;
+  location?: string | null;
+  meeting_url?: string | null;
+}
+
+export interface SlotListResponse {
+  success: boolean;
+  slots: AvailabilitySlot[];
+}

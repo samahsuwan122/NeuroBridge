@@ -6,11 +6,11 @@ import { initials } from "../lib";
 const NAV = [
   { to: "/", label: "Overview", icon: "▚", end: true },
   { to: "/patients", label: "Patients", icon: "☰", end: false },
+  { to: "/appointments", label: "Appointments", icon: "🗓", end: false },
 ];
 
-// Roadmap items are shown but disabled — foundation is Overview + Patients.
+// Roadmap items are shown but disabled.
 const NAV_SOON = [
-  { label: "Appointments", icon: "🗓" },
   { label: "Reports", icon: "📄" },
   { label: "AI review queue", icon: "✦" },
 ];

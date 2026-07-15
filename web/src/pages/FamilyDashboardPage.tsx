@@ -12,6 +12,7 @@ import {
   Spinner,
   StatCard,
 } from "../components/ui";
+import { Link } from "react-router-dom";
 import { MemoryGrid } from "../components/MemoryGrid";
 import { MemoryForm } from "../components/MemoryForm";
 import {
@@ -19,9 +20,12 @@ import {
   formatDateTime,
   formatDuration,
   patientName,
+  pickLinkedPatient,
   scorePercent,
 } from "../lib";
 import type {
+  Encouragement,
+  EncouragementListResponse,
   GameDefinition,
   GameListResponse,
   GameResult,
@@ -40,13 +44,15 @@ export function FamilyDashboardPage() {
   const [games, setGames] = useState<GameDefinition[]>([]);
   const [results, setResults] = useState<GameResult[]>([]);
   const [memories, setMemories] = useState<MemoryEntry[]>([]);
+  const [latestEncouragement, setLatestEncouragement] =
+    useState<Encouragement | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [banner, setBanner] = useState<
     { tone: "ok" | "warn"; text: string } | null
   >(null);
 
-  // The linked patient (foundation: the first linked patient).
-  const patient = patients[0] ?? null;
+  // The patient this family member is linked to (used for all create actions).
+  const patient = pickLinkedPatient(patients, user?.id);
 
   const load = async () => {
     setLoading(true);
@@ -54,9 +60,9 @@ export function FamilyDashboardPage() {
     try {
       // Backend scopes /patients to the family member's linked patient(s).
       const p = await api<PatientListResponse>("/patients?limit=200");
-      const linked = p.patients[0] ?? null;
+      const linked = pickLinkedPatient(p.patients, user?.id);
 
-      const [g, r, m] = await Promise.all([
+      const [g, r, m, e] = await Promise.all([
         api<GameListResponse>("/games"),
         linked
           ? api<GameResultListResponse>(
@@ -64,6 +70,13 @@ export function FamilyDashboardPage() {
             )
           : Promise.resolve({ results: [] } as unknown as GameResultListResponse),
         api<MemoryListResponse>("/memories?limit=200"),
+        linked
+          ? api<EncouragementListResponse>(
+              `/encouragements?patient_profile_id=${linked.id}&limit=1`,
+            )
+          : Promise.resolve(
+              { encouragements: [] } as unknown as EncouragementListResponse,
+            ),
       ]);
 
       setPatients(p.patients);
@@ -74,6 +87,7 @@ export function FamilyDashboardPage() {
           ? m.memories.filter((x) => x.patient_profile_id === linked.id)
           : [],
       );
+      setLatestEncouragement(e.encouragements[0] ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load your view.");
     } finally {
@@ -312,34 +326,27 @@ export function FamilyDashboardPage() {
             )}
           </Card>
 
-          {/* Encouragement placeholder */}
-          <Card className="ai-card">
+          {/* Family encouragement preview (full form lives on /encouragement) */}
+          <Card>
             <SectionHeader
               eyebrow="Family encouragement"
-              title="Send a supportive message"
-              action={<Badge tone="plan">Coming soon</Badge>}
+              title="Supportive messages"
+              action={
+                <Link className="btn btn--gold btn--sm" to="/encouragement">
+                  Open encouragement
+                </Link>
+              }
             />
-            <div className="ai-placeholder">
-              <p>
-                A simple way to send <strong>family encouragement</strong> to
-                your family member will appear here.
-              </p>
-              <textarea
-                className="encourage__input"
-                rows={2}
-                placeholder="Encouragement messaging is coming soon…"
-                disabled
-              />
-              <div className="encourage__row">
-                <button className="btn btn--gold" disabled>
-                  Send encouragement
-                </button>
-                <span className="ai-placeholder__note">
-                  No messaging endpoint exists yet — this is a labeled
-                  placeholder, not a live feature.
+            {latestEncouragement ? (
+              <div className="encourage-preview">
+                <p>“{latestEncouragement.message}”</p>
+                <span className="encourage-preview__date">
+                  {formatDateTime(latestEncouragement.created_at)}
                 </span>
               </div>
-            </div>
+            ) : (
+              <EmptyState message="No encouragement messages yet. Open encouragement to send one." />
+            )}
           </Card>
 
           <FamilySafetyNote />

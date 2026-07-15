@@ -1,4 +1,30 @@
-import type { GameResult } from "./types";
+import type { GameResult, PatientProfile } from "./types";
+
+/**
+ * Pick the patient the family member is actually linked to.
+ *
+ * The backend scopes create actions (memory / encouragement / appointment) to a
+ * patient the family is *linked* to. Selecting the profile whose active
+ * `family_links` includes the current user — instead of blindly `patients[0]` —
+ * ensures create requests always target a viewable patient (avoiding a 403 if
+ * the account can ever see more than one patient). Falls back to the first
+ * patient when no explicit link match is available.
+ */
+export function pickLinkedPatient(
+  patients: PatientProfile[],
+  userId?: string,
+): PatientProfile | null {
+  if (patients.length === 0) return null;
+  if (userId) {
+    const linked = patients.find((p) =>
+      (p.family_links ?? []).some(
+        (l) => l.active && l.family_user_id === userId,
+      ),
+    );
+    if (linked) return linked;
+  }
+  return patients[0];
+}
 
 export function formatDate(iso?: string | null): string {
   if (!iso) return "—";
