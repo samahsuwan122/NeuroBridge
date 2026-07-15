@@ -11,6 +11,7 @@ Run from the backend/ folder:
     python -m app.scripts.seed_demo_data
 """
 
+from datetime import date, timedelta
 from typing import Dict, Tuple
 
 from sqlalchemy import select
@@ -23,6 +24,8 @@ from app.models import (
     PatientAssignment,
     PatientFamilyLink,
     PatientProfile,
+    ProviderAvailabilitySlot,
+    ProviderProfile,
     Role,
     User,
     UserRole,
@@ -42,6 +45,234 @@ DEMO_USERS = [
     ("doctor.demo@neurobridge.local", "Demo Doctor", "doctor"),
     ("therapist.demo@neurobridge.local", "Demo Therapist", "therapist"),
 ]
+
+# Extra bookable demo care providers across governorates (LOCAL DEMO ACCOUNTS
+# ONLY — realistic FAKE names for the graduation demo, NOT real clinicians).
+# Keyed by email so several providers of the same role/governorate can coexist.
+DEMO_EXTRA_PROVIDERS = [
+    ("dr.lina.demo@neurobridge.local", "Dr. Lina Haddad", "doctor"),
+    ("dr.sara.demo@neurobridge.local", "Dr. Sara Khalil", "doctor"),
+    ("therapist.omar.demo@neurobridge.local", "Therapist Omar Naser", "therapist"),
+    ("dr.kareem.demo@neurobridge.local", "Dr. Kareem Mansour", "doctor"),
+    ("therapist.dana.demo@neurobridge.local", "Therapist Dana Saleh", "therapist"),
+    ("dr.hala.demo@neurobridge.local", "Dr. Hala Barghouti", "doctor"),
+    ("therapist.yazan.demo@neurobridge.local", "Therapist Yazan Saleh", "therapist"),
+]
+
+# The old placeholder demo contact. Kept only so re-seeding can detect and
+# replace it with a realistic-looking demo number below. NEVER a real number.
+LEGACY_DEMO_PHONE = "+970-000-000-000"
+
+# Realistic-looking demo contact numbers — one per provider. These are FAKE
+# local demo numbers for the graduation demo ONLY. They are not real phone
+# numbers and must never be dialed or treated as real clinician contacts.
+# email -> demo contact number.
+DEMO_PROVIDER_PHONES = {
+    "doctor.demo@neurobridge.local": "+970-59-410-2301",
+    "therapist.demo@neurobridge.local": "+970-56-220-1844",
+    "dr.lina.demo@neurobridge.local": "+970-59-730-5022",
+    "dr.sara.demo@neurobridge.local": "+970-56-815-7490",
+    "therapist.omar.demo@neurobridge.local": "+970-59-284-6617",
+    "dr.kareem.demo@neurobridge.local": "+970-56-903-1185",
+    "therapist.dana.demo@neurobridge.local": "+970-59-642-3370",
+    "dr.hala.demo@neurobridge.local": "+970-56-771-2094",
+    "therapist.yazan.demo@neurobridge.local": "+970-59-508-6123",
+}
+
+# Provider profile detail. Names/ratings/text/phone are SEEDED DEMO VALUES ONLY —
+# they do not represent real clinicians, real phone numbers, or real reviews.
+# The phone_number_demo is taken from DEMO_PROVIDER_PHONES (fake demo contacts).
+# email -> profile fields.
+DEMO_PROVIDER_PROFILES = {
+    "doctor.demo@neurobridge.local": {
+        "specialty": "Cognitive follow-up",
+        "bio_short": "Supportive cognitive follow-up and care coordination.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Nablus",
+        "city": "Nablus",
+        "location": "NeuroBridge Demo Center, Room 3",
+        "experience_label": "10 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES["doctor.demo@neurobridge.local"],
+        "rating_average": 4.9,
+        "rating_count": 24,
+    },
+    "therapist.demo@neurobridge.local": {
+        "specialty": "Therapy support",
+        "bio_short": "Supportive therapy activities and family coordination.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Ramallah",
+        "city": "Ramallah",
+        "location": "NeuroBridge Demo Center, Room 5",
+        "experience_label": "8 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES[
+            "therapist.demo@neurobridge.local"
+        ],
+        "rating_average": 4.8,
+        "rating_count": 19,
+    },
+    "dr.lina.demo@neurobridge.local": {
+        "specialty": "Memory and attention support",
+        "bio_short": "Focus on memory and attention supportive activities.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Nablus",
+        "city": "Nablus",
+        "location": "NeuroBridge Demo Center, Room 2",
+        "experience_label": "12 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES["dr.lina.demo@neurobridge.local"],
+        "rating_average": 4.9,
+        "rating_count": 31,
+    },
+    "dr.sara.demo@neurobridge.local": {
+        "specialty": "Cognitive care planning",
+        "bio_short": "Care coordination and supportive planning.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Ramallah",
+        "city": "Ramallah",
+        "location": "NeuroBridge Demo Center, Room 1",
+        "experience_label": "9 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES["dr.sara.demo@neurobridge.local"],
+        "rating_average": 4.8,
+        "rating_count": 22,
+    },
+    "therapist.omar.demo@neurobridge.local": {
+        "specialty": "Daily activity training",
+        "bio_short": "Supportive daily-activity training sessions.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Nablus",
+        "city": "Nablus",
+        "location": "NeuroBridge Demo Center, Room 6",
+        "experience_label": "6 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES[
+            "therapist.omar.demo@neurobridge.local"
+        ],
+        "rating_average": 4.7,
+        "rating_count": 15,
+    },
+    "dr.kareem.demo@neurobridge.local": {
+        "specialty": "Cognitive follow-up",
+        "bio_short": "Supportive cognitive follow-up and family coordination.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Hebron",
+        "city": "Hebron",
+        "location": "NeuroBridge Demo Center, Room 4",
+        "experience_label": "11 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES[
+            "dr.kareem.demo@neurobridge.local"
+        ],
+        "rating_average": 4.8,
+        "rating_count": 20,
+    },
+    "therapist.dana.demo@neurobridge.local": {
+        "specialty": "Therapy support",
+        "bio_short": "Supportive therapy activities for families.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Jenin",
+        "city": "Jenin",
+        "location": "NeuroBridge Demo Center, Room 2",
+        "experience_label": "7 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES[
+            "therapist.dana.demo@neurobridge.local"
+        ],
+        "rating_average": 4.6,
+        "rating_count": 12,
+    },
+    "dr.hala.demo@neurobridge.local": {
+        "specialty": "Memory and attention support",
+        "bio_short": "Focus on memory and attention supportive activities.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Tulkarem",
+        "city": "Tulkarem",
+        "location": "NeuroBridge Demo Center, Room 3",
+        "experience_label": "13 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES["dr.hala.demo@neurobridge.local"],
+        "rating_average": 4.9,
+        "rating_count": 27,
+    },
+    "therapist.yazan.demo@neurobridge.local": {
+        "specialty": "Daily activity training",
+        "bio_short": "Supportive daily-routine training sessions.",
+        "clinic_name": "NeuroBridge Demo Center",
+        "governorate": "Qalqilya",
+        "city": "Qalqilya",
+        "location": "NeuroBridge Demo Center, Room 1",
+        "experience_label": "5 years experience",
+        "phone_number_demo": DEMO_PROVIDER_PHONES[
+            "therapist.yazan.demo@neurobridge.local"
+        ],
+        "rating_average": 4.5,
+        "rating_count": 9,
+    },
+}
+
+# Fields every demo provider profile must have. Used for idempotent backfill so
+# re-seeding an older DB fills in any missing values (and swaps the legacy
+# placeholder phone for a realistic demo contact number).
+_REQUIRED_PROFILE_FIELDS = (
+    "specialty",
+    "experience_label",
+    "governorate",
+    "city",
+    "location",
+    "phone_number_demo",
+    "rating_average",
+    "rating_count",
+)
+
+# email -> list of (day_offset, start, end, mode, room). Rooms are demo-only.
+DEMO_PROVIDER_SLOTS = {
+    "doctor.demo@neurobridge.local": [
+        (2, "10:00", "10:30", "in_person", "Room 3"),
+        (2, "11:00", "11:30", "online", None),
+        (4, "09:30", "10:00", "in_person", "Room 3"),
+    ],
+    "therapist.demo@neurobridge.local": [
+        (3, "14:00", "14:45", "online", None),
+        (3, "15:00", "15:45", "in_person", "Room 5"),
+        (5, "13:00", "13:45", "in_person", "Room 5"),
+    ],
+    "dr.lina.demo@neurobridge.local": [
+        (2, "09:00", "09:30", "in_person", "Room 2"),
+        (3, "10:30", "11:00", "online", None),
+        (5, "09:00", "09:30", "in_person", "Room 2"),
+    ],
+    "dr.sara.demo@neurobridge.local": [
+        (3, "11:30", "12:00", "in_person", "Room 1"),
+        (4, "12:30", "13:00", "online", None),
+        (6, "10:00", "10:30", "in_person", "Room 1"),
+    ],
+    "therapist.omar.demo@neurobridge.local": [
+        (2, "16:00", "16:45", "online", None),
+        (4, "14:00", "14:45", "in_person", "Room 6"),
+    ],
+    "dr.kareem.demo@neurobridge.local": [
+        (2, "08:30", "09:00", "in_person", "Room 4"),
+        (3, "09:30", "10:00", "online", None),
+    ],
+    "therapist.dana.demo@neurobridge.local": [
+        (3, "13:00", "13:45", "in_person", "Room 2"),
+        (5, "14:00", "14:45", "online", None),
+    ],
+    "dr.hala.demo@neurobridge.local": [
+        (2, "10:00", "10:30", "in_person", "Room 3"),
+        (4, "11:00", "11:30", "online", None),
+    ],
+    "therapist.yazan.demo@neurobridge.local": [
+        (3, "15:30", "16:15", "in_person", "Room 1"),
+        (6, "12:00", "12:45", "online", None),
+    ],
+}
+
+MEETING_URLS = {
+    "doctor.demo@neurobridge.local": "https://meet.neurobridge.local/demo-doctor",
+    "therapist.demo@neurobridge.local": "https://meet.neurobridge.local/demo-therapist",
+    "dr.lina.demo@neurobridge.local": "https://meet.neurobridge.local/demo-lina",
+    "dr.sara.demo@neurobridge.local": "https://meet.neurobridge.local/demo-sara",
+    "therapist.omar.demo@neurobridge.local": "https://meet.neurobridge.local/demo-omar",
+    "dr.kareem.demo@neurobridge.local": "https://meet.neurobridge.local/demo-kareem",
+    "therapist.dana.demo@neurobridge.local": "https://meet.neurobridge.local/demo-dana",
+    "dr.hala.demo@neurobridge.local": "https://meet.neurobridge.local/demo-hala",
+    "therapist.yazan.demo@neurobridge.local": "https://meet.neurobridge.local/demo-yazan",
+}
 
 # LOCAL DEV ONLY fake care/safety details for the demo patient. These are
 # non-diagnostic care details only — never analyzed, scored, or interpreted.
@@ -211,6 +442,97 @@ def _ensure_demo_memories(
     return created
 
 
+def _ensure_provider_profiles(
+    session: Session, providers_by_email: Dict[str, User]
+) -> Tuple[int, int]:
+    """Create/refresh demo provider profiles (idempotent by provider).
+
+    New providers get a full demo profile. Existing profiles are left as-is
+    except that any missing required field is backfilled and the old placeholder
+    demo phone (+970-000-000-000) is replaced with a realistic demo contact
+    number, so every provider always has a non-empty demo phone.
+
+    Returns (created, updated).
+    """
+    created = 0
+    updated = 0
+    for email, fields in DEMO_PROVIDER_PROFILES.items():
+        provider = providers_by_email.get(email)
+        if provider is None:
+            continue
+        existing = session.execute(
+            select(ProviderProfile).where(
+                ProviderProfile.provider_user_id == provider.id
+            )
+        ).scalar_one_or_none()
+        if existing is None:
+            session.add(ProviderProfile(provider_user_id=provider.id, **fields))
+            created += 1
+            continue
+
+        changed = False
+        for key in _REQUIRED_PROFILE_FIELDS:
+            desired = fields.get(key)
+            if desired is None:
+                continue
+            current = getattr(existing, key, None)
+            is_empty = current is None or (
+                isinstance(current, str) and not current.strip()
+            )
+            is_legacy_phone = (
+                key == "phone_number_demo" and current == LEGACY_DEMO_PHONE
+            )
+            if is_empty or is_legacy_phone:
+                setattr(existing, key, desired)
+                changed = True
+        if changed:
+            session.add(existing)
+            updated += 1
+    return created, updated
+
+
+def _ensure_availability_slots(
+    session: Session, providers_by_email: Dict[str, User]
+) -> int:
+    """Create clean demo booking slots for each demo provider.
+
+    Dates are relative (next few days) so slots are always in the future.
+    Idempotent by (provider, slot_date, start_time). Returns count created.
+    """
+    created = 0
+    for email, plans in DEMO_PROVIDER_SLOTS.items():
+        provider = providers_by_email.get(email)
+        if provider is None:
+            continue
+        for day_offset, start, end, mode, room in plans:
+            slot_date = date.today() + timedelta(days=day_offset)
+            existing = session.execute(
+                select(ProviderAvailabilitySlot).where(
+                    ProviderAvailabilitySlot.provider_user_id == provider.id,
+                    ProviderAvailabilitySlot.slot_date == slot_date,
+                    ProviderAvailabilitySlot.start_time == start,
+                )
+            ).scalar_one_or_none()
+            if existing is not None:
+                continue
+            location = f"NeuroBridge Demo Center, {room}" if room else None
+            meeting_url = MEETING_URLS.get(email) if mode == "online" else None
+            session.add(
+                ProviderAvailabilitySlot(
+                    provider_user_id=provider.id,
+                    slot_date=slot_date,
+                    start_time=start,
+                    end_time=end,
+                    appointment_mode=mode,
+                    location=location,
+                    meeting_url=meeting_url,
+                    is_available=True,
+                )
+            )
+            created += 1
+    return created
+
+
 def _ensure_assignment(
     session: Session,
     profile: PatientProfile,
@@ -269,6 +591,25 @@ def seed_demo_data(session: Session) -> Dict[str, object]:
     )
     memories_created = _ensure_demo_memories(session, profile, users["family"])
 
+    # Bookable demo providers: the core doctor/therapist plus extra demo
+    # providers (local demo accounts only), keyed by email.
+    providers_by_email: Dict[str, User] = {
+        "doctor.demo@neurobridge.local": users["doctor"],
+        "therapist.demo@neurobridge.local": users["therapist"],
+    }
+    for email, full_name, role in DEMO_EXTRA_PROVIDERS:
+        provider_user, created = _get_or_create_user(
+            session, email=email, full_name=full_name, center_id=center.id
+        )
+        user_status[email] = "created" if created else "reused"
+        _ensure_role(session, provider_user, role)
+        providers_by_email[email] = provider_user
+
+    profiles_created, profiles_updated = _ensure_provider_profiles(
+        session, providers_by_email
+    )
+    slots_created = _ensure_availability_slots(session, providers_by_email)
+
     session.commit()
 
     return {
@@ -280,6 +621,9 @@ def seed_demo_data(session: Session) -> Dict[str, object]:
         "doctor_assignment": "created" if doctor_created else "reused",
         "therapist_assignment": "created" if therapist_created else "reused",
         "memories": memories_created,
+        "provider_profiles": profiles_created,
+        "provider_profiles_updated": profiles_updated,
+        "availability_slots": slots_created,
         "games": games_result,
     }
 
@@ -303,6 +647,12 @@ def main() -> None:
     print("Doctor assignment: " + str(result["doctor_assignment"]))
     print("Therapist assignment: " + str(result["therapist_assignment"]))
     print("Memory Album demo entries created: " + str(result["memories"]))
+    print("Provider profiles created: " + str(result["provider_profiles"]))
+    print(
+        "Provider profiles updated (backfill/phone): "
+        + str(result["provider_profiles_updated"])
+    )
+    print("Provider availability slots created: " + str(result["availability_slots"]))
     games = result["games"]
     print(
         "Games created: "

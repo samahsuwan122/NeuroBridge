@@ -28,11 +28,19 @@ from fastapi.staticfiles import StaticFiles
 from app.core import database
 from app.core.config import get_settings
 from app.modules.admin.routes import router as admin_router
+from app.modules.appointments.routes import router as appointments_router
 from app.modules.auth.routes import router as auth_router
+from app.modules.encouragements.routes import router as encouragements_router
 from app.modules.games.routes import router as games_router
 from app.modules.memories.media import MEDIA_URL_PREFIX, memory_uploads_dir
 from app.modules.memories.routes import router as memories_router
+from app.modules.messages.routes import router as provider_messages_router
 from app.modules.patients.routes import router as patients_router
+from app.modules.providers.media import (
+    MEDIA_URL_PREFIX as PROVIDER_MEDIA_URL_PREFIX,
+    provider_photos_dir,
+)
+from app.modules.providers.routes import router as providers_router
 
 logger = logging.getLogger("neurobridge")
 
@@ -74,6 +82,10 @@ app.include_router(admin_router)
 app.include_router(patients_router)
 app.include_router(games_router)
 app.include_router(memories_router)
+app.include_router(encouragements_router)
+app.include_router(appointments_router)
+app.include_router(providers_router)
+app.include_router(provider_messages_router)
 
 # Serve uploaded Memory Album images read-only. The directory is created if
 # missing so the mount is always valid; its contents are runtime-only and
@@ -84,6 +96,15 @@ app.mount(
     MEDIA_URL_PREFIX,
     StaticFiles(directory=str(_memory_media_dir)),
     name="memory_media",
+)
+
+# Serve uploaded provider photos read-only (demo images only; git-ignored).
+_provider_photos_dir = provider_photos_dir()
+_provider_photos_dir.mkdir(parents=True, exist_ok=True)
+app.mount(
+    PROVIDER_MEDIA_URL_PREFIX,
+    StaticFiles(directory=str(_provider_photos_dir)),
+    name="provider_media",
 )
 
 

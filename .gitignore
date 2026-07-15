@@ -83,6 +83,9 @@ backend/storage/*
 !backend/storage/memory_uploads/
 backend/storage/memory_uploads/*
 !backend/storage/memory_uploads/.gitkeep
+!backend/storage/provider_photos/
+backend/storage/provider_photos/*
+!backend/storage/provider_photos/.gitkeep
 
 # --- Local AI/agent tooling ---
 .agents/
