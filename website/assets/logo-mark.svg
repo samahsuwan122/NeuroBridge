@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="NeuroBridge logo mark">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5a3e2b"/><stop offset="0.55" stop-color="#3a2b1f"/><stop offset="1" stop-color="#2c2119"/>
+    </linearGradient>
+    <linearGradient id="brain" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2dcae"/><stop offset="1" stop-color="#e2be79"/>
+    </linearGradient>
+    <linearGradient id="arch" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e2be79"/><stop offset="0.55" stop-color="#c99a63"/><stop offset="1" stop-color="#8fae9b"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#bg)"/>
+  <g fill="none" stroke="url(#brain)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 26 C50 20 40 28 41 38 C30 38 26 50 34 56 C28 62 32 74 42 74 C48 82 60 82 64 74"/>
+    <path d="M64 26 C78 20 88 28 87 38 C98 38 102 50 94 56 C100 62 96 74 86 74 C80 82 68 82 64 74"/>
+  </g>
+  <g fill="none" stroke="#8fae9b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 28 V74"/>
+    <path d="M48 44 C54 42 56 48 52 52" opacity="0.9"/>
+    <path d="M80 44 C74 42 72 48 76 52" opacity="0.9"/>
+  </g>
+  <path d="M22 92 C44 58 84 58 106 92" fill="none" stroke="url(#arch)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M20 96 H108" stroke="#f6ecdd" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+  <g stroke="#f6ecdd" stroke-width="2" opacity="0.4">
+    <path d="M40 96 V76"/><path d="M52 96 V70"/><path d="M64 96 V68"/><path d="M76 96 V70"/><path d="M88 96 V76"/>
+  </g>
+  <circle cx="20" cy="96" r="7" fill="#e2be79"/>
+  <circle cx="108" cy="96" r="7" fill="#e2be79"/>
+</svg>

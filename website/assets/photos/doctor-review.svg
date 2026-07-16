@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-labelledby="drTitle drDesc">
+  <title id="drTitle">Care provider reviewing performance-only progress</title>
+  <desc id="drDesc">A soft illustration placeholder of a provider reviewing a progress chart — original artwork, not a real photo or real clinician.</desc>
+  <defs>
+    <linearGradient id="drBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbf3e6"/><stop offset="1" stop-color="#e8dcc6"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="22" fill="url(#drBg)"/>
+  <circle cx="80" cy="70" r="64" fill="#b78358" opacity="0.18"/>
+  <circle cx="410" cy="300" r="66" fill="#8fae9b" opacity="0.20"/>
+  <g transform="translate(292 96)">
+    <rect x="0" y="0" width="150" height="120" rx="14" fill="#fff9f0" stroke="#e3d3bb"/>
+    <rect x="14" y="14" width="70" height="9" rx="4" fill="#2f6f5e"/>
+    <rect x="14" y="30" width="46" height="7" rx="3" fill="#e3d3bb"/>
+    <g>
+      <rect x="16" y="96" width="18" height="14" rx="3" fill="#8fae9b"/>
+      <rect x="42" y="80" width="18" height="30" rx="3" fill="#8fae9b"/>
+      <rect x="68" y="66" width="18" height="44" rx="3" fill="#2f6f5e"/>
+      <rect x="94" y="54" width="18" height="56" rx="3" fill="#c99a63"/>
+      <rect x="120" y="44" width="18" height="66" rx="3" fill="#b78358"/>
+    </g>
+  </g>
+  <ellipse cx="150" cy="324" rx="110" ry="15" fill="#5a3e2b" opacity="0.10"/>
+  <g transform="translate(150 190)">
+    <path d="M-74 150 C-74 72 -44 42 0 42 C44 42 74 72 74 150 Z" fill="#fff9f0" stroke="#e6d8bf"/>
+    <path d="M0 42 L-16 150 M0 42 L16 150" stroke="#ecdcc2" stroke-width="3"/>
+    <path d="M-14 46 H14 L6 96 H-6 Z" fill="#8fae9b"/>
+    <rect x="-4" y="46" width="8" height="42" fill="#2f6f5e"/>
+    <rect x="-12" y="20" width="24" height="26" rx="10" fill="#c98a5e"/>
+    <circle cx="0" cy="-12" r="40" fill="#d99a68"/>
+    <path d="M-40 -18 C-40 -50 -20 -60 0 -60 C20 -60 40 -50 40 -18 C26 -40 -26 -40 -40 -18Z" fill="#3a2b1f"/>
+    <circle cx="-13" cy="-12" r="3" fill="#2b2b2b"/><circle cx="13" cy="-12" r="3" fill="#2b2b2b"/>
+    <path d="M-11 4 C-3 12 3 12 11 4" fill="none" stroke="#7a4a2e" stroke-width="3" stroke-linecap="round"/>
+    <path d="M-14 48 C-26 74 -26 104 -6 112" fill="none" stroke="#2f6f5e" stroke-width="4"/>
+    <circle cx="-6" cy="116" r="7" fill="#e2be79" stroke="#2f6f5e" stroke-width="3"/>
+  </g>
+</svg>
