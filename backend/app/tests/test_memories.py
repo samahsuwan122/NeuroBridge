@@ -176,14 +176,20 @@ def test_family_sees_linked_memories(client, admin_headers, user_factory):
     assert memory["id"] in ids
 
 
-def test_doctor_sees_assigned_memories(client, admin_headers, user_factory):
+def test_assigned_doctor_cannot_see_memories(client, admin_headers, user_factory):
+    # PRIVACY (Module 5): the Memory Album is private to patient/family. Even a
+    # doctor assigned to the patient must not receive raw memory items — via the
+    # list or a direct detail fetch.
     profile, memory = _seed_memory(client, admin_headers, user_factory, "p@example.test")
     _assign_doctor(client, admin_headers, user_factory, profile["id"], "doc@example.test")
     headers = _login(client, "doc@example.test")
     resp = client.get("/api/v1/memories", headers=headers)
     assert resp.status_code == 200
-    ids = {m["id"] for m in resp.json()["memories"]}
-    assert memory["id"] in ids
+    assert memory["id"] not in {m["id"] for m in resp.json()["memories"]}
+    assert (
+        client.get(f"/api/v1/memories/{memory['id']}", headers=headers).status_code
+        == 403
+    )
 
 
 def test_doctor_cannot_see_unassigned_memories(client, admin_headers, user_factory):

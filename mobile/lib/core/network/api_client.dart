@@ -42,6 +42,20 @@ class ApiClient {
     );
   }
 
+  Future<Response<dynamic>> patchJson(
+    String path,
+    Map<String, dynamic> data, {
+    String? token,
+  }) {
+    return _dio.patch<dynamic>(
+      '${AppConfig.apiPrefix}$path',
+      data: data,
+      options: token != null
+          ? Options(headers: {'Authorization': 'Bearer $token'})
+          : null,
+    );
+  }
+
   /// POST multipart/form-data (e.g. a file upload). The token is never logged.
   Future<Response<dynamic>> postMultipart(
     String path,

@@ -7,7 +7,6 @@ import {
   Card,
   EmptyState,
   ErrorState,
-  SafetyNote,
   SectionHeader,
   Spinner,
 } from "../components/ui";
@@ -381,8 +380,6 @@ export function DoctorAppointmentsPage() {
               ) : null}
             </Card>
           )}
-
-          <SafetyNote compact />
         </>
       )}
     </div>

@@ -7,6 +7,7 @@ that metadata is complete.
 
 from app.db.base import Base
 from app.models.appointment import Appointment
+from app.models.assigned_activity import AssignedActivity
 from app.models.audit_log import AuditLog
 from app.models.provider_availability_slot import ProviderAvailabilitySlot
 from app.models.family_encouragement import FamilyEncouragement
@@ -36,6 +37,7 @@ __all__ = [
     "PatientFamilyLink",
     "GameDefinition",
     "GameResult",
+    "AssignedActivity",
     "MemoryEntry",
     "FamilyEncouragement",
     "Appointment",

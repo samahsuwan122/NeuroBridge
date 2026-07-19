@@ -5,34 +5,62 @@
    ========================================================================== */
 
 :root {
-  --emerald-950: #072a24;
-  --emerald-900: #0b3d34;
-  --emerald-800: #0e4d42;
-  --emerald-700: #12695a;
-  --emerald-600: #178a75;
+  /* Warm NeuroBridge identity — matches the public website: cream, ivory, warm
+     beige, champagne, mocha, caramel. Sage/emerald are kept ONLY for success +
+     status accents. The legacy token names are re-valued to warm equivalents so
+     the whole portal shifts warm at once (no per-rule rewrite needed). */
 
-  --ivory: #f7f4ec;
-  --ivory-2: #fcfaf3;
-  --sage: #e4ebe2;
-  --sage-2: #d8e4d9;
-  --line: #cbd8cb;
+  /* Structural "dark" scale → warm mocha / espresso (sidebar, headings, tiles) */
+  --emerald-950: #2a1e14;
+  --emerald-900: #45301d;
+  --emerald-800: #5a3e2b;
+  --emerald-700: #6f4f39;
+  --emerald-600: #8a6547;
 
-  --gold: #c9a25a;
-  --gold-2: #d9be86;
-  --gold-soft: #e7d6ad;
+  /* Surfaces */
+  --ivory: #f4ead8;      /* warm cream page background */
+  --ivory-2: #fdf7ec;    /* soft ivory (insets, tables, scroll areas) */
+  --sage: #f3e7d2;       /* warm beige (card gradient bottom) */
+  --sage-2: #ecdcc2;     /* champagne sand (avatars, tracks, chips) */
+  --line: #e7d6b6;       /* champagne border */
 
-  --ink: #12251f;
-  --ink-2: #3a4a43;
-  --muted: #5b6a62;
-  --on-dark: #eaf3ee;
-  --on-dark-muted: #b6cdc3;
+  /* Caramel / champagne accents (primary buttons, active highlights) */
+  --gold: #b78358;       /* caramel */
+  --gold-2: #d9b877;     /* champagne */
+  --gold-soft: #ecd8ad;  /* soft champagne */
 
-  --radius: 18px;
-  --radius-sm: 12px;
-  --shadow-sm: 0 6px 16px rgba(11, 61, 52, 0.08);
-  --shadow: 0 16px 38px rgba(9, 44, 37, 0.14);
+  /* Text */
+  --ink: #2c2119;        /* deep brown ink */
+  --ink-2: #574636;      /* brown ink-2 */
+  --muted: #7a6957;      /* warm muted (AA on cream) */
+  --on-dark: #f4ead8;    /* text on the mocha sidebar */
+  --on-dark-muted: #cdb896; /* champagne-grey on the mocha sidebar */
+
+  /* Warm aliases (same palette, clearer names) */
+  --cream: #f6ecdd;
+  --mocha: #5a3e2b;
+  --caramel: #b78358;
+  --champagne: #e2be79;
+  --sand: #ecdcc2;
+
+  /* Success / status greens — small accents only */
+  --sage-green: #8fae9b;
+  --muted-emerald: #2f6f5e;
+  --success: #0c7a55;
+
+  --radius: 20px;
+  --radius-sm: 14px;
+  --shadow-sm: 0 6px 16px rgba(90, 62, 43, 0.10);
+  --shadow: 0 16px 38px rgba(74, 50, 30, 0.16);
   --sidebar-w: 264px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Accessibility: a clear, warm keyboard-focus ring across the portal. */
+:focus-visible {
+  outline: 2px solid var(--caramel);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 * {
@@ -73,11 +101,11 @@ a {
   width: 38px;
   height: 38px;
   border-radius: 11px;
-  background: linear-gradient(140deg, var(--emerald-700), var(--emerald-900));
-  color: var(--gold-2);
+  background: linear-gradient(140deg, var(--mocha), var(--emerald-950));
+  color: var(--champagne);
   font-weight: 800;
   font-size: 0.85rem;
-  box-shadow: inset 0 0 0 1px rgba(217, 190, 134, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(226, 190, 121, 0.45);
 }
 .brand-mark--lg {
   width: 52px;
@@ -200,9 +228,9 @@ a {
   color: #fff;
 }
 .navitem--active {
-  background: rgba(23, 138, 117, 0.28);
+  background: rgba(183, 131, 88, 0.34);
   color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(217, 190, 134, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(226, 190, 121, 0.5);
 }
 .navitem__icon {
   width: 20px;
@@ -332,6 +360,61 @@ a {
   color: var(--muted);
 }
 
+/* ---------- Welcome card (care-team note) ----------
+   A refined, integrated care message: cream surface with a soft warm radial
+   glow, champagne border, a gentle caramel side accent and a soft mocha shadow.
+   A small label sits above an elegant, readable Arabic quote (Amiri naskh, with
+   a graceful serif fallback offline) and a compact warm CTA pill. */
+.welcome-card {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(120% 130% at 50% 6%, rgba(226, 190, 121, 0.16), transparent 60%),
+    linear-gradient(135deg, #fdf7ec, #f5e8d1);
+  border: 1px solid var(--champagne);
+  border-left: 3px solid var(--caramel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(1.6rem, 3.2vw, 2.4rem) clamp(1.3rem, 4vw, 2.4rem);
+}
+.welcome-card__label {
+  display: block;
+  margin: 0 auto 0.85rem;
+  font-family: "Amiri", "Noto Naskh Arabic", "Cairo", "Tajawal",
+    "Traditional Arabic", serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--caramel);
+}
+.welcome-card__quote {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+  max-width: min(92%, 34rem);
+}
+.welcome-card__lead {
+  margin: 0;
+  font-family: "Amiri", "Noto Naskh Arabic", "Cairo", "Tajawal",
+    "Traditional Arabic", serif;
+  font-size: clamp(1.25rem, 2vw, 1.85rem);
+  line-height: 1.9;
+  font-weight: 600;
+  color: var(--mocha);
+}
+.welcome-card__cta-ar {
+  display: inline-block;
+  margin-top: clamp(1rem, 2.4vw, 1.4rem);
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--champagne), var(--caramel));
+  color: #3d2f12; /* deep mocha — kept dark for AA contrast on the caramel pill */
+  font-family: "Amiri", "Noto Naskh Arabic", "Cairo", "Tajawal", serif;
+  font-size: clamp(0.98rem, 1.6vw, 1.12rem);
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(183, 131, 88, 0.22);
+}
+
 /* ---------- Cards ---------- */
 .card {
   background: linear-gradient(180deg, #ffffff, var(--sage));
@@ -456,7 +539,7 @@ a {
 .barlist__fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--emerald-600), var(--emerald-800));
+  background: linear-gradient(90deg, var(--sage-green), var(--muted-emerald));
 }
 
 /* ---------- Activity / lists ---------- */
@@ -495,17 +578,25 @@ a {
   font-weight: 700;
   font-size: 0.82rem;
   color: var(--emerald-800);
-  background: #fff;
-  border: 1px solid var(--line);
+  background: rgba(183, 131, 88, 0.12);
+  border: 1px solid var(--gold-soft);
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
 }
 .dotlabel {
-  font-size: 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 700;
   color: var(--muted);
+  background: var(--sage-2);
+  border: 1px solid var(--line);
+  padding: 0.22rem 0.62rem;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 .dotlabel--ok {
-  color: #0c7a55;
+  color: var(--success);
+  background: rgba(143, 174, 155, 0.22);
+  border-color: rgba(143, 174, 155, 0.5);
 }
 
 .minilist {
@@ -936,8 +1027,8 @@ a {
   width: 66px;
   height: 66px;
   border-radius: 50%;
-  background: linear-gradient(140deg, #0e5b6b, #0a3a52);
-  color: #ffe9bf;
+  background: linear-gradient(140deg, #7a5b43, #3a2b1d);
+  color: #f0dcb4;
   font-size: 1.6rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -1089,7 +1180,7 @@ a {
   border-color: var(--line);
 }
 .cat-item--active {
-  background: rgba(23, 138, 117, 0.12);
+  background: rgba(183, 131, 88, 0.12);
   border-color: var(--emerald-700);
   color: var(--emerald-900);
   font-weight: 650;
@@ -1107,13 +1198,13 @@ a {
   display: flex;
   gap: 1.4rem;
   align-items: flex-start;
-  color: #eaf4f8;
+  color: #f3e9d8;
   border-radius: var(--radius);
   padding: 1.7rem;
   box-shadow: var(--shadow);
   background:
-    radial-gradient(700px 260px at 88% -30%, rgba(120, 200, 220, 0.22), transparent 60%),
-    linear-gradient(135deg, #0e5b6b, #0a3a52);
+    radial-gradient(700px 260px at 88% -30%, rgba(226, 190, 121, 0.22), transparent 60%),
+    linear-gradient(135deg, #5a3e2b, #33241a);
 }
 .prov-hero__photo {
   width: 96px;
@@ -1287,13 +1378,13 @@ a {
 .appt-hero {
   border-radius: var(--radius);
   overflow: hidden;
-  color: #eaf4f8;
+  color: #f3e9d8;
   padding: 1.9rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow);
   background:
-    radial-gradient(720px 260px at 88% -30%, rgba(120, 200, 220, 0.25), transparent 60%),
-    linear-gradient(135deg, #0e5b6b, #0a3a52);
+    radial-gradient(720px 260px at 88% -30%, rgba(226, 190, 121, 0.25), transparent 60%),
+    linear-gradient(135deg, #5a3e2b, #33241a);
 }
 .appt-hero__top {
   display: flex;
@@ -1511,7 +1602,7 @@ a {
   gap: 1rem;
   padding: 1.4rem 1.5rem;
   background:
-    radial-gradient(600px 240px at 90% -40%, rgba(23, 138, 117, 0.35), transparent 60%),
+    radial-gradient(600px 240px at 90% -40%, rgba(183, 131, 88, 0.35), transparent 60%),
     linear-gradient(140deg, var(--emerald-800), var(--emerald-950));
   color: var(--on-dark);
 }
@@ -1685,7 +1776,7 @@ a {
   color: rgba(234, 244, 248, 0.7);
 }
 .side-selected {
-  background: rgba(23, 138, 117, 0.08);
+  background: rgba(183, 131, 88, 0.08);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 0.7rem 0.8rem;
@@ -2148,7 +2239,7 @@ a {
 }
 .login__aside {
   background:
-    radial-gradient(700px 380px at 80% 10%, rgba(23, 138, 117, 0.35), transparent 60%),
+    radial-gradient(700px 380px at 80% 10%, rgba(183, 131, 88, 0.35), transparent 60%),
     linear-gradient(160deg, var(--emerald-800), var(--emerald-950));
   color: var(--on-dark);
   display: flex;
@@ -2177,7 +2268,7 @@ a {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(7, 42, 36, 0.4);
+  background: rgba(44, 33, 25, 0.45);
   border: 0;
   z-index: 25;
 }
@@ -2273,7 +2364,7 @@ a {
   vertical-align: middle;
 }
 .row--unread td {
-  background: rgba(23, 138, 117, 0.06);
+  background: rgba(183, 131, 88, 0.06);
 }
 .row--active td {
   background: var(--sage);
@@ -2379,8 +2470,8 @@ a {
   gap: 0.5rem;
   font-size: 0.8rem;
   color: var(--emerald-800);
-  background: rgba(23, 138, 117, 0.08);
-  border: 1px solid rgba(23, 138, 117, 0.2);
+  background: rgba(183, 131, 88, 0.08);
+  border: 1px solid rgba(183, 131, 88, 0.2);
   border-radius: 10px;
   padding: 0.5rem 0.7rem;
 }
@@ -2581,4 +2672,400 @@ a {
     align-items: center;
     justify-content: center;
   }
+}
+
+/* ==========================================================================
+   Care-team activity builder (Module 4)
+   ========================================================================== */
+.activity-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.activity-form {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--caramel, #b78358);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffdf9, var(--sage));
+  padding: 1.2rem 1.3rem;
+  box-shadow: var(--shadow-sm);
+}
+.activity-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.9rem;
+}
+.activity-form__full {
+  grid-column: 1 / -1;
+}
+.activity-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.activity-form select,
+.activity-form input,
+.activity-form textarea {
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font: inherit;
+  color: var(--ink);
+}
+.activity-form select:focus,
+.activity-form input:focus,
+.activity-form textarea:focus {
+  outline: 2px solid var(--gold, #b78358);
+  outline-offset: 1px;
+}
+.activity-form textarea {
+  resize: vertical;
+}
+.activity-form__actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+/* Preview panel */
+.activity-preview {
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--gold-soft);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fffdf8, #f6efe0);
+}
+.activity-preview__label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--caramel, #b78358);
+  margin-bottom: 0.3rem;
+}
+.activity-preview__title {
+  color: var(--emerald-900);
+  font-size: 1.05rem;
+}
+.activity-preview__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0;
+}
+.activity-preview__text {
+  margin: 0.3rem 0 0;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+
+/* Assigned activities list */
+.activity-list__items {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--line);
+}
+.activity-item:first-child {
+  border-top: 0;
+}
+.activity-item__main {
+  min-width: 0;
+}
+.activity-item__main strong {
+  display: block;
+  color: var(--ink);
+}
+.activity-item__sub {
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+@media (max-width: 720px) {
+  .activity-form__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   Reports (patient-first) + Care Review Queue (Module 5)
+   ========================================================================== */
+
+/* Reports — patient cards grid */
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+.report-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: linear-gradient(180deg, #ffffff, var(--sage));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.3rem 1.35rem;
+  color: var(--ink);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+.report-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--champagne);
+}
+.report-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.report-card__id {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.report-card__id strong {
+  color: var(--emerald-900);
+}
+.report-card__last {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.report-card__head .badge {
+  margin-left: auto;
+}
+.report-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.report-card__stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.report-card__stats strong {
+  font-size: 1.35rem;
+  color: var(--emerald-900);
+  line-height: 1.1;
+}
+.report-card__stats span {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.report-card__go {
+  color: var(--caramel, #b78358);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Patient report header actions */
+.report-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Rule-based summary panel */
+.report-summary {
+  background: linear-gradient(135deg, #fdf7ec, #f5e8d1);
+  border: 1px solid var(--champagne);
+  border-left: 3px solid var(--caramel, #b78358);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.1rem 1.3rem;
+}
+.report-summary p {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--mocha, #5a3e2b);
+}
+.report-summary__note {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.report-engage {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+.report-notes p {
+  margin: 0 0 0.6rem;
+  color: var(--ink-2);
+}
+.report-notes__caregiver strong {
+  color: var(--emerald-900);
+}
+
+/* Recent activity timeline */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.timeline__row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line);
+}
+.timeline__row:first-child {
+  border-top: 0;
+}
+.timeline__dot {
+  width: 11px;
+  height: 11px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--sage-2);
+}
+.timeline__dot--session {
+  background: var(--sage-green, #8fae9b);
+}
+.timeline__dot--activity {
+  background: var(--caramel, #b78358);
+}
+.timeline__dot--appointment {
+  background: var(--champagne, #e2be79);
+}
+.timeline__dot--message {
+  background: var(--muted-emerald, #2f6f5e);
+}
+.timeline__main {
+  display: flex;
+  flex-direction: column;
+}
+.timeline__main strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.timeline__main span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Care Review Queue */
+.queue-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: -0.4rem 0 0.4rem;
+}
+.queue {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.queue-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(180deg, #ffffff, var(--sage));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.05rem 1.25rem;
+}
+.queue-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.queue-item__top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.queue-item__name {
+  color: var(--emerald-900);
+}
+.queue-item__type {
+  font-weight: 600;
+  color: var(--mocha, #5a3e2b);
+  font-size: 0.92rem;
+}
+.queue-item__detail {
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+.queue-item__time {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.queue-item__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .queue-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .queue-item__actions {
+    justify-content: flex-start;
+  }
+  .report-card__stats strong {
+    font-size: 1.2rem;
+  }
+}
+
+/* Privacy-safe placeholder (e.g. Memory Album hidden from care team) */
+.privacy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  background: linear-gradient(180deg, #fffdf8, #f6efe0);
+  border: 1px solid var(--gold-soft);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.15rem;
+}
+.privacy-note__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 10px;
+  background: rgba(183, 131, 88, 0.14);
+  border: 1px solid var(--gold-soft);
+  font-size: 1rem;
+}
+.privacy-note p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.92rem;
 }

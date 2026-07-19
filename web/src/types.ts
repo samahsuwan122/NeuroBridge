@@ -80,6 +80,42 @@ export interface GameResult {
   created_at: string;
 }
 
+export interface AssignedActivity {
+  id: string;
+  patient_profile_id: string;
+  assigned_by_user_id: string;
+  template_type: string;
+  title: string;
+  instructions?: string | null;
+  difficulty: string;
+  duration_minutes: number;
+  status: string;
+  generated_content?: Record<string, unknown> | null;
+  created_at: string;
+  completed_at?: string | null;
+}
+
+export interface AssignedActivityListResponse {
+  success: boolean;
+  total: number;
+  activities: AssignedActivity[];
+}
+
+export interface ActivityTemplate {
+  template_type: string;
+  label: string;
+  default_title: string;
+  default_instructions: string;
+  game_slug: string;
+  playable: boolean;
+}
+
+export interface ActivityTemplateListResponse {
+  success: boolean;
+  difficulties: string[];
+  templates: ActivityTemplate[];
+}
+
 export interface MemoryEntry {
   id: string;
   patient_profile_id: string;

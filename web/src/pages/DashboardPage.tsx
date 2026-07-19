@@ -6,7 +6,6 @@ import {
   Card,
   EmptyState,
   ErrorState,
-  SafetyNote,
   SectionHeader,
   Spinner,
   StatCard,
@@ -78,12 +77,24 @@ export function DashboardPage() {
       <div className="page__head">
         <div>
           <span className="eyebrow">Overview</span>
-          <h1>Welcome, {user?.full_name?.split(" ")[0] ?? "Doctor"}</h1>
+          <h1>Welcome back, {user?.full_name?.split(" ")[0] ?? "Doctor"}</h1>
           <p className="page__sub">
-            A supportive, performance-only view of your assigned patients.
+            An overview of your assigned patients and their recent activity.
           </p>
         </div>
       </div>
+
+      <section className="welcome-card" aria-label="A note for the care team">
+        <span className="welcome-card__label" dir="rtl" lang="ar">
+          رسالة لفريق الرعاية
+        </span>
+        <blockquote className="welcome-card__quote" dir="rtl" lang="ar">
+          <p className="welcome-card__lead">
+            خلف كل ملاحظة تقدّم هناك إنسان يستحق الصبر، الرعاية، والمتابعة الواعية
+          </p>
+          <span className="welcome-card__cta-ar">هيا بنا لنتابع</span>
+        </blockquote>
+      </section>
 
       <div className="stat-grid">
         <StatCard
@@ -102,7 +113,7 @@ export function DashboardPage() {
           icon="✓"
           label="Completion rate"
           value={`${completionRate}%`}
-          hint="Game performance only"
+          hint="Across recorded sessions"
         />
         <StatCard
           icon="◆"
@@ -180,8 +191,6 @@ export function DashboardPage() {
           )}
         </Card>
       </div>
-
-      <SafetyNote />
     </div>
   );
 }

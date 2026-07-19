@@ -43,9 +43,6 @@ export function RoleAccessPage() {
         <div className="login__aside-inner">
           <span className="eyebrow eyebrow--gold">NeuroBridge</span>
           <h2>Role-based access keeps data safe</h2>
-          <p className="login__aside-note">
-            Not a diagnostic medical system. Not a medical assessment.
-          </p>
         </div>
       </aside>
     </div>

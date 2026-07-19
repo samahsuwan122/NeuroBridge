@@ -7,10 +7,10 @@ MEDICAL SAFETY: memories are supportive/family-engagement content only. They are
 never analyzed, scored, or used to infer any medical condition.
 
 Access model:
-- View (list/detail): admin=all, doctor/therapist=assigned, patient=own,
-  family=linked, manager=same center (via visible_patient_profile_ids).
-- Create: patient (own profile), linked family, or admin only. Doctor/therapist/
-  manager are view-only.
+- View (list/detail/media): PRIVATE to the patient (own) and their linked
+  family, plus admin. Doctors/therapists/managers are intentionally excluded —
+  the Memory Album is personal family content, not care-team clinical data.
+- Create: patient (own profile), linked family, or admin only.
 - Update/delete: creator or admin only.
 """
 
@@ -22,13 +22,10 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.permissions import ROLE_ADMIN, ROLE_FAMILY, ROLE_PATIENT
-from app.models import MemoryEntry, PatientProfile, User
+from app.models import MemoryEntry, PatientFamilyLink, PatientProfile, User
 from app.modules.audit.service import record_audit
 from app.modules.memories import media
-from app.modules.patients.service import (
-    can_view_profile,
-    visible_patient_profile_ids,
-)
+from app.modules.patients.service import can_view_profile
 
 
 # --- domain exceptions -------------------------------------------------------
@@ -73,17 +70,57 @@ def get_memory(session: Session, memory_id: uuid.UUID) -> Optional[MemoryEntry]:
     return memory
 
 
+def _memory_visible_profile_ids(session: Session, viewer: User, roles: Iterable[str]):
+    """Profile ids whose memories `viewer` may see, or None for admin (all).
+
+    PRIVACY: the Memory Album is private to the patient and their linked family.
+    Doctors/therapists/managers are intentionally excluded — memories are
+    personal family content, not care-team clinical data. (A future
+    `share_with_care_team` flag could widen this; none exists yet.)
+    """
+    role_set = set(roles)
+    if ROLE_ADMIN in role_set:
+        return None
+    ids = set()
+    if ROLE_PATIENT in role_set:
+        ids |= set(
+            session.execute(
+                select(PatientProfile.id).where(
+                    PatientProfile.user_id == viewer.id,
+                    PatientProfile.deleted_at.is_(None),
+                )
+            )
+            .scalars()
+            .all()
+        )
+    if ROLE_FAMILY in role_set:
+        ids |= set(
+            session.execute(
+                select(PatientFamilyLink.patient_profile_id).where(
+                    PatientFamilyLink.family_user_id == viewer.id,
+                    PatientFamilyLink.active.is_(True),
+                )
+            )
+            .scalars()
+            .all()
+        )
+    return ids
+
+
 def can_view_memory(
     session: Session,
     viewer: User,
     roles: Iterable[str],
     memory: MemoryEntry,
 ) -> bool:
-    """Return True if `viewer` may view `memory` (via its patient profile)."""
+    """Return True if `viewer` may view `memory` (patient/family/admin only)."""
     profile = session.get(PatientProfile, memory.patient_profile_id)
     if profile is None or profile.deleted_at is not None:
         return False
-    return can_view_profile(session, viewer, set(roles), profile)
+    ids = _memory_visible_profile_ids(session, viewer, roles)
+    if ids is None:  # admin
+        return True
+    return memory.patient_profile_id in ids
 
 
 def can_modify_memory(editor: User, roles: Iterable[str], memory: MemoryEntry) -> bool:
@@ -102,8 +139,9 @@ def list_memories(
     limit: int = 50,
     offset: int = 0,
 ) -> Tuple[List[MemoryEntry], int]:
-    # Which patient profiles the viewer may see (None == all/admin).
-    visible = visible_patient_profile_ids(session, viewer, roles)
+    # Memories are private to patient/family (admin sees all). Clinicians get
+    # an empty set here, so they never receive raw memory items from the API.
+    visible = _memory_visible_profile_ids(session, viewer, roles)
 
     conditions = [MemoryEntry.deleted_at.is_(None)]
     if visible is not None:

@@ -10,6 +10,8 @@ import '../../../core/widgets/error_state.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/loading_state.dart';
 import '../../../core/widgets/section_header.dart';
+import '../../activities/application/activities_controller.dart';
+import '../../activities/data/assigned_activity.dart';
 import '../../auth/application/auth_controller.dart';
 import '../../encouragements/application/encouragement_controller.dart';
 import '../application/home_controller.dart';
@@ -40,6 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
         scope.home.load();
         scope.encouragements?.load();
       }
+      // Assigned activities are patient-only (GET /activities/my).
+      if (roles.contains(_patientRole)) {
+        scope.activities?.load();
+      }
     });
   }
 
@@ -69,6 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     home: scope.home,
                     l10n: l10n,
                   ),
+                  if (scope.activities != null) ...[
+                    const SizedBox(height: 16),
+                    _AssignedActivitiesSection(
+                      auth: scope.auth,
+                      controller: scope.activities!,
+                      l10n: l10n,
+                    ),
+                  ],
                   if (scope.encouragements != null) ...[
                     const SizedBox(height: 16),
                     _EncouragementSection(
@@ -424,5 +438,197 @@ class _EncouragementSection extends StatelessWidget {
           ],
         );
     }
+  }
+}
+
+/// Care-team assigned activities for the patient. Shows each activity with a
+/// large, tappable row that opens a preview (and, when playable, the matching
+/// in-app game). Cognitive exercises only — no medical content.
+class _AssignedActivitiesSection extends StatelessWidget {
+  const _AssignedActivitiesSection({
+    required this.auth,
+    required this.controller,
+    required this.l10n,
+  });
+
+  final AuthController auth;
+  final ActivitiesController controller;
+  final AppLocalizations l10n;
+
+  String _difficultyLabel(String difficulty) {
+    switch (difficulty) {
+      case 'easy':
+        return l10n.difficultyEasy;
+      case 'medium':
+        return l10n.difficultyMedium;
+      case 'hard':
+        return l10n.difficultyHard;
+      default:
+        return difficulty;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final roles = auth.user?.roles ?? const <String>[];
+    if (!roles.contains(_patientRole)) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const IconChip(icon: Icons.assignment_turned_in, size: 34),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(l10n.assignedByCareTeam,
+                          style: theme.textTheme.titleMedium),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.assignedActivitiesNote,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
+                const SizedBox(height: 12),
+                _body(context),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    switch (controller.status) {
+      case ActivitiesStatus.initial:
+      case ActivitiesStatus.loading:
+        return const LoadingState();
+      case ActivitiesStatus.error:
+        return ErrorState(
+          message: l10n.networkError,
+          retryLabel: l10n.retry,
+          onRetry: controller.load,
+        );
+      case ActivitiesStatus.empty:
+        return Text(l10n.noAssignedActivities);
+      case ActivitiesStatus.loaded:
+        final next = controller.nextPending;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final activity in controller.items)
+              _ActivityRow(
+                activity: activity,
+                difficultyLabel: _difficultyLabel(activity.difficulty),
+                minutesLabel: l10n.minutesLabel,
+                isToday: next != null && next.id == activity.id,
+                todayLabel: l10n.todaysActivity,
+                doneLabel: l10n.activityDone,
+              ),
+          ],
+        );
+    }
+  }
+}
+
+class _ActivityRow extends StatelessWidget {
+  const _ActivityRow({
+    required this.activity,
+    required this.difficultyLabel,
+    required this.minutesLabel,
+    required this.isToday,
+    required this.todayLabel,
+    required this.doneLabel,
+  });
+
+  final AssignedActivity activity;
+  final String difficultyLabel;
+  final String minutesLabel;
+  final bool isToday;
+  final String todayLabel;
+  final String doneLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final done = activity.isCompleted;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: isToday
+            ? AppColors.goldTint.withValues(alpha: 0.4)
+            : theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isToday ? AppColors.softGold : AppColors.warmStone,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => context.push('/activities/preview', extra: activity),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Icon(
+                  done ? Icons.check_circle : Icons.play_circle_fill,
+                  size: 34,
+                  color: done ? AppColors.deepEmerald : AppColors.softGold,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isToday && !done)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Text(
+                            todayLabel,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: AppColors.softGold,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.4,
+                            ),
+                          ),
+                        ),
+                      Text(
+                        activity.title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        done
+                            ? doneLabel
+                            : '$difficultyLabel · ${activity.durationMinutes} $minutesLabel',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right, color: AppColors.onSurfaceMuted),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

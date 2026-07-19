@@ -56,6 +56,21 @@ class AppLocalizations {
       'loginSubtitle': 'Bridging memory. Connecting lives.',
       'homeSupportiveMessage': 'Small steps every day make a difference.',
       'activities': 'Activities',
+      'assignedByCareTeam': 'Assigned by care team',
+      'assignedActivitiesNote': 'Activities your care team prepared for you.',
+      'noAssignedActivities': 'No activities yet. Your care team will add some.',
+      'todaysActivity': "Today's activity",
+      'startActivity': 'Start activity',
+      'markCompleted': 'Mark as completed',
+      'activityDone': 'Completed',
+      'activityToDo': 'To do',
+      'activitySkippedLabel': 'Skipped',
+      'howToDoIt': 'How to do it',
+      'minutesLabel': 'min',
+      'difficultyEasy': 'Easy',
+      'difficultyMedium': 'Medium',
+      'difficultyHard': 'Hard',
+      'greatJob': 'Great job!',
       'basicInformation': 'Basic Information',
       'loginTitle': 'Sign in',
       'emailOrPhone': 'Email or phone',
@@ -279,6 +294,21 @@ class AppLocalizations {
       'loginSubtitle': 'نجسر الذاكرة، ونصل الحياة.',
       'homeSupportiveMessage': 'خطوات صغيرة كل يوم تُحدث فرقًا.',
       'activities': 'الأنشطة',
+      'assignedByCareTeam': 'من فريق الرعاية',
+      'assignedActivitiesNote': 'أنشطة أعدّها لك فريق الرعاية.',
+      'noAssignedActivities': 'لا توجد أنشطة بعد. سيضيفها فريق الرعاية.',
+      'todaysActivity': 'نشاط اليوم',
+      'startActivity': 'ابدأ النشاط',
+      'markCompleted': 'وضع علامة كمكتمل',
+      'activityDone': 'مكتمل',
+      'activityToDo': 'للقيام به',
+      'activitySkippedLabel': 'تم التخطي',
+      'howToDoIt': 'طريقة الأداء',
+      'minutesLabel': 'دقيقة',
+      'difficultyEasy': 'سهل',
+      'difficultyMedium': 'متوسط',
+      'difficultyHard': 'صعب',
+      'greatJob': 'أحسنت!',
       'basicInformation': 'المعلومات الأساسية',
       'loginTitle': 'تسجيل الدخول',
       'emailOrPhone': 'البريد الإلكتروني أو الهاتف',
@@ -1469,6 +1499,21 @@ class AppLocalizations {
   String get loginSubtitle => _t('loginSubtitle');
   String get homeSupportiveMessage => _t('homeSupportiveMessage');
   String get activities => _t('activities');
+  String get assignedByCareTeam => _t('assignedByCareTeam');
+  String get assignedActivitiesNote => _t('assignedActivitiesNote');
+  String get noAssignedActivities => _t('noAssignedActivities');
+  String get todaysActivity => _t('todaysActivity');
+  String get startActivity => _t('startActivity');
+  String get markCompleted => _t('markCompleted');
+  String get activityDone => _t('activityDone');
+  String get activityToDo => _t('activityToDo');
+  String get activitySkippedLabel => _t('activitySkippedLabel');
+  String get howToDoIt => _t('howToDoIt');
+  String get minutesLabel => _t('minutesLabel');
+  String get difficultyEasy => _t('difficultyEasy');
+  String get difficultyMedium => _t('difficultyMedium');
+  String get difficultyHard => _t('difficultyHard');
+  String get greatJob => _t('greatJob');
   String get basicInformation => _t('basicInformation');
   String get loginTitle => _t('loginTitle');
   String get emailOrPhone => _t('emailOrPhone');

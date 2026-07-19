@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
-import {
-  Badge,
-  EmptyState,
-  ErrorState,
-  SafetyNote,
-  Spinner,
-} from "../components/ui";
+import { Badge, EmptyState, ErrorState, Spinner } from "../components/ui";
 import { formatDate, patientName } from "../lib";
 import type { PatientListResponse, PatientProfile } from "../types";
 
@@ -119,8 +113,6 @@ export function PatientsPage() {
           </table>
         </div>
       )}
-
-      <SafetyNote compact />
     </div>
   );
 }

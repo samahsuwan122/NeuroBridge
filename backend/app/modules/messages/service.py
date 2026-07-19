@@ -92,11 +92,18 @@ def can_view_thread(
     visible = visible_patient_profile_ids(session, viewer, roles)
     if visible is None:  # admin
         return True
-    return (
-        message.patient_profile_id in visible
-        or message.provider_user_id == viewer.id
+    # A participant (the addressed provider, or the family sender) always sees it.
+    if (
+        message.provider_user_id == viewer.id
         or message.sender_user_id == viewer.id
-    )
+    ):
+        return True
+    # PRIVACY: a doctor/therapist assigned to the patient but NOT a participant
+    # of this thread must not see it. Only non-clinical viewers (patient/family)
+    # may see a thread about a patient they can view.
+    if set(roles) & CLINICAL_ROLES:
+        return False
+    return message.patient_profile_id in visible
 
 
 def can_reply_thread(
@@ -119,6 +126,27 @@ def can_reply_thread(
 # --- queries -----------------------------------------------------------------
 
 
+def _thread_visibility_condition(
+    viewer: User, roles: Iterable[str], visible
+):
+    """SQL condition scoping threads to those the viewer may see.
+
+    Returns None for admin (no restriction). A doctor/therapist is limited to
+    threads they participate in (addressed to them, or started by them) — being
+    assigned to the patient is NOT enough. Patient/family may also see threads
+    about a patient they can view.
+    """
+    if visible is None:  # admin
+        return None
+    clauses = [
+        ProviderMessage.provider_user_id == viewer.id,
+        ProviderMessage.sender_user_id == viewer.id,
+    ]
+    if not (set(roles) & CLINICAL_ROLES):
+        clauses.append(ProviderMessage.patient_profile_id.in_(visible))
+    return or_(*clauses)
+
+
 def list_provider_messages(
     session: Session,
     viewer: User,
@@ -133,16 +161,9 @@ def list_provider_messages(
     visible = visible_patient_profile_ids(session, viewer, roles)
 
     conditions = [ProviderMessage.deleted_at.is_(None)]
-    if visible is not None:
-        # A thread about a patient the viewer can see, OR addressed to the viewer
-        # as the provider, OR one the viewer started.
-        conditions.append(
-            or_(
-                ProviderMessage.patient_profile_id.in_(visible),
-                ProviderMessage.provider_user_id == viewer.id,
-                ProviderMessage.sender_user_id == viewer.id,
-            )
-        )
+    scope = _thread_visibility_condition(viewer, roles, visible)
+    if scope is not None:
+        conditions.append(scope)
 
     if provider_user_id is not None:
         conditions.append(ProviderMessage.provider_user_id == provider_user_id)
@@ -226,14 +247,9 @@ def unread_count(
     visible = visible_patient_profile_ids(session, viewer, roles)
 
     thread_conditions = [ProviderMessage.deleted_at.is_(None)]
-    if visible is not None:
-        thread_conditions.append(
-            or_(
-                ProviderMessage.patient_profile_id.in_(visible),
-                ProviderMessage.provider_user_id == viewer.id,
-                ProviderMessage.sender_user_id == viewer.id,
-            )
-        )
+    scope = _thread_visibility_condition(viewer, roles, visible)
+    if scope is not None:
+        thread_conditions.append(scope)
 
     count = session.execute(
         select(func.count())

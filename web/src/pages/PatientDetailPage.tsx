@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api, resolveMediaUrl } from "../api/client";
+import { api } from "../api/client";
+import { ActivityBuilder } from "../components/ActivityBuilder";
 import {
   BarList,
   Badge,
   Card,
   EmptyState,
   ErrorState,
-  SafetyNote,
   SectionHeader,
   Spinner,
   StatCard,
@@ -24,8 +24,6 @@ import type {
   GameListResponse,
   GameResult,
   GameResultListResponse,
-  MemoryEntry,
-  MemoryListResponse,
   PatientProfile,
 } from "../types";
 
@@ -36,25 +34,24 @@ export function PatientDetailPage() {
   const [patient, setPatient] = useState<PatientProfile | null>(null);
   const [games, setGames] = useState<GameDefinition[]>([]);
   const [results, setResults] = useState<GameResult[]>([]);
-  const [memories, setMemories] = useState<MemoryEntry[]>([]);
 
   const load = async () => {
     setLoading(true);
     setError(null);
     try {
-      const [p, g, r, m] = await Promise.all([
+      // Memory Album is intentionally NOT fetched here: personal family
+      // memories are private to the patient and their linked family, not the
+      // care team (backend enforces this too).
+      const [p, g, r] = await Promise.all([
         api<PatientProfile>(`/patients/${id}`),
         api<GameListResponse>("/games"),
         api<GameResultListResponse>(
           `/games/results?patient_profile_id=${id}&limit=200`,
         ),
-        api<MemoryListResponse>("/memories?limit=200"),
       ]);
       setPatient(p);
       setGames(g.games);
       setResults(r.results);
-      // Memory listing is role-scoped; keep only this patient's entries.
-      setMemories(m.memories.filter((x) => x.patient_profile_id === id));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load patient.");
     } finally {
@@ -170,12 +167,12 @@ export function PatientDetailPage() {
         <StatCard
           label="Best performance"
           value={summary.best != null ? `${summary.best}%` : "—"}
-          hint="Game performance only"
+          hint="Across recorded sessions"
         />
         <StatCard
           label="Average performance"
           value={summary.avg != null ? `${summary.avg}%` : "—"}
-          hint="Game performance only"
+          hint="Across recorded sessions"
         />
       </div>
 
@@ -225,77 +222,26 @@ export function PatientDetailPage() {
         </Card>
       </div>
 
-      {/* Memory album review */}
+      {/* Care-team activity builder */}
       <Card>
-        <SectionHeader
-          eyebrow="Memory album"
-          title="Supportive recall review"
-          action={<Badge tone="gold">Family-contributed</Badge>}
-        />
-        {memories.length === 0 ? (
-          <EmptyState message="No memory album entries for this patient yet." />
-        ) : (
-          <div className="memory-grid">
-            {memories.map((mem) => {
-              const src = resolveMediaUrl(mem.media_url);
-              return (
-                <article className="memory" key={mem.id}>
-                  <div className="memory__media">
-                    {src ? (
-                      <img src={src} alt={mem.title} loading="lazy" />
-                    ) : (
-                      <span className="memory__ph" aria-hidden="true">
-                        ▤
-                      </span>
-                    )}
-                  </div>
-                  <div className="memory__body">
-                    <strong>{mem.title}</strong>
-                    {mem.person_name && <span>{mem.person_name}</span>}
-                    {mem.place_name && <span>{mem.place_name}</span>}
-                    <span className="memory__date">
-                      {formatDate(mem.memory_date ?? mem.created_at)}
-                    </span>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
+        <ActivityBuilder patientProfileId={id} />
       </Card>
 
-      {/* AI summary placeholder */}
-      <Card className="ai-card">
-        <SectionHeader
-          eyebrow="AI-assisted summary"
-          title="Supportive review draft"
-          action={<Badge tone="plan">AI review placeholder</Badge>}
-        />
-        <div className="ai-placeholder">
+      {/* Memory album — private to patient & family (not shown to care team) */}
+      <Card className="privacy-card">
+        <SectionHeader eyebrow="Private family space" title="Memory album" />
+        <div className="privacy-note">
+          <span className="privacy-note__icon" aria-hidden="true">🔒</span>
           <p>
-            An AI-assisted summary of this patient&apos;s recent activity
-            performance will appear here for your review. It will be{" "}
-            <strong>based on activity performance</strong>, presented as a draft
-            that stays <strong>pending doctor/therapist review</strong>.
-          </p>
-          <ul className="ticks ticks--tight">
-            <li>Plain-language recap of recent exercise performance</li>
-            <li>Supportive activity suggestions — you approve, edit, or dismiss</li>
-            <li>Never a diagnosis, prediction, or medical assessment</li>
-          </ul>
-          <p className="ai-placeholder__note">
-            Coming next — the AI Core and review queue are on the roadmap. No
-            AI-generated content is shown yet.
+            Private family memories are managed in the patient and family space.
+            Photos and personal captions aren&apos;t shown to the care team.
           </p>
         </div>
       </Card>
 
-      {/* Care & safety information */}
+      {/* Care information */}
       <Card>
-        <SectionHeader
-          eyebrow="Care &amp; safety information only"
-          title="Care details"
-        />
+        <SectionHeader eyebrow="Care information" title="Care details" />
         <div className="care-grid">
           {care.map((row) => (
             <div className="care-row" key={row.label}>
@@ -305,8 +251,6 @@ export function PatientDetailPage() {
           ))}
         </div>
       </Card>
-
-      <SafetyNote />
     </div>
   );
 }

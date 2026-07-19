@@ -8,6 +8,9 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { PatientsPage } from "./pages/PatientsPage";
 import { PatientDetailPage } from "./pages/PatientDetailPage";
 import { DoctorAppointmentsPage } from "./pages/DoctorAppointmentsPage";
+import { ReportsPage } from "./pages/ReportsPage";
+import { PatientReportPage } from "./pages/PatientReportPage";
+import { ReviewQueuePage } from "./pages/ReviewQueuePage";
 import { FamilyDashboardPage } from "./pages/FamilyDashboardPage";
 import { FamilyEncouragementPage } from "./pages/FamilyEncouragementPage";
 import { FamilyAppointmentsPage } from "./pages/FamilyAppointmentsPage";
@@ -38,6 +41,9 @@ function AppRoutes() {
           <Route path="/patients" element={<PatientsPage />} />
           <Route path="/patients/:id" element={<PatientDetailPage />} />
           <Route path="/appointments" element={<DoctorAppointmentsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/reports/:patientId" element={<PatientReportPage />} />
+          <Route path="/review-queue" element={<ReviewQueuePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       ) : isFamily ? (

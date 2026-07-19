@@ -106,25 +106,6 @@ export function BarList({
   );
 }
 
-// ---- Safety note (medical review boundary) ---------------------------------
-export function SafetyNote({ compact = false }: { compact?: boolean }) {
-  return (
-    <div className={`safety ${compact ? "safety--compact" : ""}`}>
-      <span className="safety__mark" aria-hidden="true">
-        ⚕
-      </span>
-      <p>
-        <strong>Supportive review only.</strong> All summaries reflect{" "}
-        <strong>cognitive exercise performance only</strong> and are{" "}
-        <strong>not a medical diagnosis and not a medical assessment</strong>.
-        AI-assisted summaries are based on activity performance and remain{" "}
-        <strong>pending doctor/therapist review</strong>. NeuroBridge does not
-        diagnose, predict, or treat any condition.
-      </p>
-    </div>
-  );
-}
-
 // ---- Family safety note (family boundary) ----------------------------------
 export function FamilySafetyNote() {
   return (

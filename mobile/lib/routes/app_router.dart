@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 
+import '../features/activities/data/assigned_activity.dart';
+import '../features/activities/presentation/activity_preview_screen.dart';
 import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/games/data/game_definition.dart';
@@ -73,6 +75,11 @@ GoRouter createRouter(AuthController auth) {
         path: '/games/play/sequence-order',
         builder: (context, state) =>
             SequenceRecallScreen(game: state.extra as GameDefinition?),
+      ),
+      GoRoute(
+        path: '/activities/preview',
+        builder: (context, state) =>
+            ActivityPreviewScreen(activity: state.extra as AssignedActivity?),
       ),
       GoRoute(
         path: '/progress',

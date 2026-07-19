@@ -51,7 +51,7 @@ export function LoginPage() {
         <p className="login__lead">
           For the care team and families. Doctors and therapists open the
           clinical dashboard; families open a supportive view of their linked
-          patient&apos;s journey — a non-diagnostic, performance-only experience.
+          patient&apos;s journey.
         </p>
 
         <form className="login__form" onSubmit={onSubmit}>
@@ -102,12 +102,9 @@ export function LoginPage() {
           <ul className="ticks">
             <li>Care team: assigned patients, with role-based access</li>
             <li>Families: your linked patient&apos;s supportive journey</li>
-            <li>Performance-only progress and memory album for recall</li>
-            <li>Non-diagnostic by design — never a medical assessment</li>
+            <li>Progress summaries and a memory album for recall</li>
+            <li>Secure sign-in across the care journey</li>
           </ul>
-          <p className="login__aside-note">
-            Not a diagnostic medical system. Not a medical assessment.
-          </p>
         </div>
       </aside>
     </div>

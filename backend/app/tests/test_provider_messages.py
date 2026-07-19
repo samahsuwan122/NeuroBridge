@@ -410,3 +410,75 @@ def test_reply_audit_log_created(client, admin_headers, db_session, user_factory
     db_session.rollback()
     actions = db_session.execute(select(AuditLog.action)).scalars().all()
     assert "create_provider_message_reply" in actions
+
+
+# --- Module 5: provider-message privacy scoping ------------------------------
+
+
+def _assign_clinician(client, admin_headers, clinician_id, profile_id, atype):
+    return client.post(
+        f"/api/v1/patients/{profile_id}/assign-clinician",
+        headers=admin_headers,
+        json={"clinician_user_id": str(clinician_id), "assignment_type": atype},
+    )
+
+
+def test_assigned_clinician_not_participant_cannot_see_thread(
+    client, admin_headers, user_factory
+):
+    # Thread is addressed to a doctor. A therapist assigned to the same patient
+    # is NOT a participant and must not see it.
+    profile, doctor, fam_headers, doc_headers, mid = _thread_fixture(
+        client, admin_headers, user_factory
+    )
+    therapist = _provider(user_factory, "ther@example.test", "therapist")
+    assert _assign_clinician(
+        client, admin_headers, therapist.id, profile["id"], "therapist"
+    ).status_code in (200, 201)
+    ther_headers = _login(client, "ther@example.test")
+
+    listed = client.get("/api/v1/provider-messages", headers=ther_headers)
+    assert listed.status_code == 200
+    assert mid not in {m["id"] for m in listed.json()["messages"]}
+    # Direct fetch is forbidden.
+    assert _thread(client, ther_headers, mid).status_code == 403
+    # A family reply does not leak into the therapist's unread count.
+    _reply(client, fam_headers, mid, "Any update?")
+    assert _unread(client, ther_headers).json()["unread_count"] == 0
+
+    # The addressed doctor still sees the thread and the reply.
+    assert mid in {
+        m["id"]
+        for m in client.get(
+            "/api/v1/provider-messages", headers=doc_headers
+        ).json()["messages"]
+    }
+    assert _thread(client, doc_headers, mid).status_code == 200
+    assert _unread(client, doc_headers).json()["unread_count"] >= 1
+
+
+def test_doctor_cannot_see_therapist_addressed_thread(
+    client, admin_headers, user_factory
+):
+    # Symmetric case: thread addressed to a therapist; an assigned doctor can't
+    # see it, but the addressed therapist can.
+    _, profile = _create_patient(client, admin_headers, user_factory, "p2@example.test")
+    _link_family(client, admin_headers, user_factory, profile["id"], "fam2@example.test")
+    therapist = _provider(user_factory, "ther2@example.test", "therapist")
+    fam_headers = _login(client, "fam2@example.test")
+    mid = _send(client, fam_headers, therapist.id, profile["id"]).json()["id"]
+
+    doctor = _provider(user_factory, "doc2@example.test", "doctor")
+    _assign_clinician(client, admin_headers, doctor.id, profile["id"], "doctor")
+    doc_headers = _login(client, "doc2@example.test")
+
+    assert _thread(client, doc_headers, mid).status_code == 403
+    assert mid not in {
+        m["id"]
+        for m in client.get(
+            "/api/v1/provider-messages", headers=doc_headers
+        ).json()["messages"]
+    }
+
+    ther_headers = _login(client, "ther2@example.test")
+    assert _thread(client, ther_headers, mid).status_code == 200

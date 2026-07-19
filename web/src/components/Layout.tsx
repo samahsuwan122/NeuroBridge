@@ -7,12 +7,8 @@ const NAV = [
   { to: "/", label: "Overview", icon: "▚", end: true },
   { to: "/patients", label: "Patients", icon: "☰", end: false },
   { to: "/appointments", label: "Appointments", icon: "🗓", end: false },
-];
-
-// Roadmap items are shown but disabled.
-const NAV_SOON = [
-  { label: "Reports", icon: "📄" },
-  { label: "AI review queue", icon: "✦" },
+  { to: "/reports", label: "Reports", icon: "📄", end: false },
+  { to: "/review-queue", label: "Care Review Queue", icon: "✦", end: false },
 ];
 
 export function Layout() {
@@ -64,22 +60,7 @@ export function Layout() {
               {item.label}
             </NavLink>
           ))}
-
-          <span className="sidebar__group">Coming next</span>
-          {NAV_SOON.map((item) => (
-            <span className="navitem navitem--soon" key={item.label}>
-              <span className="navitem__icon" aria-hidden="true">
-                {item.icon}
-              </span>
-              {item.label}
-              <span className="navitem__tag">Soon</span>
-            </span>
-          ))}
         </nav>
-
-        <div className="sidebar__foot">
-          <p>Supportive, non-diagnostic clinical review.</p>
-        </div>
       </aside>
 
       <div className="main">
