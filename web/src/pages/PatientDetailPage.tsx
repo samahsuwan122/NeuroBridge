@@ -19,6 +19,8 @@ import {
   patientName,
   scorePercent,
 } from "../lib";
+import { useI18n } from "../i18n/useI18n";
+import type { TranslationKey } from "../i18n/translations";
 import type {
   GameDefinition,
   GameListResponse,
@@ -28,6 +30,7 @@ import type {
 } from "../types";
 
 export function PatientDetailPage() {
+  const { t } = useI18n();
   const { id = "" } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,26 +110,26 @@ export function PatientDetailPage() {
     [results],
   );
 
-  if (loading) return <Spinner label="Loading patient…" />;
+  if (loading) return <Spinner />;
   if (error) return <ErrorState message={error} onRetry={load} />;
-  if (!patient) return <EmptyState message="Patient not found." />;
+  if (!patient) return <EmptyState message={t("pd.notFound")} />;
 
-  const care: { label: string; value?: string | null }[] = [
-    { label: "Allergies", value: patient.allergies },
-    { label: "Current medications", value: patient.current_medications },
-    { label: "Blood type", value: patient.blood_type },
-    { label: "Mobility needs", value: patient.mobility_needs },
-    { label: "Vision / hearing", value: patient.vision_hearing_needs },
-    { label: "Preferred communication", value: patient.preferred_communication },
-    { label: "Emergency contact", value: patient.emergency_contact_name },
-    { label: "Caregiver notes", value: patient.caregiver_notes },
+  const care: { key: TranslationKey; value?: string | null }[] = [
+    { key: "care.allergies", value: patient.allergies },
+    { key: "care.medications", value: patient.current_medications },
+    { key: "care.bloodType", value: patient.blood_type },
+    { key: "care.mobility", value: patient.mobility_needs },
+    { key: "care.visionHearing", value: patient.vision_hearing_needs },
+    { key: "care.preferredComm", value: patient.preferred_communication },
+    { key: "care.emergencyContact", value: patient.emergency_contact_name },
+    { key: "care.caregiverNotes", value: patient.caregiver_notes },
   ];
 
   return (
     <div className="page">
       <div className="crumbs">
         <Link className="link" to="/patients">
-          Patients
+          {t("patients.eyebrow")}
         </Link>
         <span aria-hidden="true"> / </span>
         <span>{patientName(patient.user)}</span>
@@ -141,8 +144,8 @@ export function PatientDetailPage() {
           <p className="patient-head__meta">
             {patient.gender ? `${patient.gender} · ` : ""}
             {patient.date_of_birth
-              ? `Born ${formatDate(patient.date_of_birth)}`
-              : "Date of birth not provided"}
+              ? t("pd.born", { date: formatDate(patient.date_of_birth) })
+              : t("pd.dobMissing")}
           </p>
         </div>
         <div className="patient-head__tags">
@@ -158,30 +161,30 @@ export function PatientDetailPage() {
 
       {/* Progress summary */}
       <SectionHeader
-        eyebrow="Progress summary"
-        title="Cognitive exercise performance"
+        eyebrow={t("pd.progressSummary")}
+        title={t("pd.cognitivePerformance")}
       />
       <div className="stat-grid">
-        <StatCard label="Total exercises" value={summary.total} />
-        <StatCard label="Completed" value={summary.completed} />
+        <StatCard label={t("pd.stat.total")} value={summary.total} />
+        <StatCard label={t("common.completed")} value={summary.completed} />
         <StatCard
-          label="Best performance"
+          label={t("pd.stat.best")}
           value={summary.best != null ? `${summary.best}%` : "—"}
-          hint="Across recorded sessions"
+          hint={t("common.acrossSessions")}
         />
         <StatCard
-          label="Average performance"
+          label={t("pd.stat.avg")}
           value={summary.avg != null ? `${summary.avg}%` : "—"}
-          hint="Across recorded sessions"
+          hint={t("common.acrossSessions")}
         />
       </div>
 
       <div className="grid-2">
         {/* Cognitive games performance */}
         <Card>
-          <SectionHeader eyebrow="By exercise" title="Games performance" />
+          <SectionHeader eyebrow={t("pd.byExercise")} title={t("pd.gamesPerformance")} />
           {perGame.length === 0 ? (
-            <EmptyState message="No scored exercises yet." />
+            <EmptyState message={t("pd.noScored")} />
           ) : (
             <BarList items={perGame} />
           )}
@@ -189,9 +192,9 @@ export function PatientDetailPage() {
 
         {/* Recent activity / sessions */}
         <Card>
-          <SectionHeader eyebrow="Recent activity" title="Sessions" />
+          <SectionHeader eyebrow={t("dash.recentActivity")} title={t("pd.sessions")} />
           {recent.length === 0 ? (
-            <EmptyState message="No recorded sessions yet." />
+            <EmptyState message={t("pd.noSessions")} />
           ) : (
             <ul className="activity">
               {recent.map((r) => {
@@ -211,7 +214,7 @@ export function PatientDetailPage() {
                       <span
                         className={`dotlabel ${r.completed ? "dotlabel--ok" : ""}`}
                       >
-                        {r.completed ? "Completed" : "In progress"}
+                        {r.completed ? t("common.completed") : t("common.inProgress")}
                       </span>
                     </div>
                   </li>
@@ -229,23 +232,20 @@ export function PatientDetailPage() {
 
       {/* Memory album — private to patient & family (not shown to care team) */}
       <Card className="privacy-card">
-        <SectionHeader eyebrow="Private family space" title="Memory album" />
+        <SectionHeader eyebrow={t("pd.privateEyebrow")} title={t("pd.memoryAlbum")} />
         <div className="privacy-note">
           <span className="privacy-note__icon" aria-hidden="true">🔒</span>
-          <p>
-            Private family memories are managed in the patient and family space.
-            Photos and personal captions aren&apos;t shown to the care team.
-          </p>
+          <p>{t("pd.privacyNote")}</p>
         </div>
       </Card>
 
       {/* Care information */}
       <Card>
-        <SectionHeader eyebrow="Care information" title="Care details" />
+        <SectionHeader eyebrow={t("pd.careInfo")} title={t("pd.careDetails")} />
         <div className="care-grid">
           {care.map((row) => (
-            <div className="care-row" key={row.label}>
-              <span className="care-row__label">{row.label}</span>
+            <div className="care-row" key={row.key}>
+              <span className="care-row__label">{t(row.key)}</span>
               <span className="care-row__value">{row.value?.trim() || "—"}</span>
             </div>
           ))}

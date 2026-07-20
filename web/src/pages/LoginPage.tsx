@@ -2,9 +2,11 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ApiError } from "../api/client";
+import { useI18n } from "../i18n/useI18n";
 
 export function LoginPage() {
   const { login } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -25,9 +27,9 @@ export function LoginPage() {
       const message =
         err instanceof ApiError
           ? err.status === 401
-            ? "Invalid email/phone or password."
+            ? t("login.invalid")
             : err.message
-          : "Something went wrong. Please try again.";
+          : t("login.genericError");
       setError(message);
       setBusy(false);
     }
@@ -44,19 +46,15 @@ export function LoginPage() {
             <strong>
               NeuroBridge
             </strong>
-            <span>Care Team &amp; Family Portal</span>
+            <span>{t("login.brandSub")}</span>
           </div>
         </div>
-        <h1>Sign in</h1>
-        <p className="login__lead">
-          For the care team and families. Doctors and therapists open the
-          clinical dashboard; families open a supportive view of their linked
-          patient&apos;s journey.
-        </p>
+        <h1>{t("login.signIn")}</h1>
+        <p className="login__lead">{t("login.lead")}</p>
 
         <form className="login__form" onSubmit={onSubmit}>
           <label>
-            Email or phone
+            {t("login.emailOrPhone")}
             <input
               type="text"
               autoComplete="username"
@@ -67,13 +65,13 @@ export function LoginPage() {
             />
           </label>
           <label>
-            Password
+            {t("login.password")}
             <input
               type="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
+              placeholder={t("login.passwordPlaceholder")}
               required
             />
           </label>
@@ -81,29 +79,27 @@ export function LoginPage() {
           {error && <div className="login__error">{error}</div>}
 
           <button className="btn btn--gold btn--block" disabled={busy}>
-            {busy ? "Signing in…" : "Sign in"}
+            {busy ? t("login.signingIn") : t("login.signIn")}
           </button>
         </form>
 
         <p className="login__hint">
-          Demo clinician: <code>doctor.demo@neurobridge.local</code>
+          {t("login.demoClinician")} <code>doctor.demo@neurobridge.local</code>
           <br />
-          Demo family: <code>family.demo@neurobridge.local</code> ·{" "}
+          {t("login.demoFamily")} <code>family.demo@neurobridge.local</code> ·{" "}
           <code>Demo12345!</code>
         </p>
       </div>
 
       <aside className="login__aside">
         <div className="login__aside-inner">
-          <span className="eyebrow eyebrow--gold">
-            AI-Powered Cognitive Rehabilitation Ecosystem
-          </span>
-          <h2>A shared, continuous view of the care journey</h2>
+          <span className="eyebrow eyebrow--gold">{t("login.asideEyebrow")}</span>
+          <h2>{t("login.asideTitle")}</h2>
           <ul className="ticks">
-            <li>Care team: assigned patients, with role-based access</li>
-            <li>Families: your linked patient&apos;s supportive journey</li>
-            <li>Progress summaries and a memory album for recall</li>
-            <li>Secure sign-in across the care journey</li>
+            <li>{t("login.tick1")}</li>
+            <li>{t("login.tick2")}</li>
+            <li>{t("login.tick3")}</li>
+            <li>{t("login.tick4")}</li>
           </ul>
         </div>
       </aside>

@@ -91,3 +91,9 @@ backend/storage/provider_photos/*
 .agents/
 .claude/
 skills-lock.json
+
+# Local AI/agent files
+.claude/
+.agents/
+CLAUDE.md
+skills-lock.json

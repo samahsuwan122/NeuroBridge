@@ -3069,3 +3069,144 @@ a {
   color: var(--ink-2);
   font-size: 0.92rem;
 }
+
+/* ==========================================================================
+   Portal language switcher + RTL support (Module 6)
+   ========================================================================== */
+.portal-lang {
+  position: relative;
+}
+.portal-lang__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.44rem 0.82rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fffaf0, var(--ivory-2));
+  border: 1px solid var(--champagne, #e2be79);
+  color: var(--mocha, #5a3e2b);
+  font: inherit;
+  font-weight: 650;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(90, 62, 43, 0.08);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+.portal-lang__btn:hover {
+  border-color: var(--caramel, #b78358);
+  box-shadow: 0 8px 18px rgba(90, 62, 43, 0.14);
+}
+.portal-lang__btn:focus-visible {
+  outline: 2px solid var(--caramel, #b78358);
+  outline-offset: 2px;
+}
+.portal-lang__btn[aria-expanded="true"] {
+  border-color: var(--caramel, #b78358);
+  background: linear-gradient(180deg, #fff7ea, #fdf1df);
+}
+.portal-lang__globe {
+  color: var(--caramel, #b78358);
+  flex: none;
+}
+.portal-lang__code {
+  color: var(--mocha, #5a3e2b);
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+.portal-lang__chev {
+  color: var(--caramel, #b78358);
+  opacity: 0.85;
+  flex: none;
+}
+.portal-lang__menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  inset-inline-end: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 210px;
+  max-width: calc(100vw - 2rem);
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  background: linear-gradient(180deg, #fffaf0, var(--ivory-2));
+  border: 1px solid var(--gold-soft, #ecd8ad);
+  border-radius: 18px;
+  box-shadow: 0 22px 46px rgba(90, 62, 43, 0.20),
+    0 4px 12px rgba(90, 62, 43, 0.10);
+}
+.portal-lang__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.6rem 0.78rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--ink-2, #574636);
+  cursor: pointer;
+  text-align: start;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease),
+    border-color 0.15s var(--ease);
+}
+.portal-lang__item:hover {
+  background: rgba(226, 190, 121, 0.16);
+  color: var(--mocha, #5a3e2b);
+}
+.portal-lang__item:focus-visible {
+  outline: 2px solid var(--caramel, #b78358);
+  outline-offset: -2px;
+}
+.portal-lang__item.is-active {
+  background: linear-gradient(180deg, rgba(226, 190, 121, 0.32), rgba(183, 131, 88, 0.2));
+  border-color: rgba(183, 131, 88, 0.35);
+  color: var(--mocha, #5a3e2b);
+  font-weight: 700;
+}
+/* Arabic option renders in an Arabic-friendly face even in an LTR portal */
+.portal-lang__item[lang="ar"] {
+  font-family: "Segoe UI", Tahoma, "Cairo", "Tajawal", sans-serif;
+  font-size: 0.98rem;
+}
+.portal-lang__check {
+  color: var(--caramel, #b78358);
+  font-weight: 800;
+}
+
+/* Arabic-friendly font stack (brand wordmark stays Latin) */
+html[lang="ar"] body {
+  font-family: "Segoe UI", Tahoma, "Cairo", "Tajawal", system-ui, sans-serif;
+}
+
+/* RTL: natural text alignment for a few explicitly-aligned elements */
+html[dir="rtl"] .table th {
+  text-align: right;
+}
+html[dir="rtl"] .table__go {
+  text-align: left;
+}
+html[dir="rtl"] .topbar__meta {
+  text-align: left;
+}
+html[dir="rtl"] .care-row__value {
+  text-align: left;
+}
+
+/* RTL: mobile sidebar slides in from the right */
+@media (max-width: 900px) {
+  html[dir="rtl"] .sidebar {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+  html[dir="rtl"] .sidebar--open {
+    transform: none;
+  }
+}

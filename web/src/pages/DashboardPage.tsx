@@ -11,6 +11,7 @@ import {
   StatCard,
 } from "../components/ui";
 import { formatDateTime, patientName, scorePercent } from "../lib";
+import { useI18n } from "../i18n/useI18n";
 import type {
   GameDefinition,
   GameListResponse,
@@ -22,6 +23,7 @@ import type {
 
 export function DashboardPage() {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [patients, setPatients] = useState<PatientProfile[]>([]);
@@ -69,18 +71,20 @@ export function DashboardPage() {
     .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
     .slice(0, 8);
 
-  if (loading) return <Spinner label="Loading your dashboard…" />;
+  if (loading) return <Spinner />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
     <div className="page">
       <div className="page__head">
         <div>
-          <span className="eyebrow">Overview</span>
-          <h1>Welcome back, {user?.full_name?.split(" ")[0] ?? "Doctor"}</h1>
-          <p className="page__sub">
-            An overview of your assigned patients and their recent activity.
-          </p>
+          <span className="eyebrow">{t("dash.eyebrow")}</span>
+          <h1>
+            {t("dash.welcomeBack", {
+              name: user?.full_name?.split(" ")[0] ?? t("role.doctor"),
+            })}
+          </h1>
+          <p className="page__sub">{t("dash.sub")}</p>
         </div>
       </div>
 
@@ -99,39 +103,39 @@ export function DashboardPage() {
       <div className="stat-grid">
         <StatCard
           icon="☰"
-          label="Assigned patients"
+          label={t("dash.stat.assignedPatients")}
           value={patients.length}
-          hint="Role-scoped to you"
+          hint={t("dash.stat.assignedPatientsHint")}
         />
         <StatCard
           icon="✦"
-          label="Recorded sessions"
+          label={t("dash.stat.recordedSessions")}
           value={results.length}
-          hint="Cognitive exercises"
+          hint={t("dash.stat.recordedSessionsHint")}
         />
         <StatCard
           icon="✓"
-          label="Completion rate"
+          label={t("dash.stat.completionRate")}
           value={`${completionRate}%`}
-          hint="Across recorded sessions"
+          hint={t("common.acrossSessions")}
         />
         <StatCard
           icon="◆"
-          label="Exercises available"
+          label={t("dash.stat.exercisesAvailable")}
           value={games.length}
-          hint="In the patient app"
+          hint={t("dash.stat.exercisesAvailableHint")}
         />
       </div>
 
       <div className="grid-2">
         <Card>
           <SectionHeader
-            eyebrow="Recent activity"
-            title="Latest cognitive sessions"
-            action={<Link className="link" to="/patients">All patients →</Link>}
+            eyebrow={t("dash.recentActivity")}
+            title={t("dash.latestSessions")}
+            action={<Link className="link" to="/patients">{t("dash.allPatients")}</Link>}
           />
           {recent.length === 0 ? (
-            <EmptyState message="No recorded sessions yet for your patients." />
+            <EmptyState message={t("dash.noSessions")} />
           ) : (
             <ul className="activity">
               {recent.map((r) => {
@@ -147,7 +151,7 @@ export function DashboardPage() {
                             {patientName(p.user)}
                           </Link>
                         ) : (
-                          "Patient"
+                          t("common.patient")
                         )}
                         {" · "}
                         {formatDateTime(r.created_at)}
@@ -158,7 +162,7 @@ export function DashboardPage() {
                       <span
                         className={`dotlabel ${r.completed ? "dotlabel--ok" : ""}`}
                       >
-                        {r.completed ? "Completed" : "In progress"}
+                        {r.completed ? t("common.completed") : t("common.inProgress")}
                       </span>
                     </div>
                   </li>
@@ -169,9 +173,9 @@ export function DashboardPage() {
         </Card>
 
         <Card>
-          <SectionHeader eyebrow="Your patients" title="Quick access" />
+          <SectionHeader eyebrow={t("dash.yourPatients")} title={t("dash.quickAccess")} />
           {patients.length === 0 ? (
-            <EmptyState message="No patients are assigned to you yet." />
+            <EmptyState message={t("dash.noPatients")} />
           ) : (
             <ul className="minilist">
               {patients.slice(0, 6).map((p) => (

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge, EmptyState, ErrorState, Spinner } from "../components/ui";
 import { formatDate } from "../lib";
+import { useI18n } from "../i18n/useI18n";
 import { loadCareData, reviewStatus, type CareData } from "../lib/careData";
 
 /**
@@ -10,6 +11,7 @@ import { loadCareData, reviewStatus, type CareData } from "../lib/careData";
  * at /reports/:patientId. Performance-only, non-diagnostic.
  */
 export function ReportsPage() {
+  const { t } = useI18n();
   const [data, setData] = useState<CareData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +23,7 @@ export function ReportsPage() {
     try {
       setData(await loadCareData());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load reports.");
+      setError(err instanceof Error ? err.message : t("reports.couldNotLoad"));
     } finally {
       setLoading(false);
     }
@@ -44,27 +46,25 @@ export function ReportsPage() {
     );
   }, [data, query]);
 
-  if (loading) return <Spinner label="Loading reports…" />;
+  if (loading) return <Spinner label={t("reports.loading")} />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
     <div className="page">
       <div className="page__head">
         <div>
-          <span className="eyebrow">Reports</span>
-          <h1>Reports</h1>
-          <p className="page__sub">
-            Select a patient to review their performance summary.
-          </p>
+          <span className="eyebrow">{t("reports.eyebrow")}</span>
+          <h1>{t("reports.title")}</h1>
+          <p className="page__sub">{t("reports.sub")}</p>
         </div>
         {data && data.patients.length > 0 && (
           <input
             className="search"
             type="search"
-            placeholder="Search patients…"
+            placeholder={t("reports.searchPatients")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search patients"
+            aria-label={t("reports.searchAria")}
           />
         )}
       </div>
@@ -73,8 +73,8 @@ export function ReportsPage() {
         <EmptyState
           message={
             data && data.patients.length === 0
-              ? "No patients are assigned to you yet."
-              : "No patients match your search."
+              ? t("dash.noPatients")
+              : t("reports.noMatch")
           }
         />
       ) : (
@@ -90,28 +90,28 @@ export function ReportsPage() {
                   <div className="report-card__id">
                     <strong>{p.name}</strong>
                     <span className="report-card__last">
-                      Last activity: {formatDate(p.lastActivityAt)}
+                      {t("reports.lastActivity", { date: formatDate(p.lastActivityAt) })}
                     </span>
                   </div>
-                  <Badge tone={status.tone}>{status.label}</Badge>
+                  <Badge tone={status.tone}>{t(status.labelKey)}</Badge>
                 </div>
 
                 <div className="report-card__stats">
                   <div>
                     <strong>{p.completedSessions}</strong>
-                    <span>Completed sessions</span>
+                    <span>{t("reports.completedSessions")}</span>
                   </div>
                   <div>
                     <strong>{p.assignedActivities}</strong>
-                    <span>Assigned activities</span>
+                    <span>{t("reports.assignedActivities")}</span>
                   </div>
                   <div>
                     <strong>{p.pendingActivities}</strong>
-                    <span>Pending</span>
+                    <span>{t("reports.pending")}</span>
                   </div>
                 </div>
 
-                <span className="report-card__go">View report →</span>
+                <span className="report-card__go">{t("reports.viewReport")}</span>
               </Link>
             );
           })}

@@ -2,17 +2,21 @@ import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { initials } from "../lib";
+import { useI18n } from "../i18n/useI18n";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import type { TranslationKey } from "../i18n/translations";
 
-const NAV = [
-  { to: "/", label: "Overview", icon: "▚", end: true },
-  { to: "/patients", label: "Patients", icon: "☰", end: false },
-  { to: "/appointments", label: "Appointments", icon: "🗓", end: false },
-  { to: "/reports", label: "Reports", icon: "📄", end: false },
-  { to: "/review-queue", label: "Care Review Queue", icon: "✦", end: false },
+const NAV: { to: string; key: TranslationKey; icon: string; end: boolean }[] = [
+  { to: "/", key: "nav.overview", icon: "▚", end: true },
+  { to: "/patients", key: "nav.patients", icon: "☰", end: false },
+  { to: "/appointments", key: "nav.appointments", icon: "🗓", end: false },
+  { to: "/reports", key: "nav.reports", icon: "📄", end: false },
+  { to: "/review-queue", key: "nav.reviewQueue", icon: "✦", end: false },
 ];
 
 export function Layout() {
   const { user, roles, logout } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -22,10 +26,10 @@ export function Layout() {
   };
 
   const clinicianRole = roles.includes("doctor")
-    ? "Doctor"
+    ? t("role.doctor")
     : roles.includes("therapist")
-      ? "Therapist"
-      : "Clinician";
+      ? t("role.therapist")
+      : t("role.clinician");
 
   return (
     <div className="shell">
@@ -38,12 +42,12 @@ export function Layout() {
             <strong>
               NeuroBridge
             </strong>
-            <span className="sidebar__sub">Clinical Dashboard</span>
+            <span className="sidebar__sub">{t("app.subtitle")}</span>
           </div>
         </div>
 
         <nav className="sidebar__nav" aria-label="Primary">
-          <span className="sidebar__group">Portal</span>
+          <span className="sidebar__group">{t("app.subtitle")}</span>
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -57,7 +61,7 @@ export function Layout() {
               <span className="navitem__icon" aria-hidden="true">
                 {item.icon}
               </span>
-              {item.label}
+              {t(item.key)}
             </NavLink>
           ))}
         </nav>
@@ -67,22 +71,23 @@ export function Layout() {
         <header className="topbar">
           <button
             className="topbar__burger"
-            aria-label="Toggle navigation"
+            aria-label={t("nav.toggle")}
             onClick={() => setOpen((v) => !v)}
           >
             ☰
           </button>
           <div className="topbar__spacer" />
+          <LanguageSwitcher />
           <div className="topbar__user">
             <div className="topbar__meta">
-              <strong>{user?.full_name ?? "Clinician"}</strong>
+              <strong>{user?.full_name ?? t("role.clinician")}</strong>
               <span>{clinicianRole}</span>
             </div>
             <span className="avatar" aria-hidden="true">
               {initials(user?.full_name)}
             </span>
             <button className="btn btn--ghost btn--sm" onClick={handleLogout}>
-              Log out
+              {t("action.logout")}
             </button>
           </div>
         </header>
@@ -95,7 +100,7 @@ export function Layout() {
       {open && (
         <button
           className="scrim"
-          aria-label="Close navigation"
+          aria-label={t("nav.close")}
           onClick={() => setOpen(false)}
         />
       )}

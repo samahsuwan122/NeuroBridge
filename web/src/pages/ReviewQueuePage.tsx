@@ -2,9 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge, EmptyState, ErrorState, Spinner } from "../components/ui";
 import { formatDate, formatDateTime } from "../lib";
+import { useI18n } from "../i18n/useI18n";
+import type { TranslationKey } from "../i18n/translations";
 import { isRecent, loadCareData, type CareData, type PatientAggregate } from "../lib/careData";
 
 type Tone = "neutral" | "live" | "plan" | "gold";
+type T = (key: TranslationKey, params?: Record<string, string | number>) => string;
 
 interface QueueItem {
   key: string;
@@ -25,9 +28,11 @@ function startOfToday(): number {
   return d.getTime();
 }
 
-function buildQueue(data: CareData): QueueItem[] {
+function buildQueue(data: CareData, t: T): QueueItem[] {
   const items: QueueItem[] = [];
   const today = startOfToday();
+  const word = (n: number, one: TranslationKey, many: TranslationKey) =>
+    t(n === 1 ? one : many);
 
   const push = (
     p: PatientAggregate,
@@ -44,6 +49,8 @@ function buildQueue(data: CareData): QueueItem[] {
   for (const p of data.patients) {
     const reportTo = `/reports/${p.profile.id}`;
     const patientTo = `/patients/${p.profile.id}`;
+    const openPatient = { label: t("queue.action.openPatient"), to: patientTo };
+    const viewReport = { label: t("queue.action.viewReport"), to: reportTo };
 
     // Pending assigned activities → follow-up.
     if (p.pendingActivities > 0) {
@@ -51,32 +58,35 @@ function buildQueue(data: CareData): QueueItem[] {
         .filter((a) => a.status === "assigned")
         .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))[0];
       push(p, {
-        type: "Pending activity",
-        detail: `${p.pendingActivities} assigned ${p.pendingActivities === 1 ? "activity" : "activities"} not started`,
+        type: t("queue.type.pendingActivity"),
+        detail: t("queue.detail.pending", {
+          n: p.pendingActivities,
+          activities: word(p.pendingActivities, "word.activity", "word.activities"),
+        }),
         at: latest?.created_at ?? null,
-        statusLabel: "Pending follow-up",
+        statusLabel: t("queue.status.pendingFollowUp"),
         tone: "plan",
         priority: 1,
-        actions: [
-          { label: "Open patient", to: patientTo },
-          { label: "View report", to: reportTo },
-        ],
+        actions: [openPatient, viewReport],
       });
     }
 
     // Unread family/provider messages → needs review.
     if (p.unreadMessages > 0) {
       push(p, {
-        type: "Unread messages",
-        detail: `${p.unreadMessages} unread ${p.unreadMessages === 1 ? "reply" : "replies"}`,
+        type: t("queue.type.unreadMessages"),
+        detail: t("queue.detail.unread", {
+          n: p.unreadMessages,
+          replies: word(p.unreadMessages, "word.reply", "word.replies"),
+        }),
         at:
           [...p.messages]
             .map((m) => m.latest_reply_at ?? m.created_at)
             .sort((a, b) => +new Date(b) - +new Date(a))[0] ?? null,
-        statusLabel: "Needs review",
+        statusLabel: t("queue.status.needsReview"),
         tone: "plan",
         priority: 1,
-        actions: [{ label: "View messages", to: "/appointments" }],
+        actions: [{ label: t("queue.action.viewMessages"), to: "/appointments" }],
       });
     }
 
@@ -86,16 +96,16 @@ function buildQueue(data: CareData): QueueItem[] {
     );
     if (recentDoneActs.length > 0) {
       push(p, {
-        type: "Activity completed",
-        detail: `${recentDoneActs.length} recently completed`,
+        type: t("queue.type.activityCompleted"),
+        detail: t("queue.detail.doneRecently", { n: recentDoneActs.length }),
         at:
           [...recentDoneActs]
             .map((a) => a.completed_at ?? a.created_at)
             .sort((a, b) => +new Date(b) - +new Date(a))[0] ?? null,
-        statusLabel: "Ready for review",
+        statusLabel: t("queue.status.readyForReview"),
         tone: "live",
         priority: 2,
-        actions: [{ label: "View report", to: reportTo }],
+        actions: [viewReport],
       });
     }
 
@@ -105,25 +115,28 @@ function buildQueue(data: CareData): QueueItem[] {
     );
     if (recentSessions.length > 0) {
       push(p, {
-        type: "Sessions completed",
-        detail: `${recentSessions.length} recent cognitive ${recentSessions.length === 1 ? "session" : "sessions"}`,
+        type: t("queue.type.sessionsCompleted"),
+        detail: t("queue.detail.sessionsRecent", {
+          n: recentSessions.length,
+          sessions: word(recentSessions.length, "word.session", "word.sessions"),
+        }),
         at:
           [...recentSessions]
             .map((r) => r.created_at)
             .sort((a, b) => +new Date(b) - +new Date(a))[0] ?? null,
-        statusLabel: "Ready for review",
+        statusLabel: t("queue.status.readyForReview"),
         tone: "live",
         priority: 2,
-        actions: [{ label: "View report", to: reportTo }],
+        actions: [viewReport],
       });
     }
 
     // Upcoming appointments.
     const upcoming = p.appointments.filter((ap) => {
-      const t = new Date(ap.preferred_date).getTime();
+      const time = new Date(ap.preferred_date).getTime();
       return (
-        !Number.isNaN(t) &&
-        t >= today &&
+        !Number.isNaN(time) &&
+        time >= today &&
         ["pending", "approved", "requested"].includes(ap.status)
       );
     });
@@ -132,28 +145,28 @@ function buildQueue(data: CareData): QueueItem[] {
         (a, b) => +new Date(a.preferred_date) - +new Date(b.preferred_date),
       )[0];
       push(p, {
-        type: "Upcoming appointment",
-        detail: `${next.provider_name ?? "Appointment"} · ${formatDate(next.preferred_date)}`,
+        type: t("queue.type.upcomingAppt"),
+        detail: `${next.provider_name ?? t("pr.appointments")} · ${formatDate(next.preferred_date)}`,
         at: next.preferred_date,
-        statusLabel: "Upcoming",
+        statusLabel: t("queue.status.upcoming"),
         tone: "gold",
         priority: 3,
-        actions: [{ label: "View appointment", to: "/appointments" }],
+        actions: [{ label: t("queue.action.viewAppointment"), to: "/appointments" }],
       });
     }
 
     // No recent activity.
     if (!isRecent(p.lastActivityAt) && p.pendingActivities === 0) {
       push(p, {
-        type: "No recent activity",
+        type: t("queue.type.noRecentActivity"),
         detail: p.lastActivityAt
-          ? `Last activity ${formatDate(p.lastActivityAt)}`
-          : "No activity recorded yet",
+          ? t("queue.detail.lastActivity", { date: formatDate(p.lastActivityAt) })
+          : t("queue.detail.noActivityYet"),
         at: p.lastActivityAt,
-        statusLabel: "No recent activity",
+        statusLabel: t("queue.status.noRecentActivity"),
         tone: "neutral",
         priority: 4,
-        actions: [{ label: "Open patient", to: patientTo }],
+        actions: [openPatient],
       });
     }
   }
@@ -172,6 +185,7 @@ function buildQueue(data: CareData): QueueItem[] {
  * conclusions; only counts, dates, and engagement states.
  */
 export function ReviewQueuePage() {
+  const { t } = useI18n();
   const [data, setData] = useState<CareData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -182,7 +196,7 @@ export function ReviewQueuePage() {
     try {
       setData(await loadCareData());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load the queue.");
+      setError(err instanceof Error ? err.message : t("queue.couldNotLoad"));
     } finally {
       setLoading(false);
     }
@@ -192,30 +206,25 @@ export function ReviewQueuePage() {
     void load();
   }, []);
 
-  const queue = useMemo(() => (data ? buildQueue(data) : []), [data]);
+  const queue = useMemo(() => (data ? buildQueue(data, t) : []), [data, t]);
 
-  if (loading) return <Spinner label="Loading review queue…" />;
+  if (loading) return <Spinner label={t("queue.loading")} />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
     <div className="page">
       <div className="page__head">
         <div>
-          <span className="eyebrow">Care Review Queue</span>
-          <h1>Care Review Queue</h1>
-          <p className="page__sub">
-            What needs your attention across your patients.
-          </p>
+          <span className="eyebrow">{t("queue.eyebrow")}</span>
+          <h1>{t("queue.title")}</h1>
+          <p className="page__sub">{t("queue.sub")}</p>
         </div>
       </div>
 
-      <p className="queue-note">
-        AI-assisted summaries organize activity data for care-team review only —
-        performance-based, not a medical assessment.
-      </p>
+      <p className="queue-note">{t("queue.note")}</p>
 
       {queue.length === 0 ? (
-        <EmptyState message="Nothing needs review right now. You're all caught up." />
+        <EmptyState message={t("queue.empty")} />
       ) : (
         <ul className="queue">
           {queue.map((item) => (

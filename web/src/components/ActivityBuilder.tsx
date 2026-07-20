@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/client";
 import { Badge, EmptyState } from "./ui";
 import { formatDate } from "../lib";
+import { useI18n } from "../i18n/useI18n";
+import type { TranslationKey } from "../i18n/translations";
 import type {
   ActivityTemplate,
   ActivityTemplateListResponse,
@@ -10,6 +12,8 @@ import type {
 } from "../types";
 
 const DIFFICULTY_FALLBACK = ["easy", "medium", "hard"];
+const KNOWN_DIFFICULTIES = ["easy", "medium", "hard"];
+const KNOWN_STATUSES = ["assigned", "completed", "skipped"];
 
 function statusTone(status: string): "neutral" | "live" | "plan" | "gold" {
   if (status === "completed") return "live";
@@ -27,6 +31,12 @@ export function ActivityBuilder({
 }: {
   patientProfileId: string;
 }) {
+  const { t } = useI18n();
+  const difficultyLabel = (d: string) =>
+    KNOWN_DIFFICULTIES.includes(d) ? t(`difficulty.${d}` as TranslationKey) : d;
+  const statusLabel = (s: string) =>
+    KNOWN_STATUSES.includes(s) ? t(`activityStatus.${s}` as TranslationKey) : s;
+
   const [templates, setTemplates] = useState<ActivityTemplate[]>([]);
   const [difficulties, setDifficulties] = useState<string[]>(DIFFICULTY_FALLBACK);
   const [activities, setActivities] = useState<AssignedActivity[]>([]);
@@ -54,7 +64,7 @@ export function ActivityBuilder({
       );
       setActivities(res.activities);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load activities.");
+      setError(err instanceof Error ? err.message : t("ab.couldNotLoad"));
     }
   };
 
@@ -112,10 +122,10 @@ export function ActivityBuilder({
         }),
       });
       setActivities((prev) => [created, ...prev]);
-      setOk("Activity assigned to the patient.");
+      setOk(t("ab.assigned"));
       setOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not assign activity.");
+      setError(err instanceof Error ? err.message : t("ab.couldNotAssign"));
     } finally {
       setBusy(false);
     }
@@ -125,20 +135,17 @@ export function ActivityBuilder({
     <div className="activity-builder">
       <div className="section-header">
         <div>
-          <span className="eyebrow">Activity builder</span>
-          <h2>Personalized activities</h2>
+          <span className="eyebrow">{t("ab.eyebrow")}</span>
+          <h2>{t("ab.title")}</h2>
         </div>
         {!open && (
           <button className="btn btn--gold btn--sm" onClick={startBuilder}>
-            + Create activity
+            {t("ab.create")}
           </button>
         )}
       </div>
 
-      <p className="muted-sub">
-        Choose a safe predefined template and customize it. The patient sees the
-        activity in their app. Cognitive exercises only.
-      </p>
+      <p className="muted-sub">{t("ab.help")}</p>
 
       {ok && <div className="banner banner--ok">{ok}</div>}
       {error && <div className="banner banner--warn">{error}</div>}
@@ -147,33 +154,33 @@ export function ActivityBuilder({
         <div className="activity-form">
           <div className="activity-form__grid">
             <label>
-              Template
+              {t("ab.template")}
               <select
                 value={templateType}
                 onChange={(e) => applyTemplate(e.target.value)}
               >
-                {templates.map((t) => (
-                  <option key={t.template_type} value={t.template_type}>
-                    {t.label}
+                {templates.map((tpl) => (
+                  <option key={tpl.template_type} value={tpl.template_type}>
+                    {tpl.label}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Difficulty
+              {t("ab.difficulty")}
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
               >
                 {difficulties.map((d) => (
                   <option key={d} value={d}>
-                    {d.charAt(0).toUpperCase() + d.slice(1)}
+                    {difficultyLabel(d)}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Duration (minutes)
+              {t("ab.duration")}
               <input
                 type="number"
                 min={1}
@@ -185,38 +192,40 @@ export function ActivityBuilder({
               />
             </label>
             <label className="activity-form__full">
-              Title
+              {t("ab.titleField")}
               <input
                 type="text"
                 value={title}
                 maxLength={255}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Activity title"
+                placeholder={t("ab.titlePlaceholder")}
               />
             </label>
             <label className="activity-form__full">
-              Instructions
+              {t("ab.instructions")}
               <textarea
                 rows={3}
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
-                placeholder="Simple, supportive instructions for the patient"
+                placeholder={t("ab.instructionsPlaceholder")}
               />
             </label>
           </div>
 
           {/* Preview of what the patient will receive */}
           <div className="activity-preview">
-            <span className="activity-preview__label">Preview</span>
+            <span className="activity-preview__label">{t("ab.preview")}</span>
             <strong className="activity-preview__title">
-              {title.trim() || selected?.default_title || "Activity"}
+              {title.trim() || selected?.default_title || t("word.activity")}
             </strong>
             <div className="activity-preview__meta">
               <span className="pill">{selected?.label ?? templateType}</span>
-              <span className="pill">{difficulty}</span>
-              <span className="pill">{duration} min</span>
+              <span className="pill">{difficultyLabel(difficulty)}</span>
               <span className="pill">
-                {selected?.playable ? "Playable in app" : "Guided preview"}
+                {duration} {t("ab.minutes")}
+              </span>
+              <span className="pill">
+                {selected?.playable ? t("ab.playable") : t("ab.guidedPreview")}
               </span>
             </div>
             {(instructions.trim() || selected?.default_instructions) && (
@@ -228,14 +237,14 @@ export function ActivityBuilder({
 
           <div className="activity-form__actions">
             <button className="btn btn--gold" disabled={busy} onClick={assign}>
-              {busy ? "Assigning…" : "Assign to patient"}
+              {busy ? t("ab.assigning") : t("ab.assign")}
             </button>
             <button
               className="btn btn--ghost"
               disabled={busy}
               onClick={() => setOpen(false)}
             >
-              Cancel
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -243,7 +252,7 @@ export function ActivityBuilder({
 
       <div className="activity-list">
         {activities.length === 0 ? (
-          <EmptyState message="No activities assigned to this patient yet." />
+          <EmptyState message={t("ab.noneAssigned")} />
         ) : (
           <ul className="activity-list__items">
             {activities.map((a) => (
@@ -251,14 +260,14 @@ export function ActivityBuilder({
                 <div className="activity-item__main">
                   <strong>{a.title}</strong>
                   <span className="activity-item__sub">
-                    {a.difficulty} · {a.duration_minutes} min · assigned{" "}
-                    {formatDate(a.created_at)}
+                    {difficultyLabel(a.difficulty)} · {a.duration_minutes}{" "}
+                    {t("ab.minutes")} · {t("ab.assignedOn", { date: formatDate(a.created_at) })}
                     {a.completed_at
-                      ? ` · completed ${formatDate(a.completed_at)}`
+                      ? ` · ${t("ab.completedOn", { date: formatDate(a.completed_at) })}`
                       : ""}
                   </span>
                 </div>
-                <Badge tone={statusTone(a.status)}>{a.status}</Badge>
+                <Badge tone={statusTone(a.status)}>{statusLabel(a.status)}</Badge>
               </li>
             ))}
           </ul>

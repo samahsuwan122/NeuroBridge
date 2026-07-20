@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import { Badge, EmptyState, ErrorState, Spinner } from "../components/ui";
 import { formatDate, patientName } from "../lib";
+import { useI18n } from "../i18n/useI18n";
 import type { PatientListResponse, PatientProfile } from "../types";
 
 export function PatientsPage() {
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [patients, setPatients] = useState<PatientProfile[]>([]);
@@ -40,31 +42,29 @@ export function PatientsPage() {
     <div className="page">
       <div className="page__head">
         <div>
-          <span className="eyebrow">Patients</span>
-          <h1>Assigned patients</h1>
-          <p className="page__sub">
-            You can view only patients assigned to you (role-based access).
-          </p>
+          <span className="eyebrow">{t("patients.eyebrow")}</span>
+          <h1>{t("patients.title")}</h1>
+          <p className="page__sub">{t("patients.sub")}</p>
         </div>
         <input
           className="search"
           type="search"
-          placeholder="Search by name…"
+          placeholder={t("patients.searchByName")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
 
       {loading ? (
-        <Spinner label="Loading patients…" />
+        <Spinner />
       ) : error ? (
         <ErrorState message={error} onRetry={load} />
       ) : filtered.length === 0 ? (
         <EmptyState
           message={
             patients.length === 0
-              ? "No patients are assigned to you yet."
-              : "No patients match your search."
+              ? t("dash.noPatients")
+              : t("patients.noMatch")
           }
         />
       ) : (
@@ -72,11 +72,11 @@ export function PatientsPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Patient</th>
-                <th>Date of birth</th>
-                <th>Gender</th>
-                <th>Assignment</th>
-                <th aria-label="Open" />
+                <th>{t("table.patient")}</th>
+                <th>{t("table.dob")}</th>
+                <th>{t("table.gender")}</th>
+                <th>{t("table.assignment")}</th>
+                <th aria-label={t("common.view")} />
               </tr>
             </thead>
             <tbody>
@@ -103,7 +103,7 @@ export function PatientsPage() {
                     </td>
                     <td className="table__go">
                       <Link className="link" to={`/patients/${p.id}`}>
-                        View →
+                        {t("common.view")}
                       </Link>
                     </td>
                   </tr>

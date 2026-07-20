@@ -11,6 +11,7 @@ import {
   Spinner,
 } from "../components/ui";
 import { formatDate, formatDateTime, patientName } from "../lib";
+import { useI18n } from "../i18n/useI18n";
 import type {
   Appointment,
   AppointmentListResponse,
@@ -36,10 +37,6 @@ function statusTone(status: string): "neutral" | "live" | "plan" | "gold" {
   }
 }
 
-function modeLabel(mode: string): string {
-  return mode === "online" ? "Online" : "In-person";
-}
-
 /**
  * Doctor/therapist appointment requests + provider inquiry chat. Shows requests
  * where the clinician is the chosen provider or is assigned to the patient, lets
@@ -48,6 +45,7 @@ function modeLabel(mode: string): string {
  */
 export function DoctorAppointmentsPage() {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<Appointment[]>([]);
@@ -74,7 +72,7 @@ export function DoctorAppointmentsPage() {
       setPatients(p.patients);
       setMessages(m.messages);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load.");
+      setError(err instanceof Error ? err.message : t("appt.couldNotLoad"));
     } finally {
       setLoading(false);
     }
@@ -86,8 +84,8 @@ export function DoctorAppointmentsPage() {
 
   const nameByProfile = useMemo(() => {
     const map = new Map(patients.map((p) => [p.id, patientName(p.user)]));
-    return (id: string) => map.get(id) ?? "Patient";
-  }, [patients]);
+    return (id: string) => map.get(id) ?? t("common.patient");
+  }, [patients, t]);
 
   const updateStatus = async (id: string, status: string) => {
     setBusyId(id);
@@ -99,7 +97,7 @@ export function DoctorAppointmentsPage() {
       });
       setItems((prev) => prev.map((a) => (a.id === id ? updated : a)));
     } catch (err) {
-      setRowError(err instanceof Error ? err.message : "Could not update.");
+      setRowError(err instanceof Error ? err.message : t("appt.couldNotUpdate"));
     } finally {
       setBusyId(null);
     }
@@ -123,7 +121,7 @@ export function DoctorAppointmentsPage() {
       );
     } catch (err) {
       setThreadError(
-        err instanceof Error ? err.message : "Could not open the thread.",
+        err instanceof Error ? err.message : t("appt.couldNotOpenThread"),
       );
     } finally {
       setThreadLoading(false);
@@ -157,38 +155,35 @@ export function DoctorAppointmentsPage() {
     <div className="page">
       <div className="page__head">
         <div>
-          <span className="eyebrow">Appointments</span>
-          <h1>Appointment requests</h1>
-          <p className="page__sub">
-            Requests where you are the provider or the assigned clinician. Care
-            coordination only.
-          </p>
+          <span className="eyebrow">{t("appt.eyebrow")}</span>
+          <h1>{t("appt.title")}</h1>
+          <p className="page__sub">{t("appt.sub")}</p>
         </div>
       </div>
 
       {loading ? (
-        <Spinner label="Loading appointment requests…" />
+        <Spinner label={t("appt.loading")} />
       ) : error ? (
         <ErrorState message={error} onRetry={load} />
       ) : (
         <>
           <Card>
-            <SectionHeader eyebrow="Requests" title="Manage requests" />
+            <SectionHeader eyebrow={t("appt.requests")} title={t("appt.manage")} />
             {rowError && <div className="mform__error">{rowError}</div>}
             {items.length === 0 ? (
-              <EmptyState message="No appointment requests yet." />
+              <EmptyState message={t("appt.none")} />
             ) : (
               <div className="table-card">
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>Patient</th>
-                      <th>Provider</th>
-                      <th>Date / time</th>
-                      <th>Mode</th>
-                      <th>Reason</th>
-                      <th>Status</th>
-                      <th aria-label="Actions" />
+                      <th>{t("table.patient")}</th>
+                      <th>{t("appt.provider")}</th>
+                      <th>{t("appt.dateTime")}</th>
+                      <th>{t("appt.mode")}</th>
+                      <th>{t("appt.reason")}</th>
+                      <th>{t("appt.status")}</th>
+                      <th aria-label={t("appt.status")} />
                     </tr>
                   </thead>
                   <tbody>
@@ -206,7 +201,9 @@ export function DoctorAppointmentsPage() {
                               a.appointment_mode === "online" ? "gold" : "live"
                             }
                           >
-                            {modeLabel(a.appointment_mode)}
+                            {a.appointment_mode === "online"
+                              ? t("appt.online")
+                              : t("appt.inPerson")}
                           </Badge>
                         </td>
                         <td>{a.reason}</td>
@@ -219,21 +216,21 @@ export function DoctorAppointmentsPage() {
                             disabled={busyId === a.id || a.status === "approved"}
                             onClick={() => updateStatus(a.id, "approved")}
                           >
-                            Approve
+                            {t("appt.approve")}
                           </button>
                           <button
                             className="btn btn--ghost btn--sm"
                             disabled={busyId === a.id || a.status === "completed"}
                             onClick={() => updateStatus(a.id, "completed")}
                           >
-                            Complete
+                            {t("appt.complete")}
                           </button>
                           <button
                             className="btn btn--ghost btn--sm"
                             disabled={busyId === a.id || a.status === "cancelled"}
                             onClick={() => updateStatus(a.id, "cancelled")}
                           >
-                            Cancel
+                            {t("appt.cancel")}
                           </button>
                         </td>
                       </tr>
@@ -246,28 +243,26 @@ export function DoctorAppointmentsPage() {
 
           <Card>
             <SectionHeader
-              eyebrow="Provider inquiries"
-              title="Inbox"
+              eyebrow={t("appt.inquiriesEyebrow")}
+              title={t("appt.inbox")}
             />
             <p className="page__sub" style={{ marginTop: 0 }}>
-              Non-urgent care-coordination inquiries families sent to you. Open a
-              thread to reply. For urgent concerns, contact local emergency
-              services.
+              {t("appt.inboxSub")}
             </p>
             {messages.length === 0 ? (
-              <EmptyState message="No inquiries yet." />
+              <EmptyState message={t("appt.noInquiries")} />
             ) : (
               <div className="table-card">
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>From</th>
-                      <th>Patient</th>
-                      <th>Provider</th>
-                      <th>Latest</th>
-                      <th>Updated</th>
-                      <th>Status</th>
-                      <th aria-label="Open" />
+                      <th>{t("appt.from")}</th>
+                      <th>{t("table.patient")}</th>
+                      <th>{t("appt.provider")}</th>
+                      <th>{t("appt.latest")}</th>
+                      <th>{t("appt.updated")}</th>
+                      <th>{t("appt.status")}</th>
+                      <th aria-label={t("appt.open")} />
                     </tr>
                   </thead>
                   <tbody>
@@ -283,15 +278,15 @@ export function DoctorAppointmentsPage() {
                             thread?.id === m.id ? "row--active" : ""
                           }`.trim()}
                         >
-                          <td>{m.sender_name || "Family"}</td>
-                          <td>{m.patient_name || "Patient"}</td>
+                          <td>{m.sender_name || t("appt.family")}</td>
+                          <td>{m.patient_name || t("common.patient")}</td>
                           <td>
                             {m.provider_name || "—"}
                             <span className="cell-sub">
                               {mine ? (
-                                <Badge tone="live">Can reply</Badge>
+                                <Badge tone="live">{t("appt.canReply")}</Badge>
                               ) : (
-                                <Badge tone="neutral">View only</Badge>
+                                <Badge tone="neutral">{t("appt.viewOnly")}</Badge>
                               )}
                             </span>
                           </td>
@@ -300,7 +295,7 @@ export function DoctorAppointmentsPage() {
                           <td>
                             <Badge tone={statusTone(m.status)}>{m.status}</Badge>
                             {unread > 0 && (
-                              <span className="unread-dot" title="Unread replies">
+                              <span className="unread-dot" title={t("appt.unreadReplies")}>
                                 {unread}
                               </span>
                             )}
@@ -311,10 +306,10 @@ export function DoctorAppointmentsPage() {
                               onClick={() => openThread(m.id)}
                             >
                               {thread?.id === m.id
-                                ? "Reopen"
+                                ? t("appt.reopen")
                                 : mine
-                                  ? "Open"
-                                  : "View"}
+                                  ? t("appt.open")
+                                  : t("appt.viewBtn")}
                             </button>
                           </td>
                         </tr>
@@ -330,13 +325,13 @@ export function DoctorAppointmentsPage() {
             <Card className="chat-card">
               <div className="chat-card__head">
                 <SectionHeader
-                  eyebrow="Conversation"
+                  eyebrow={t("appt.conversation")}
                   title={
                     thread
-                      ? `${thread.sender_name || "Family"} · ${
-                          thread.patient_name || "Patient"
+                      ? `${thread.sender_name || t("appt.family")} · ${
+                          thread.patient_name || t("common.patient")
                         }`
-                      : "Conversation"
+                      : t("appt.conversation")
                   }
                 />
                 {thread && (
@@ -344,23 +339,23 @@ export function DoctorAppointmentsPage() {
                     className="btn btn--ghost btn--sm"
                     onClick={() => setThread(null)}
                   >
-                    Close
+                    {t("appt.close")}
                   </button>
                 )}
               </div>
               {thread && (
                 <p className="chat-addressed">
-                  Addressed to:{" "}
-                  <strong>{thread.provider_name || "Provider"}</strong>{" "}
+                  {t("appt.addressedTo")}{" "}
+                  <strong>{thread.provider_name || t("appt.provider")}</strong>{" "}
                   {thread.provider_user_id === user?.id ? (
-                    <Badge tone="live">Can reply</Badge>
+                    <Badge tone="live">{t("appt.canReply")}</Badge>
                   ) : (
-                    <Badge tone="neutral">View only</Badge>
+                    <Badge tone="neutral">{t("appt.viewOnly")}</Badge>
                   )}
                 </p>
               )}
               {threadLoading ? (
-                <Spinner label="Opening thread…" />
+                <Spinner label={t("appt.openingThread")} />
               ) : threadError ? (
                 <ErrorState message={threadError} />
               ) : thread ? (
@@ -374,7 +369,7 @@ export function DoctorAppointmentsPage() {
                   replies={thread.replies}
                   currentUserId={user?.id}
                   canReply={thread.provider_user_id === user?.id}
-                  disabledNote="View only — this inquiry is addressed to another provider."
+                  disabledNote={t("appt.viewOnlyNote")}
                   onSend={sendReply}
                 />
               ) : null}

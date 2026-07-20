@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useI18n } from "../i18n/useI18n";
 
 // ---- Section header --------------------------------------------------------
 export function SectionHeader({
@@ -127,11 +128,12 @@ export function FamilySafetyNote() {
 }
 
 // ---- States ----------------------------------------------------------------
-export function Spinner({ label = "Loading…" }: { label?: string }) {
+export function Spinner({ label }: { label?: string }) {
+  const { t } = useI18n();
   return (
     <div className="state">
       <div className="spinner" aria-hidden="true" />
-      <p>{label}</p>
+      <p>{label ?? t("common.loading")}</p>
     </div>
   );
 }
@@ -143,12 +145,13 @@ export function ErrorState({
   message: string;
   onRetry?: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="state state--error">
       <p>{message}</p>
       {onRetry && (
         <button className="btn btn--ghost" onClick={onRetry}>
-          Retry
+          {t("common.retry")}
         </button>
       )}
     </div>

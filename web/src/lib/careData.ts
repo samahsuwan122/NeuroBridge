@@ -7,6 +7,7 @@
 
 import { api } from "../api/client";
 import { patientName } from "../lib";
+import type { TranslationKey } from "../i18n/translations";
 import type {
   Appointment,
   AppointmentListResponse,
@@ -161,31 +162,14 @@ export function reviewStatus(
   p: Pick<PatientAggregate, "pendingActivities" | "lastActivityAt">,
 ): {
   status: ReviewStatus;
-  label: string;
+  labelKey: TranslationKey;
   tone: "neutral" | "live" | "plan" | "gold";
 } {
   if (p.pendingActivities > 0) {
-    return { status: "pending", label: "Pending activity", tone: "plan" };
+    return { status: "pending", labelKey: "status.pendingActivity", tone: "plan" };
   }
   if (isRecent(p.lastActivityAt)) {
-    return { status: "ready", label: "Ready for review", tone: "live" };
+    return { status: "ready", labelKey: "status.readyForReview", tone: "live" };
   }
-  return { status: "idle", label: "No recent activity", tone: "neutral" };
-}
-
-/** Deterministic, non-diagnostic one-line summary for a patient. */
-export function ruleBasedSummary(
-  p: Pick<PatientAggregate, "name" | "completedSessions" | "pendingActivities">,
-): string {
-  const sessions = p.completedSessions;
-  const pending = p.pendingActivities;
-  const sessionPart =
-    sessions === 0
-      ? "no recent cognitive sessions"
-      : `${sessions} recent cognitive ${sessions === 1 ? "session" : "sessions"}`;
-  const pendingPart =
-    pending === 0
-      ? "no activities awaiting review"
-      : `${pending} assigned ${pending === 1 ? "activity" : "activities"} ready for review`;
-  return `${p.name} completed ${sessionPart} and has ${pendingPart}.`;
+  return { status: "idle", labelKey: "status.noRecentActivity", tone: "neutral" };
 }

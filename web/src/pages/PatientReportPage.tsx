@@ -11,7 +11,9 @@ import {
   StatCard,
 } from "../components/ui";
 import { formatDate, formatDateTime, patientName, scorePercent } from "../lib";
-import { reviewStatus, ruleBasedSummary } from "../lib/careData";
+import { useI18n } from "../i18n/useI18n";
+import type { TranslationKey } from "../i18n/translations";
+import { reviewStatus } from "../lib/careData";
 import type {
   Appointment,
   AppointmentListResponse,
@@ -37,12 +39,15 @@ function activityTone(status: string): "neutral" | "live" | "plan" | "gold" {
   return "plan";
 }
 
+const KNOWN_STATUSES = ["assigned", "completed", "skipped"];
+
 /**
  * Patient-specific report. Fetches this patient's data by id (refresh-safe),
  * then renders performance/engagement sections. Performance-only and
  * non-diagnostic — no medical assessment, risk, or conclusions.
  */
 export function PatientReportPage() {
+  const { t } = useI18n();
   const { patientId = "" } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +84,7 @@ export function PatientReportPage() {
       );
       setMessages(m.messages.filter((x) => x.patient_profile_id === patientId));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load report.");
+      setError(err instanceof Error ? err.message : t("pr.couldNotLoad"));
     } finally {
       setLoading(false);
     }
@@ -127,24 +132,27 @@ export function PatientReportPage() {
       });
     }
     for (const a of activities) {
+      const st = KNOWN_STATUSES.includes(a.status)
+        ? t(`activityStatus.${a.status}` as TranslationKey)
+        : a.status;
       items.push({
         at: a.completed_at ?? a.created_at,
         kind: "activity",
-        text: `${a.title} · ${a.status}`,
+        text: `${a.title} · ${st}`,
       });
     }
     for (const ap of appointments) {
       items.push({
         at: ap.preferred_date,
         kind: "appointment",
-        text: `${ap.provider_name ?? "Appointment"} · ${ap.status}`,
+        text: `${ap.provider_name ?? t("pr.appointments")} · ${ap.status}`,
       });
     }
     for (const m of messages) {
       items.push({
         at: m.latest_reply_at ?? m.created_at,
         kind: "message",
-        text: `Message with ${m.provider_name ?? "provider"}`,
+        text: `${t("appt.conversation")} · ${m.provider_name ?? t("appt.provider")}`,
       });
     }
     return items
@@ -152,22 +160,36 @@ export function PatientReportPage() {
       .sort((a, b) => +new Date(b.at) - +new Date(a.at))
       .slice(0, 12);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [results, activities, appointments, messages, gameNames]);
+  }, [results, activities, appointments, messages, gameNames, t]);
 
-  if (loading) return <Spinner label="Loading report…" />;
+  if (loading) return <Spinner label={t("pr.loading")} />;
   if (error) return <ErrorState message={error} onRetry={load} />;
-  if (!patient) return <EmptyState message="Patient not found." />;
+  if (!patient) return <EmptyState message={t("pd.notFound")} />;
 
   const name = patientName(patient.user);
   const status = reviewStatus({
     pendingActivities: stats.pendingActivities,
     lastActivityAt: results[0]?.created_at ?? null,
   });
-  const summary = ruleBasedSummary({
+  const sessionsPart =
+    stats.completedSessions === 0
+      ? t("summary.sessionsZero")
+      : stats.completedSessions === 1
+        ? t("summary.sessionsOne")
+        : t("summary.sessionsMany", { n: stats.completedSessions });
+  const pendingPart =
+    stats.pendingActivities === 0
+      ? t("summary.pendingZero")
+      : stats.pendingActivities === 1
+        ? t("summary.pendingOne")
+        : t("summary.pendingMany", { n: stats.pendingActivities });
+  const summary = t("summary.sentence", {
     name,
-    completedSessions: stats.completedSessions,
-    pendingActivities: stats.pendingActivities,
+    sessions: sessionsPart,
+    pending: pendingPart,
   });
+  const statusLabel = (s: string) =>
+    KNOWN_STATUSES.includes(s) ? t(`activityStatus.${s}` as TranslationKey) : s;
   const recent = [...results]
     .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
     .slice(0, 10);
@@ -188,26 +210,28 @@ export function PatientReportPage() {
     <div className="page">
       <div className="crumbs">
         <Link className="link" to="/reports">
-          ← Back to patients
+          {t("pr.back")}
         </Link>
       </div>
 
       <div className="page__head">
         <div>
-          <span className="eyebrow">Performance report</span>
+          <span className="eyebrow">{t("pr.eyebrow")}</span>
           <h1>{name}</h1>
-          <p className="page__sub">Recent period · last activity {formatDate(results[0]?.created_at)}</p>
+          <p className="page__sub">
+            {t("pr.period", { date: formatDate(results[0]?.created_at) })}
+          </p>
         </div>
         <div className="report-actions">
-          <Badge tone={status.tone}>{status.label}</Badge>
+          <Badge tone={status.tone}>{t(status.labelKey)}</Badge>
           <Link className="btn btn--ghost btn--sm" to={`/patients/${patient.id}`}>
-            Open profile
+            {t("pr.openProfile")}
           </Link>
           <button className="btn btn--ghost btn--sm" onClick={copySummary}>
-            {copied ? "Copied ✓" : "Copy summary"}
+            {copied ? t("pr.copied") : t("pr.copySummary")}
           </button>
           <button className="btn btn--gold btn--sm" onClick={() => window.print()}>
-            Print view
+            {t("pr.print")}
           </button>
         </div>
       </div>
@@ -215,39 +239,37 @@ export function PatientReportPage() {
       {/* Deterministic, non-diagnostic summary */}
       <div className="report-summary">
         <p>{summary}</p>
-        <span className="report-summary__note">
-          AI-assisted summaries organize activity data for care-team review only.
-        </span>
+        <span className="report-summary__note">{t("pr.summaryNote")}</span>
       </div>
 
       {/* Performance summary */}
-      <SectionHeader eyebrow="Performance summary" title="Cognitive sessions" />
+      <SectionHeader eyebrow={t("pr.perfSummary")} title={t("pr.cognitiveSessions")} />
       <div className="stat-grid">
-        <StatCard label="Completed sessions" value={stats.completedSessions} />
+        <StatCard label={t("pr.completedSessions")} value={stats.completedSessions} />
         <StatCard
-          label="Best performance"
+          label={t("pd.stat.best")}
           value={stats.best != null ? `${stats.best}%` : "—"}
-          hint="Across recorded sessions"
+          hint={t("common.acrossSessions")}
         />
         <StatCard
-          label="Average performance"
+          label={t("pd.stat.avg")}
           value={stats.avg != null ? `${stats.avg}%` : "—"}
-          hint="Across recorded sessions"
+          hint={t("common.acrossSessions")}
         />
-        <StatCard label="Assigned activities" value={activities.length} />
+        <StatCard label={t("pr.assignedActivities")} value={activities.length} />
       </div>
 
       <div className="grid-2">
         {/* Activity engagement */}
         <Card>
-          <SectionHeader eyebrow="Activity engagement" title="Assigned activities" />
+          <SectionHeader eyebrow={t("pr.engagement")} title={t("pr.assignedActivities")} />
           {activities.length === 0 ? (
-            <EmptyState message="No activities assigned to this patient yet." />
+            <EmptyState message={t("pr.noActivities")} />
           ) : (
             <>
               <div className="report-engage">
-                <span className="pill">{stats.completedActivities} completed</span>
-                <span className="pill">{stats.pendingActivities} pending</span>
+                <span className="pill">{t("pr.completedN", { n: stats.completedActivities })}</span>
+                <span className="pill">{t("pr.pendingN", { n: stats.pendingActivities })}</span>
               </div>
               <ul className="activity-list__items">
                 {activities.slice(0, 8).map((a) => (
@@ -255,11 +277,11 @@ export function PatientReportPage() {
                     <div className="activity-item__main">
                       <strong>{a.title}</strong>
                       <span className="activity-item__sub">
-                        {a.difficulty} · {a.duration_minutes} min · assigned{" "}
-                        {formatDate(a.created_at)}
+                        {a.difficulty} · {a.duration_minutes} {t("ab.minutes")} ·{" "}
+                        {t("ab.assignedOn", { date: formatDate(a.created_at) })}
                       </span>
                     </div>
-                    <Badge tone={activityTone(a.status)}>{a.status}</Badge>
+                    <Badge tone={activityTone(a.status)}>{statusLabel(a.status)}</Badge>
                   </li>
                 ))}
               </ul>
@@ -269,9 +291,9 @@ export function PatientReportPage() {
 
         {/* Recent sessions */}
         <Card>
-          <SectionHeader eyebrow="Recent sessions" title="Latest cognitive sessions" />
+          <SectionHeader eyebrow={t("pr.recentSessions")} title={t("pr.latestSessions")} />
           {recent.length === 0 ? (
-            <EmptyState message="No recorded sessions yet." />
+            <EmptyState message={t("pd.noSessions")} />
           ) : (
             <ul className="activity">
               {recent.map((r) => {
@@ -285,7 +307,7 @@ export function PatientReportPage() {
                     <div className="activity__meta">
                       {pct != null && <span className="pill">{pct}%</span>}
                       <span className={`dotlabel ${r.completed ? "dotlabel--ok" : ""}`}>
-                        {r.completed ? "Completed" : "In progress"}
+                        {r.completed ? t("common.completed") : t("common.inProgress")}
                       </span>
                     </div>
                   </li>
@@ -299,9 +321,9 @@ export function PatientReportPage() {
       <div className="grid-2">
         {/* Appointments */}
         <Card>
-          <SectionHeader eyebrow="Appointments" title="Appointment history" />
+          <SectionHeader eyebrow={t("pr.appointments")} title={t("pr.apptHistory")} />
           {appointments.length === 0 ? (
-            <EmptyState message="No appointments for this patient." />
+            <EmptyState message={t("pr.noAppointments")} />
           ) : (
             <ul className="activity">
               {[...appointments]
@@ -326,15 +348,15 @@ export function PatientReportPage() {
 
         {/* Family messages / interactions */}
         <Card>
-          <SectionHeader eyebrow="Interactions" title="Family & provider messages" />
+          <SectionHeader eyebrow={t("pr.interactions")} title={t("pr.messages")} />
           {messages.length === 0 ? (
-            <EmptyState message="No messages for this patient." />
+            <EmptyState message={t("pr.noMessages")} />
           ) : (
             <ul className="activity">
               {messages.slice(0, 8).map((m) => (
                 <li className="activity__row" key={m.id}>
                   <div className="activity__main">
-                    <strong>{m.provider_name ?? "Provider"}</strong>
+                    <strong>{m.provider_name ?? t("appt.provider")}</strong>
                     <span>
                       {m.latest_reply_preview ?? m.message}
                       {" · "}
@@ -342,7 +364,7 @@ export function PatientReportPage() {
                     </span>
                   </div>
                   {(m.unread_reply_count ?? 0) > 0 ? (
-                    <Badge tone="plan">{m.unread_reply_count} unread</Badge>
+                    <Badge tone="plan">{t("pr.unreadN", { n: m.unread_reply_count ?? 0 })}</Badge>
                   ) : (
                     <Badge tone="neutral">{m.status}</Badge>
                   )}
@@ -355,26 +377,26 @@ export function PatientReportPage() {
 
       {/* Care-team review notes (read-only, non-diagnostic) */}
       <Card>
-        <SectionHeader eyebrow="Care-team review notes" title="Notes" />
+        <SectionHeader eyebrow={t("pr.careNotes")} title={t("pr.notes")} />
         {notes || caregiverNotes ? (
           <div className="report-notes">
             {notes && <p>{notes}</p>}
             {caregiverNotes && (
               <p className="report-notes__caregiver">
-                <strong>Caregiver notes:</strong> {caregiverNotes}
+                <strong>{t("pr.caregiverNotes")}</strong> {caregiverNotes}
               </p>
             )}
           </div>
         ) : (
-          <EmptyState message="No care-team notes recorded yet." />
+          <EmptyState message={t("pr.noNotes")} />
         )}
       </Card>
 
       {/* Recent activity timeline */}
       <Card>
-        <SectionHeader eyebrow="Timeline" title="Recent activity" />
+        <SectionHeader eyebrow={t("pr.timeline")} title={t("pr.recentActivity")} />
         {timeline.length === 0 ? (
-          <EmptyState message="No recent activity to show." />
+          <EmptyState message={t("pr.noTimeline")} />
         ) : (
           <ul className="timeline">
             {timeline.map((t, i) => (
