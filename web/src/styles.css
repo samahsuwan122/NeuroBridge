@@ -113,6 +113,23 @@ a {
   border-radius: 14px;
   font-size: 1.1rem;
 }
+/* Real logo mark on a soft cream chip so it reads on the warm dark sidebar. */
+.brand-mark--logo {
+  background: linear-gradient(180deg, #fffaf0, var(--ivory-2));
+  padding: 4px;
+  box-shadow: inset 0 0 0 1px var(--champagne), 0 4px 10px rgba(90, 62, 43, 0.18);
+}
+.brand-mark__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+}
+/* If the image fails to load, the "NB" fallback shows on the cream chip. */
+.brand-mark--logo.brand-mark--fallback {
+  color: var(--mocha);
+}
 .eyebrow {
   display: inline-block;
   font-size: 0.72rem;

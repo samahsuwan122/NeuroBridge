@@ -19,6 +19,7 @@ export function Layout() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -35,8 +36,20 @@ export function Layout() {
     <div className="shell">
       <aside className={`sidebar ${open ? "sidebar--open" : ""}`}>
         <div className="sidebar__brand">
-          <span className="brand-mark" aria-hidden="true">
-            NB
+          <span
+            className={`brand-mark brand-mark--logo ${logoFailed ? "brand-mark--fallback" : ""}`}
+            aria-hidden="true"
+          >
+            {logoFailed ? (
+              "NB"
+            ) : (
+              <img
+                className="brand-mark__img"
+                src="/neurobridge-logo-mark.png"
+                alt=""
+                onError={() => setLogoFailed(true)}
+              />
+            )}
           </span>
           <div>
             <strong>
