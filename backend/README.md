@@ -6,7 +6,7 @@ The backend is a **FastAPI** (Python) REST API. It serves all clients: the Flutt
 As of **Phase 9**, this folder contains the FastAPI foundation, the **database foundation**,
 **authentication + RBAC**, **admin user management**, the **patient profile module**, and the
 **cognitive games module** (game definitions, patient-submitted results, role-scoped result
-visibility, audit). There are still **no** assessment, therapy, AI, or report APIs — those come later.
+visibility, audit). There are still **no** assessment, therapy, summary, or report APIs — those come later.
 
 Games are cognitive **exercises** and progress tracking only. There are **no** diagnostic fields;
 scores are exercise/game performance only.
@@ -230,5 +230,5 @@ and token lifetimes used by authentication).
 ## Safety reminder
 
 NeuroBridge is **not a diagnostic medical system**. No endpoint, response, or generated text may
-claim to diagnose any condition. AI output is always a non-diagnostic support recommendation pending
-doctor/therapist review. See [`../CLAUDE.md`](../CLAUDE.md).
+claim to diagnose any condition. All support content remains non-diagnostic, performance-based, and
+pending doctor/therapist review.

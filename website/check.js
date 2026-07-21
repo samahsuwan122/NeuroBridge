@@ -34,7 +34,7 @@ const mustInclude = [
   "not a diagnostic medical system",
   "not a medical diagnosis",
   "not a medical assessment",
-  "ai-assisted support",
+  "supportive review",
   "game performance only",
   "performance-only",
   "care-team review",

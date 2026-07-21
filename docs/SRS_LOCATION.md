@@ -22,6 +22,6 @@ Every future phase must **trace its implementation back to the SRS**:
 
 ## Safety note
 
-The SRS and all derived work must respect the project guardrails in [`../CLAUDE.md`](../CLAUDE.md):
+The SRS and all derived work must respect the project's documented guardrails:
 NeuroBridge is **not a diagnostic system**, and no implementation may claim to diagnose any medical
 condition.

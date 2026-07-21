@@ -130,7 +130,7 @@ details screen (game slug `memory_recall`) a **Start Memory Recall** button open
 `/games/play/memory-recall`. It loads the album via `GET /api/v1/memories` and generates safe
 multiple-choice questions **only from entered fields** — "Who is this person?" (person), "Where was
 this memory?" (place), "What category does this memory belong to?" (category) — using other entries
-as distractors (nothing is inferred, no AI, no image analysis). Each question shows the memory's
+as distractors (nothing is inferred, no automated analysis, no image analysis). Each question shows the memory's
 image (or an elegant placeholder), gives immediate **Correct / Try again** feedback, and moves on;
 a final summary shows the score. If there are too few usable memories it shows *"Add more memories to
 start this exercise."* On completion it submits **game-performance-only** results via the existing
@@ -276,5 +276,5 @@ Localization is part of NeuroBridge's global accessibility/readiness. **10 langu
 ## Safety reminder
 
 NeuroBridge is **not a diagnostic medical system**. No screen or message may claim to diagnose any
-condition. AI output shown to users is always a non-diagnostic support recommendation pending
-doctor/therapist review. See [`../CLAUDE.md`](../CLAUDE.md).
+condition. All support content shown to users remains non-diagnostic, performance-based, and
+pending doctor/therapist review.

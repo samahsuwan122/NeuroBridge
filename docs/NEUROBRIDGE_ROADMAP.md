@@ -1,6 +1,6 @@
 # NeuroBridge — Roadmap & Ecosystem Architecture
 
-**AI-Powered Cognitive Rehabilitation Ecosystem**
+**Smart Cognitive Rehabilitation Ecosystem**
 
 _Strategic roadmap document. Phase 25._
 _Status: planning / vision. This file is documentation only — it does not change
@@ -8,7 +8,7 @@ any code, API, database, or behavior._
 
 > **Medical safety notice.** NeuroBridge is **not** a diagnostic medical
 > system. Nothing in this roadmap describes diagnosing, predicting, scoring, or
-> treating any disease or condition. All AI output is an **AI-assisted support
+> treating any disease or condition. All output is a **supportive
 > recommendation — not a medical diagnosis and not a medical assessment — and
 > requires review by a qualified doctor or therapist.** Games and exercises
 > measure **game performance only**.
@@ -18,7 +18,7 @@ any code, API, database, or behavior._
 ## 1. Executive Vision
 
 NeuroBridge is **not** just a mobile app, and **not** just a set of memory
-games. It is an **AI-powered cognitive rehabilitation ecosystem** that connects
+games. It is a **smart cognitive rehabilitation ecosystem** that connects
 the patient, the family, the doctor, and the care center around one shared,
 structured, day-by-day support journey.
 
@@ -32,12 +32,12 @@ The vision is a startup-grade platform where:
   session plans, and keep clinical oversight through a web portal.
 - **Admins / center managers** run the platform: users, content, centers,
   analytics, and audit trails.
-- An **AI Core** proposes supportive activity suggestions and plain-language
+- A **Support Engine** proposes supportive activity suggestions and plain-language
   performance summaries — always **pending professional review**, never acting
   as a clinician.
 
 The product should feel like a real medical-grade platform: coherent design
-language, multi-role access, strong documentation, safe AI boundaries, and a
+language, multi-role access, strong documentation, safe support boundaries, and a
 cloud-ready architecture — well beyond a typical single-screen student app.
 
 The name captures the intent: **bridging memory, connecting lives** — a bridge
@@ -58,15 +58,15 @@ gaps:
   inconsistent, and rarely organized into progressive categories.
 - **Weak progress visibility.** It is hard to see, in plain language, how daily
   activity is trending over time — for the patient, the family, or the doctor.
-- **Need for safe AI-assisted support.** There is room for AI to help suggest
+- **Need for safe supportive tools.** There is room to help suggest
   supportive activities and summarize performance — **but only within strict,
   professionally-reviewed boundaries**, never as an autonomous medical
   authority.
 
 NeuroBridge addresses these gaps with a connected ecosystem: consistent daily
 activities, a shared multi-role view, structured training categories, clear
-performance summaries, and AI assistance that always stays **supportive and
-pending review**.
+performance summaries, and supportive suggestions that always stay **supportive
+and pending review**.
 
 ---
 
@@ -75,19 +75,19 @@ pending review**.
 | Module | Platform | Purpose |
 | --- | --- | --- |
 | **Landing Website** | Web | Public presentation of the vision, modules, and value; entry point and credibility. |
-| **Patient Mobile App** | Flutter (mobile-first) | Simple, accessible daily activities, memory album, reminders, progress, and AI support. |
-| **Doctor Portal** | Web dashboard | Assigned-patient oversight, session planning, performance review, appointments, and AI review queue. |
+| **Patient Mobile App** | Flutter (mobile-first) | Simple, accessible daily activities, memory album, reminders, progress, and supportive suggestions. |
+| **Doctor Portal** | Web dashboard | Assigned-patient oversight, session planning, performance review, appointments, and the Care Review Queue. |
 | **Family Portal** | Web / mobile experience | Follow linked patient progress, encourage, and contribute memories and notes. |
 | **Admin Dashboard** | Web dashboard | Manage users, centers, content, analytics, notifications, settings, and audit logs. |
-| **AI Core** | Backend service | Generate supportive activity suggestions and performance summaries — always pending professional review. |
+| **Support Engine** | Backend service | Generate supportive activity suggestions and performance summaries — always pending professional review. |
 | **Reports Engine** | Backend service | Compose patient / family / doctor / monthly reports with charts and PDF export. |
 | **Security Layer** | Cross-cutting | JWT auth, RBAC, password hashing, audit logging, and role-scoped data access. |
 | **Cloud Deployment** | Infrastructure | Cloud-ready hosting, storage, and future CI/CD. |
 
 **Module boundaries.** Each module is a separable domain. The mobile app talks
-to the backend only through the REST API; the AI Core produces suggestions that
-are **stored as pending** and surfaced to doctors for review; the Reports Engine
-composes from stored, performance-only data.
+to the backend only through the REST API; the Support Engine produces suggestions
+that are **stored as pending** and surfaced to doctors for review; the Reports
+Engine composes from stored, performance-only data.
 
 ---
 
@@ -100,8 +100,8 @@ composes from stored, performance-only data.
   contributes memories, photos/audio, and notes. Cannot access clinical
   controls.
 - **Doctor.** Reviews assigned patients only, plans supportive sessions, reads
-  performance summaries and reports, and acts on the AI review queue. Provides
-  the required professional review of AI suggestions.
+  performance summaries and reports, and acts on the Care Review Queue. Provides
+  the required professional review of supportive suggestions.
 - **Therapist.** Similar scope to the doctor for assigned patients — focused on
   supportive session planning and activity review, within professional
   boundaries.
@@ -127,7 +127,7 @@ The patient experience stays **simple, accessible, and supportive**:
   (see §10) so practice is structured rather than ad hoc.
 - **Memory album** — photos and stories that also power supportive recall
   activities, contributed by patient and family.
-- **AI assistant** — surfaces supportive activity suggestions and plain-language
+- **Support assistant** — surfaces supportive activity suggestions and plain-language
   encouragement; **all suggestions are pending doctor/therapist review**.
 - **Medication reminders** — simple reminders for medications and appointments
   (organizational support, not medical advice).
@@ -159,13 +159,13 @@ clinical judgment:
 - **Memory album review** — review family-contributed memories used in
   supportive recall activities.
 - **Family notes** — read context and notes contributed by families.
-- **AI summary** — read AI-generated **performance summaries** with the standard
+- **Performance summary** — read prepared **performance summaries** with the standard
   disclaimer; the doctor confirms or edits.
-- **AI therapy session builder** — assemble a supportive session plan; AI can
-  **propose** a draft, but every AI proposal stays **pending until the doctor or
+- **Supportive session builder** — assemble a supportive session plan; the tool can
+  **propose** a draft, but every proposal stays **pending until the doctor or
   therapist approves it**.
 
-The portal always makes the boundary explicit: AI output is a support
+The portal always makes the boundary explicit: the output is a supportive
 recommendation, **not a medical diagnosis and not a medical assessment**, and
 requires professional review.
 
@@ -205,46 +205,46 @@ The admin/center-manager dashboard runs the platform:
 - **Notifications** — manage in-app and push notifications.
 - **System settings** — configure platform behavior and defaults.
 - **Audit logs** — review sensitive-action logs (login, profile update, notes,
-  report generation, AI recommendation review).
+  report generation, supportive recommendation review).
 
 Admins manage the system but do **not** perform clinical review; that stays with
 doctors and therapists.
 
 ---
 
-## 9. AI Module Roadmap
+## 9. Support Module Roadmap
 
-The AI Core is a **supportive assistant**, never a clinician. Its scope:
+The Support Engine is a **supportive assistant**, never a clinician. Its scope:
 
-- **AI Therapy Generator** — proposes a draft supportive session plan for a
+- **Therapy Generator** — proposes a draft supportive session plan for a
   patient. Output is **pending until doctor/therapist approval**.
-- **AI Difficulty Adjustment** — suggests gentler or fuller activity variants
+- **Difficulty Adjustment** — suggests gentler or fuller activity variants
   based on recent **game performance only**.
-- **AI Recommendation Engine** — proposes supportive activity suggestions.
-- **AI Weekly Report** — composes a plain-language **performance summary** for
+- **Recommendation Engine** — proposes supportive activity suggestions.
+- **Weekly Report** — composes a plain-language **performance summary** for
   review and sharing.
-- **AI Prompt Builder** — structures safe, bounded prompts/templates so AI
-  output stays inside supportive, non-diagnostic language.
-- **AI Analytics** — surfaces performance trends to support (not replace)
+- **Template Builder** — structures safe, bounded templates so output stays
+  inside supportive, non-diagnostic language.
+- **Performance Analytics** — surfaces performance trends to support (not replace)
   professional judgment.
-- **Doctor Review Queue** — every AI suggestion lands here as **pending** and is
+- **Doctor Review Queue** — every suggestion lands here as **pending** and is
   only activated after a doctor or therapist reviews it.
 
-### AI safety boundaries (non-negotiable)
+### Safety boundaries (non-negotiable)
 
-The AI must **never** be described or built as diagnosing, predicting disease,
-scoring a condition, or replacing clinicians. Approved wording only:
+The Support Engine must **never** be described or built as diagnosing, predicting
+disease, scoring a condition, or replacing clinicians. Approved wording only:
 
-- **AI-assisted recommendations**
+- **Supportive recommendations**
 - **Supportive activity suggestions**
 - **Performance summaries**
 - **Requires doctor / therapist review**
 - **Not a medical diagnosis**
 - **Not a medical assessment**
 
-Every AI recommendation or report must carry the idea: _"AI-generated support
+Every supportive recommendation or report must carry the idea: _"Supportive
 recommendation. Not a medical diagnosis. Requires review by a qualified doctor
-or therapist."_ AI therapy recommendations stay **pending** until professional
+or therapist."_ Supportive recommendations stay **pending** until professional
 approval.
 
 ---
@@ -311,7 +311,7 @@ The Reports Engine composes readable, **performance-only** reports:
 - **Progress trends** — performance direction over time, never a clinical score.
 
 Reports never claim diagnosis or medical interpretation; they present activity
-and performance, and always mark AI-derived content as requiring professional
+and performance, and always mark prepared content as requiring professional
 review.
 
 ---
@@ -324,7 +324,7 @@ Protecting sensitive, health-related data is a first-class requirement:
 - **RBAC** — strict role-based access control at the API layer (patient /
   family / doctor / therapist / admin scopes).
 - **Audit logs** — logging of sensitive actions: login, profile update, notes,
-  report generation, and AI recommendation review.
+  report generation, and supportive recommendation review.
 - **Password hashing** — passwords stored only as bcrypt/Argon2 hashes, never in
   plain text.
 - **Role-based data access** — families see only linked patients; doctors see
@@ -366,7 +366,7 @@ A realistic, phased plan from roadmap to presentation:
 | **Phase 28** | Doctor Portal | Assigned-patient oversight, sessions, reports, appointments. |
 | **Phase 29** | Family Portal | Linked-patient progress, encouragement, memory contribution. |
 | **Phase 30** | Admin Dashboard | Users, centers, content, analytics, notifications, audit logs. |
-| **Phase 31** | AI Core | Supportive suggestions and summaries with a doctor review queue. |
+| **Phase 31** | Support Engine | Supportive suggestions and summaries with a doctor review queue. |
 | **Phase 32** | Reports | Patient/family/doctor/monthly reports, charts, PDF export. |
 | **Phase 33** | Full Localization | Complete 10-language coverage across all modules. |
 | **Phase 34** | Testing & Deployment | End-to-end testing and cloud-ready deployment. |
@@ -383,15 +383,15 @@ every step.
 Why NeuroBridge is stronger than a typical student app:
 
 - **Ecosystem approach.** A connected platform (website, mobile app, portals,
-  dashboards, AI, reports), not a single screen.
+  dashboards, support engine, reports), not a single screen.
 - **Multi-role platform.** Patient, family, doctor, therapist, and admin roles
   with real, enforced boundaries.
-- **AI-driven rehabilitation journey.** A structured, day-by-day supportive
-  journey — with AI assistance inside safe limits.
+- **Structured rehabilitation journey.** A structured, day-by-day supportive
+  journey — with supportive suggestions inside safe limits.
 - **Doctor / family / patient integration.** One shared, continuous view across
   the people who matter to care.
-- **Safe AI boundaries.** AI is explicitly supportive and **pending review** —
-  never diagnostic, never a clinician replacement.
+- **Safe support boundaries.** Support features are explicitly supportive and
+  **pending review** — never diagnostic, never a clinician replacement.
 - **Professional UI/UX.** A coherent, accessible, premium medical design
   language, with RTL and 10-language support.
 - **Cloud-ready architecture.** Clean client ↔ API ↔ database separation with a
@@ -405,6 +405,6 @@ platform vision** — safe, structured, connected, and well-documented.
 ---
 
 _This is a strategic planning document only. It introduces no medical claims:
-NeuroBridge does not diagnose, predict, score, or treat any condition. All AI
-output is an AI-assisted support recommendation — not a medical diagnosis and not
+NeuroBridge does not diagnose, predict, score, or treat any condition. All
+output is a supportive recommendation — not a medical diagnosis and not
 a medical assessment — and requires review by a qualified doctor or therapist._

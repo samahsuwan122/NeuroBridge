@@ -227,7 +227,7 @@
     { name: "Appointments", target: "#booking", hint: "Book a visit" },
     { name: "Provider Directory", target: "#booking", hint: "Demo providers" },
     { name: "Provider Chat", target: "#families", hint: "Two-way inquiries" },
-    { name: "AI-Assisted Support", target: "#ai", hint: "Pending care-team review" },
+    { name: "Supportive Review", target: "#ai", hint: "Pending care-team review" },
     { name: "Memory Album", target: "#memory", hint: "Memory Center" },
     { name: "Memory Tree", target: "#memory", hint: "Growing memories" },
     { name: "Cognitive Games", target: "#games", hint: "Supportive exercises" },

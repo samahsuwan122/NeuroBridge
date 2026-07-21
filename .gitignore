@@ -86,14 +86,3 @@ backend/storage/memory_uploads/*
 !backend/storage/provider_photos/
 backend/storage/provider_photos/*
 !backend/storage/provider_photos/.gitkeep
-
-# --- Local AI/agent tooling ---
-.agents/
-.claude/
-skills-lock.json
-
-# Local AI/agent files
-.claude/
-.agents/
-CLAUDE.md
-skills-lock.json

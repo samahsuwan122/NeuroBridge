@@ -19,5 +19,5 @@ _None yet._ The first endpoints will be the health checks added in Phase 2:
 | GET | `/health` | Service liveness check | 2 |
 | GET | `/api/v1/health` | API health check | 2 |
 
-Each subsequent phase (auth, users, patients, games, therapy, AI, reports, etc.) will append its
-endpoint definitions here, including request/response schemas and required roles (RBAC).
+Each subsequent phase (auth, users, patients, games, therapy, summaries, reports, etc.) will append
+its endpoint definitions here, including request/response schemas and required roles (RBAC).

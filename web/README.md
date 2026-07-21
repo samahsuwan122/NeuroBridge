@@ -30,7 +30,7 @@ A read-only, non-diagnostic clinical view for doctors and therapists:
   rate, recent activity.
 - **Patients list** — assigned patients only (role-scoped), with search.
 - **Patient detail** — progress summary, sessions, per-exercise performance,
-  memory album review, an AI-summary placeholder, and care details.
+  memory album review, a performance-summary placeholder, and care details.
 
 ### Phase 29 (Module 1) — Family Portal foundation
 
@@ -90,8 +90,9 @@ A supportive view for families/caregivers of their linked patient:
   a medical diagnosis and not a medical assessment; contact the care team for
   medical concerns.
 
-Charts are lightweight CSS bars (no chart dependency). The Doctor Portal AI
-section remains a **clearly-labeled placeholder** — no AI backend exists yet.
+Charts are lightweight CSS bars (no chart dependency). The Doctor Portal
+supportive-summary section remains a **clearly-labeled placeholder** — no summary
+backend exists yet.
 
 ## Stack
 
@@ -170,7 +171,7 @@ migration, and tests) for the Family Portal features.
 
 ## Planned features (later phases)
 
-- Appointments, PDF reports, AI recommendation review queue (approve / edit /
+- Appointments, PDF reports, Care Review Queue (approve / edit /
   reject; recommendations stay pending until reviewed)
 - Admin user management, audit logs, medical center manager reports
 
@@ -178,6 +179,6 @@ migration, and tests) for the Family Portal features.
 
 NeuroBridge is **not a diagnostic medical system**. No page or generated text may
 claim to diagnose any condition. All summaries reflect **cognitive exercise
-performance only**. AI output is always an **AI-assisted, non-diagnostic support
-recommendation** that is **not a medical diagnosis and not a medical assessment**
-and stays **pending doctor/therapist review**. See [`../CLAUDE.md`](../CLAUDE.md).
+performance only**. System suggestions are always **supportive, non-diagnostic
+support content** that is **not a medical diagnosis and not a medical assessment**
+and stays **pending doctor/therapist review**.

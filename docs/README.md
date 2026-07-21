@@ -11,4 +11,4 @@ each phase of [`../PROJECT_EXECUTION_PLAN.md`](../PROJECT_EXECUTION_PLAN.md) is 
 | [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) | Step-by-step demo flow for evaluation | Placeholder — filled near the demo phases |
 
 > Reminder: NeuroBridge is **not a diagnostic medical system**. Documentation must never use
-> diagnostic language. See [`../CLAUDE.md`](../CLAUDE.md) for the full medical-safety rules.
+> diagnostic language, and all work must respect the project's medical-safety rules.

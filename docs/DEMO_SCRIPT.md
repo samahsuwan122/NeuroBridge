@@ -11,7 +11,7 @@
 4. Patient plays a cognitive game.
 5. The game result is saved.
 6. Doctor views the patient's progress on the **web dashboard**.
-7. Doctor generates an AI **support recommendation** (non-diagnostic, pending review).
+7. Doctor generates a **supportive recommendation** (non-diagnostic, pending review).
 8. Doctor approves / edits / rejects the recommendation.
 9. A therapy plan appears for the patient.
 10. A reminder appears.
@@ -23,5 +23,5 @@
 Demo credentials and seed data are added in **Phase 24 (Testing and Demo Data)** and kept in local
 docs only — never committed as real secrets, and never using real patient data.
 
-> Reminder: everything shown in the demo is **non-diagnostic**. AI output is a support recommendation
-> that requires review by a qualified doctor or therapist.
+> Reminder: everything shown in the demo is **non-diagnostic**. The output is a supportive
+> recommendation that requires review by a qualified doctor or therapist.

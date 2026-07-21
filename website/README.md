@@ -3,7 +3,7 @@
 The public landing website for **NeuroBridge**, a supportive cognitive
 rehabilitation platform connecting patients, families, and care teams. It
 presents the vision, product modules, family and provider workflows, cognitive
-games, AI-assisted support boundaries, security posture, and roadmap. AI is one
+games, supportive review boundaries, security posture, and roadmap. Support is one
 supportive module — not the product identity.
 
 > This is the **public marketing site**. It is separate from
@@ -81,7 +81,7 @@ node check.js   # if present; see repository notes
 10. Memory Tree gallery (original SVG illustration + memory notes)
 11. Cognitive games showcase (colored cards, current vs roadmap)
 12. Reports & analytics (charts mockup)
-13. AI-assisted support (safety boundary)
+13. Supportive review (safety boundary)
 14. Security & trust
 15. Resources — how it works (4 steps) + use cases
 16. Join / Register interest (role cards + mailto form; no account creation)
@@ -110,9 +110,9 @@ module.
 ## Content & safety
 
 NeuroBridge is **not a diagnostic medical system**. The copy makes no claim
-to diagnose, predict disease, or treat any condition, and never says AI replaces
-doctors. AI is described only as **AI-assisted support** — supportive activity
-recommendations and performance summaries that are **not a medical diagnosis and
+to diagnose, predict disease, or treat any condition, and never says the system replaces
+doctors. Support is described only as **supportive review** — supportive activity
+recommendations and performance-based summaries that are **not a medical diagnosis and
 not a medical assessment** and **require doctor/therapist review**. Cognitive
 exercises measure **game performance only**. Everything is presented as an
 **academic prototype**, non-diagnostic and performance-only.

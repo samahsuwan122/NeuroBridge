@@ -1,22 +1,22 @@
-# NeuroBridge Practical Execution Plan for Claude Code
+# NeuroBridge Practical Execution Plan
 
 ## 0. Project Identity
 
 Project name: NeuroBridge
-Project type: Mobile-first AI-powered cognitive rehabilitation and monitoring platform
+Project type: Mobile-first smart cognitive rehabilitation and monitoring platform
 Main stack:
 
 * Mobile app: Flutter
 * Backend API: FastAPI
 * Database: PostgreSQL
 * Web dashboard: React / Next.js or React + Vite
-* AI module: Python rule-based engine first, optional LLM/template summaries later
+* Summary module: Python rule-based engine first, optional template-based summaries later
 * Notifications: in-app first, Firebase Cloud Messaging later
 * Reports: PDF generation
 * Languages: Arabic and English
 * Security: JWT, RBAC, audit logs, password hashing
 
-## 1. Core Rule for Claude Code
+## 1. Core Development Rule
 
 Do not build the whole system at once.
 
@@ -33,11 +33,11 @@ Before coding each task:
 7. Update the TODO checklist.
 8. Summarize what changed and how to test it.
 
-## 2. Medical and AI Safety Rules
+## 2. Medical and Safety Rules
 
 NeuroBridge is not a medical diagnostic system.
 
-Never write code, UI text, API responses, report text, or AI output that claims to diagnose:
+Never write code, UI text, API responses, report text, or system output that claims to diagnose:
 
 * Alzheimer’s disease
 * Dementia
@@ -47,11 +47,11 @@ Never write code, UI text, API responses, report text, or AI output that claims 
 * Mental health conditions
 * Any medical condition
 
-Every AI-generated recommendation or summary must include this idea:
+Every supportive recommendation or summary must include this idea:
 
-“AI-generated support recommendation. Not a medical diagnosis. Requires review by a qualified doctor or therapist.”
+“Supportive recommendation. Not a medical diagnosis. Requires review by a qualified doctor or therapist.”
 
-AI recommendations must not become active automatically.
+Supportive recommendations must not become active automatically.
 They must stay pending until approved, edited, or rejected by a doctor/therapist.
 
 Use neutral phrases:
@@ -96,7 +96,6 @@ Use this structure unless the existing repository already has a better structure
 
 ```text
 neurobridge/
-  CLAUDE.md
   PROJECT_EXECUTION_PLAN.md
   README.md
   .gitignore
@@ -127,7 +126,7 @@ neurobridge/
         assessments/
         reminders/
         notifications/
-        ai/
+        summaries/
         reports/
         files/
         audit/
@@ -188,7 +187,7 @@ A task is done only when:
 
 Goal: Understand the existing project before editing.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Read the current repository and PROJECT_EXECUTION_PLAN.md. Do not edit files yet.
@@ -232,7 +231,7 @@ Acceptance criteria:
 
 Goal: Create a clean foundation for the monorepo.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 1: Project Foundation.
@@ -273,7 +272,7 @@ Acceptance criteria:
 
 Goal: Start FastAPI backend with clean modular architecture.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 2: Backend Skeleton.
@@ -315,7 +314,7 @@ Acceptance criteria:
 
 Goal: Add PostgreSQL models and migration foundation.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 3: Database Foundation.
@@ -363,7 +362,7 @@ Acceptance criteria:
 
 Goal: Secure login and role-based access.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 4: Authentication and RBAC.
@@ -416,7 +415,7 @@ Acceptance criteria:
 
 Goal: Admin can create and manage users.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 5: User and Admin Management.
@@ -462,7 +461,7 @@ Acceptance criteria:
 
 Goal: Create patient records and assign doctors/family.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 6: Patient Profile Module.
@@ -516,7 +515,7 @@ Acceptance criteria:
 
 Goal: Create Flutter app foundation.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 7: Flutter Mobile Foundation.
@@ -560,7 +559,7 @@ Acceptance criteria:
 
 Goal: Patient can see simple home screen.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 8: Patient Mobile Home.
@@ -604,7 +603,7 @@ Acceptance criteria:
 
 Goal: Store game definitions and results.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 9: Cognitive Games Backend.
@@ -652,7 +651,7 @@ Acceptance criteria:
 
 Goal: Build three simple playable games.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 10: Cognitive Games Mobile.
@@ -698,7 +697,7 @@ Acceptance criteria:
 
 Goal: Add basic assessment flow.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 11: Cognitive Assessment.
@@ -746,7 +745,7 @@ Acceptance criteria:
 
 Goal: Doctors create therapy plans and sessions.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 12: Therapy Plan Management.
@@ -791,7 +790,7 @@ Acceptance criteria:
 
 Goal: Start web dashboard for doctors.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 13: Doctor Web Dashboard Foundation.
@@ -803,7 +802,7 @@ Scope:
 - Show:
   - assigned patients
   - recent results
-  - pending AI reviews placeholder
+  - pending care-team reviews placeholder
   - alerts placeholder
   - patient details navigation
 
@@ -832,7 +831,7 @@ Acceptance criteria:
 
 Goal: Family can monitor linked patient only.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 14: Family Dashboard.
@@ -867,14 +866,14 @@ Acceptance criteria:
 * Family cannot access unrelated patient.
 * Summary is simplified.
 
-## 21. Phase 15 — AI Recommendation Module
+## 21. Phase 15 — Supportive Recommendation Module
 
-Goal: Add safe rule-based AI support.
+Goal: Add safe rule-based supportive summaries.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
-Implement Phase 15: AI Recommendation Module.
+Implement Phase 15: Supportive Recommendation Module.
 
 Scope:
 - Backend only first.
@@ -890,10 +889,10 @@ Scope:
   - disclaimer
 
 Endpoints:
-- POST /api/v1/ai/therapy-recommendation
-- POST /api/v1/ai/recommendation/{id}/approve
-- POST /api/v1/ai/recommendation/{id}/reject
-- POST /api/v1/ai/recommendation/{id}/edit
+- POST /api/v1/recommendations/therapy
+- POST /api/v1/recommendations/{id}/approve
+- POST /api/v1/recommendations/{id}/reject
+- POST /api/v1/recommendations/{id}/edit
 
 Rules:
 - Recommendation status starts as pending.
@@ -905,7 +904,7 @@ Rules:
 
 TODO:
 
-* [ ] AIRecommendation model
+* [ ] Recommendation model
 * [ ] Rule-based engine
 * [ ] Recommendation endpoint
 * [ ] Safety disclaimer
@@ -924,18 +923,18 @@ Acceptance criteria:
 * Doctor can approve/edit/reject.
 * Audit log is created.
 
-## 22. Phase 16 — AI Progress Summary
+## 22. Phase 16 — Progress Summary
 
 Goal: Generate safe doctor-reviewable progress summary.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
-Implement Phase 16: AI Progress Summary.
+Implement Phase 16: Progress Summary.
 
 Scope:
 - Backend only first.
-- Generate progress summary using template-based text or safe LLM placeholder.
+- Generate progress summary using safe template-based text.
 - Summary must be non-diagnostic.
 - Summary must include:
   - sessions completed
@@ -947,7 +946,7 @@ Scope:
   - required disclaimer
 
 Endpoint:
-- POST /api/v1/ai/progress-summary
+- POST /api/v1/summaries/progress
 ```
 
 TODO:
@@ -971,7 +970,7 @@ Acceptance criteria:
 
 Goal: Show trends over time.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 17: Progress Analytics.
@@ -1018,7 +1017,7 @@ Acceptance criteria:
 
 Goal: Add medication, appointment, and therapy reminders.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 18: Reminders and Notifications.
@@ -1068,7 +1067,7 @@ Acceptance criteria:
 
 Goal: Generate downloadable progress reports.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 19: PDF Reports.
@@ -1082,10 +1081,10 @@ Scope:
   - assessment results
   - game results
   - therapy session summary
-  - reviewed AI summary only if available
+  - reviewed summary only if available
   - disclaimer
-  - generated by
-  - generated date
+  - prepared by
+  - prepared date
 
 Endpoints:
 - POST /api/v1/reports/generate
@@ -1119,7 +1118,7 @@ Acceptance criteria:
 
 Goal: Add admin/manager web features.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 20: Admin and Manager Dashboard.
@@ -1163,7 +1162,7 @@ Acceptance criteria:
 
 Goal: Add patient file upload and optional voice indicators.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 21: File Upload and Optional Voice Module.
@@ -1207,7 +1206,7 @@ Acceptance criteria:
 
 Goal: Make app usable for Arabic/English and elderly users.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 22: Localization and Accessibility Polish.
@@ -1249,7 +1248,7 @@ Acceptance criteria:
 
 Goal: Fix security gaps before demo.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 23: Security and Privacy Review.
@@ -1265,7 +1264,7 @@ Scope:
   - audit logs
   - input validation
   - file access
-  - AI safety wording
+  - safety wording
   - environment secrets
 
 Produce a security checklist and fix critical issues.
@@ -1281,7 +1280,7 @@ TODO:
 * [ ] Check password hashing
 * [ ] Check secrets are not committed
 * [ ] Check audit logs
-* [ ] Check AI safety wording
+* [ ] Check safety wording
 * [ ] Check file access
 * [ ] Fix issues
 * [ ] Document remaining risks
@@ -1291,13 +1290,13 @@ Acceptance criteria:
 * No obvious cross-patient access.
 * No plain-text passwords.
 * Sensitive actions are auditable.
-* No diagnostic AI language.
+* No diagnostic language.
 
 ## 30. Phase 24 — Testing and Demo Data
 
 Goal: Prepare project for academic demo.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 24: Testing and Demo Data.
@@ -1314,7 +1313,7 @@ Scope:
   - one manager
   - several game results
   - one therapy plan
-  - one AI recommendation
+  - one supportive recommendation
   - one report
 
 Do not use real patient data.
@@ -1331,7 +1330,7 @@ TODO:
 * [ ] Seed games
 * [ ] Seed game results
 * [ ] Seed therapy plan
-* [ ] Seed AI recommendation
+* [ ] Seed supportive recommendation
 * [ ] Seed reminders
 * [ ] Add demo credentials to local docs only
 * [ ] Add manual testing guide
@@ -1346,7 +1345,7 @@ Acceptance criteria:
 
 Goal: Connect all parts together.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 25: Final Integration.
@@ -1364,7 +1363,7 @@ Demo flow:
 4. Patient plays game.
 5. Result is saved.
 6. Doctor views progress.
-7. Doctor generates AI recommendation.
+7. Doctor generates a supportive recommendation.
 8. Doctor approves/edits recommendation.
 9. Therapy plan appears.
 10. Reminder appears.
@@ -1380,7 +1379,7 @@ TODO:
 * [ ] Login works for all roles
 * [ ] Patient game flow works
 * [ ] Doctor progress flow works
-* [ ] AI review flow works
+* [ ] Care review flow works
 * [ ] Reminder flow works
 * [ ] Report flow works
 * [ ] Audit log flow works
@@ -1396,7 +1395,7 @@ Acceptance criteria:
 
 Goal: Prepare deployment or local demo environment.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 26: Deployment Preparation.
@@ -1438,7 +1437,7 @@ Acceptance criteria:
 
 Goal: Prepare final academic documentation.
 
-Claude Code prompt:
+Implementation steps:
 
 ```text
 Implement Phase 27: Final Documentation.
@@ -1465,7 +1464,7 @@ TODO:
 * [ ] Demo script written
 * [ ] Testing guide written
 * [ ] Security/privacy notes written
-* [ ] AI safety notes written
+* [ ] Safety notes written
 * [ ] Known limitations written
 * [ ] Future enhancements written
 
@@ -1475,17 +1474,17 @@ Acceptance criteria:
 * Supervisor/examiner can understand the project.
 * Demo script is ready.
 
-## 34. Recommended Claude Code Starting Command
+## 34. Recommended Starting Steps
 
-After saving this document, start Claude Code with this prompt:
+After saving this document, begin development with these steps:
 
 ```text
-Read CLAUDE.md and PROJECT_EXECUTION_PLAN.md.
+Read PROJECT_EXECUTION_PLAN.md.
 
 Start Phase 0 only.
 
 Do not edit files yet.
-Inspect the repository and tell me:
+Inspect the repository and determine:
 1. current structure
 2. what exists
 3. what is missing
@@ -1495,13 +1494,13 @@ Inspect the repository and tell me:
 
 ## 35. Important Working Rule
 
-Never ask Claude Code to:
+Never take on:
 
 ```text
 Build the whole NeuroBridge system.
 ```
 
-Always ask:
+Always scope to:
 
 ```text
 Implement Phase X only.
@@ -1515,7 +1514,7 @@ Implement this one task from Phase X only.
 
 This project is complex. The correct strategy is:
 
-Foundation → Backend → Database → Auth/RBAC → Patient Module → Mobile Login → Games → Therapy → Doctor Dashboard → AI Review → Reports → Notifications → Polish → Demo.
+Foundation → Backend → Database → Auth/RBAC → Patient Module → Mobile Login → Games → Therapy → Doctor Dashboard → Care Review → Reports → Notifications → Polish → Demo.
 
 ## 36. Final MVP Priority Order
 
@@ -1533,7 +1532,7 @@ If time is limited, implement only this MVP order:
 10. Game result tracking
 11. Doctor dashboard
 12. Therapy plan
-13. AI recommendation with doctor review
+13. Supportive recommendation with doctor review
 14. Progress analytics
 15. PDF report
 16. Audit logs
@@ -1546,9 +1545,9 @@ Optional later:
 * Wearable integration
 * Offline synchronization
 * Hospital system integration
-* Advanced AI model
+* Advanced analytics model
 
-## 37. Final Instruction to Claude Code
+## 37. Final Notes
 
 Follow the phases in order.
 Do not skip foundation work.

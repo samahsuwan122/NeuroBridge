@@ -3,12 +3,11 @@
 _Last updated: 2026-07-11_
 
 This file is a handoff/state snapshot so a future session can continue without
-losing context. It complements `CLAUDE.md` (rules) and
-`PROJECT_EXECUTION_PLAN.md` (roadmap).
+losing context. It complements `PROJECT_EXECUTION_PLAN.md` (roadmap).
 
 ## 1. Project name
 
-NeuroBridge — mobile-first, AI-powered cognitive rehabilitation and monitoring
+NeuroBridge — mobile-first, smart cognitive rehabilitation and monitoring
 platform. **Not a diagnostic medical system.**
 
 ## 2. Current status
@@ -122,28 +121,28 @@ platform. **Not a diagnostic medical system.**
   **`web/`** folder now contains the clinical **web dashboard foundation**
   (React + Vite + TypeScript) for doctors/therapists. Implemented: doctor login,
   dashboard overview, patients list, patient detail, progress summary, recent
-  activity, cognitive games performance, memory album review, an **AI summary
-  placeholder**, and a shared safety note. It **reuses existing backend APIs
-  read-only** where possible (`auth`, `patients`, `games`, `games/results`,
+  activity, cognitive games performance, memory album review, a **performance
+  summary placeholder**, and a shared safety note. It **reuses existing backend
+  APIs read-only** where possible (`auth`, `patients`, `games`, `games/results`,
   `memories`); **no backend, API, database, mobile, or website feature changes**
-  were made. **AI is described only as AI-assisted supportive review, pending
+  were made. **The support engine is described only as supportive review, pending
   doctor/therapist review** — not a medical diagnosis and not a medical
   assessment. Separation of concerns holds: **`web/`** = clinical dashboard,
   **`website/`** = public landing site, **`mobile/`** = patient mobile app.
-- **Branding standardized:** the official product name is **NeuroBridge** (no
-  longer "NeuroBridge AI"); AI remains only as a feature/module/descriptor. The
+- **Branding standardized:** the official product name is **NeuroBridge**; the
+  support engine remains only as a feature/module/descriptor. The
   roadmap file is now `docs/NEUROBRIDGE_ROADMAP.md`.
 - **Phase 26 (Landing Website Foundation)** remains complete: a
   new **`website/`** folder holds a startup-grade public landing site for
   NeuroBridge. The stack is a **dependency-free
   static HTML/CSS/vanilla JS** foundation (no build step, no `node_modules`).
-  Implemented sections: nav, hero, problem, solution, ecosystem, AI engine,
+  Implemented sections: nav, hero, problem, solution, ecosystem, support engine,
   cognitive games, patient app, doctor portal, family portal, admin dashboard,
   reports, security, research, FAQ, contact CTA, footer. The site **distinguishes
   available features from roadmap features**, and safety wording stays
-  **non-diagnostic** — AI is described only as **AI-assisted support** (supportive
-  activity recommendations and performance summaries, pending doctor/therapist
-  review; not a medical diagnosis and not a medical assessment). **Backend,
+  **non-diagnostic** — the support engine is described only as **supportive**
+  (supportive activity recommendations and performance summaries, pending
+  doctor/therapist review; not a medical diagnosis and not a medical assessment). **Backend,
   mobile, and `web/` were untouched.**
 - Preceding recent commits: **Phase 24B** expanded mobile localization coverage
   (pt/tr/de gained the full visible UI key set; en/ar already complete;

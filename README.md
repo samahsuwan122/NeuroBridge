@@ -6,12 +6,11 @@ The platform helps patients complete cognitive exercises and therapy activities,
 
 > ⚠️ **NeuroBridge is NOT a diagnostic medical system.**
 > It does not diagnose Alzheimer's, dementia, stroke, cognitive impairment, or any other medical
-> condition. All AI output is a **non-diagnostic support recommendation that requires review by a
-> qualified doctor or therapist** before it is acted upon.
+> condition. Any supportive recommendation it produces is a **non-diagnostic support recommendation
+> that requires review by a qualified doctor or therapist** before it is acted upon.
 
 This is a final-year software/computer engineering project. Implementation follows the phased plan in
-[`PROJECT_EXECUTION_PLAN.md`](PROJECT_EXECUTION_PLAN.md) and the project rules in
-[`CLAUDE.md`](CLAUDE.md).
+[`PROJECT_EXECUTION_PLAN.md`](PROJECT_EXECUTION_PLAN.md).
 
 ---
 
@@ -24,10 +23,10 @@ This is a final-year software/computer engineering project. Implementation follo
 | **Backend API** | FastAPI (Python) | All clients |
 | **Official database** | PostgreSQL | Production / project database |
 | **Local-dev database** | SQLite (fallback) | Selected automatically via `DATABASE_URL` |
-| **AI recommendation module** | Rule-based first (optional templated summaries later) | Doctor/therapist review workflow |
+| **Supportive recommendation module** | Rule-based first (optional templated summaries later) | Doctor/therapist review workflow |
 | **PDF reports** | Backend PDF generation | Doctor / admin / manager |
 | **Notifications** | In-app first (Firebase Cloud Messaging later) | Patient / family / doctor |
-| **Audit logs** | Backend | Sensitive actions (login, notes, reports, AI review, etc.) |
+| **Audit logs** | Backend | Sensitive actions (login, notes, reports, care review, etc.) |
 | **Localization** | Arabic 🇸🇦 & English 🇬🇧 (RTL for Arabic) | All clients |
 
 **Important architecture note:** the patient and family/caregiver experience is **Flutter mobile-only**.
@@ -40,7 +39,6 @@ roles (doctor, therapist, admin, manager).
 
 ```text
 NB Project/
-  CLAUDE.md                    # Project rules and guardrails
   PROJECT_EXECUTION_PLAN.md    # Phase-by-phase execution plan
   README.md                    # This file
   .gitignore
