@@ -557,18 +557,17 @@
           <span class="eyebrow eyebrow--blue">Join NeuroBridge</span>
           <h2>Request access &amp; register your interest</h2>
           <p class="section__sub">
-            This is a prototype site — <strong>it does not create real accounts yet</strong>.
-            Tell us how you'd like to take part, and we'll follow up. Backend account
-            creation will be connected in a later module.
+            Submit your request and our team will review it before creating an account.
+            Tell us how you'd like to take part, and we'll follow up.
           </p>
         </div>
 
         <div class="join-cards">
-          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🩺</span><h3>Join as Doctor</h3><p>Review assigned patients, appointments, and provider messages — performance-only.</p><button class="btn btn--ghost btn--sm join-pick" data-role="Doctor" type="button">Join as doctor</button></article>
-          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🧑‍⚕️</span><h3>Join as Therapist</h3><p>Support therapy follow-up and coordinate supportive activities.</p><button class="btn btn--ghost btn--sm join-pick" data-role="Therapist" type="button">Join as therapist</button></article>
-          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🏥</span><h3>Join as Clinic</h3><p>Manage providers, coordinate appointments, and review usage with RBAC.</p><button class="btn btn--ghost btn--sm join-pick" data-role="Clinic / Center" type="button">Request clinic demo</button></article>
-          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">💚</span><h3>Join as Family</h3><p>Encourage, message providers, add memories, and follow progress.</p><button class="btn btn--ghost btn--sm join-pick" data-role="Family member" type="button">Join as family</button></article>
-          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🧑</span><h3>Join as Patient</h3><p>Practice daily activities and games with family and provider support.</p><button class="btn btn--ghost btn--sm join-pick" data-role="Patient" type="button">Join as patient</button></article>
+          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🩺</span><h3>Join as Doctor</h3><p>Review assigned patients, appointments, and provider messages — performance-only.</p><button class="btn btn--ghost btn--sm join-pick" data-role="doctor" type="button">Join as doctor</button></article>
+          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🧑‍⚕️</span><h3>Join as Therapist</h3><p>Support therapy follow-up and coordinate supportive activities.</p><button class="btn btn--ghost btn--sm join-pick" data-role="therapist" type="button">Join as therapist</button></article>
+          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🏥</span><h3>Join as Clinic</h3><p>Manage providers, coordinate appointments, and review usage with RBAC.</p><button class="btn btn--ghost btn--sm join-pick" data-role="clinic" type="button">Request clinic demo</button></article>
+          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">💚</span><h3>Join as Family</h3><p>Encourage, message providers, add memories, and follow progress.</p><button class="btn btn--ghost btn--sm join-pick" data-role="family" type="button">Join as family</button></article>
+          <article class="join-card reveal"><span class="join-card__ic" aria-hidden="true">🧑</span><h3>Join as Patient</h3><p>Practice daily activities and games with family and provider support.</p><button class="btn btn--ghost btn--sm join-pick" data-role="patient" type="button">Join as patient</button></article>
         </div>
 
         <div class="join-form-wrap reveal">
@@ -583,19 +582,18 @@
               </label>
               <label class="jf-field">Role <span class="mform__req">*</span>
                 <select id="jfRole" required>
-                  <option value="Doctor">Doctor</option>
-                  <option value="Therapist">Therapist</option>
-                  <option value="Clinic / Center">Clinic / Center</option>
-                  <option value="Family member">Family member</option>
-                  <option value="Patient">Patient</option>
-                  <option value="Research / University reviewer">Research / University reviewer</option>
+                  <option value="patient">Patient</option>
+                  <option value="family">Family member</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="therapist">Therapist</option>
+                  <option value="clinic">Clinic / Center</option>
                 </select>
               </label>
               <label class="jf-field">Organization / clinic <small>(optional)</small>
                 <input id="jfOrg" type="text" placeholder="Clinic or center name" />
               </label>
-              <label class="jf-field">Governorate <small>(optional)</small>
-                <input id="jfGov" type="text" placeholder="e.g. Nablus" />
+              <label class="jf-field">Phone <small>(optional)</small>
+                <input id="jfPhone" type="tel" placeholder="Your phone number" />
               </label>
               <label class="jf-field jf-field--full">Message
                 <textarea id="jfMsg" rows="3" placeholder="How would you like to take part?"></textarea>
@@ -606,10 +604,9 @@
               <span class="jf-note" id="jfNote" role="status"></span>
             </div>
             <p class="jf-legal">
-              <strong>This demo sends a mailto request and does not create real
-              accounts yet.</strong> No personal data is stored by this demo site;
-              submitting opens your email app with a pre-filled message to the
-              project team (<code>neurobridge.demo@example.com</code>).
+              <strong>Submit your request and our team will review it before creating an account.</strong>
+              Your details are used only to review your request and contact you. No account is
+              created until your request is approved.
             </p>
           </form>
         </div>
@@ -670,7 +667,7 @@
           <details><summary>Can families add memories?</summary><p>Yes. Linked families can add photos, stories, and messages to the Memory Center, and send encouragement — family support only, not medical advice.</p></details>
           <details><summary>Can patients use it alone?</summary><p>Patients can practice daily activities independently, but NeuroBridge is designed to connect them with family and care-team support. It never replaces professional care.</p></details>
           <details><summary>Are medical decisions automated?</summary><p>No. NeuroBridge provides <strong>supportive review</strong> only; suggestions stay <strong>pending care-team review</strong>, and clinical judgment always stays with qualified professionals.</p></details>
-          <details><summary>Can clinics request a demo?</summary><p>Yes. Clinics and medical centers can register interest in the Join section. This prototype site does not create accounts yet — we follow up by email.</p></details>
+          <details><summary>Can clinics request a demo?</summary><p>Yes. Clinics and medical centers can register interest in the Join section — submit a request and our team will review it before creating an account.</p></details>
           <details><summary>Is this a real deployed medical system?</summary><p>No. NeuroBridge is an <strong>academic prototype</strong> — <strong>not a deployed clinical medical system</strong> and not a replacement for professional medical care.</p></details>
         </div>
       </div>

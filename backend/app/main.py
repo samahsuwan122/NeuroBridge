@@ -27,6 +27,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.core import database
 from app.core.config import get_settings
+from app.modules.access_requests.routes import router as access_requests_router
 from app.modules.activities.routes import router as activities_router
 from app.modules.admin.routes import router as admin_router
 from app.modules.appointments.routes import router as appointments_router
@@ -88,6 +89,7 @@ app.include_router(encouragements_router)
 app.include_router(appointments_router)
 app.include_router(providers_router)
 app.include_router(provider_messages_router)
+app.include_router(access_requests_router)
 
 # Serve uploaded Memory Album images read-only. The directory is created if
 # missing so the mount is always valid; its contents are runtime-only and

@@ -48,7 +48,7 @@
         labels.push({ n: tn, k: norm(tn.nodeValue), o: tn.nodeValue });
       }
     });
-    var phs = ["siteSearch", "jfName", "jfEmail", "jfOrg", "jfGov", "jfMsg"]
+    var phs = ["siteSearch", "jfName", "jfEmail", "jfOrg", "jfPhone", "jfMsg"]
       .map(function (id) {
         var e = document.getElementById(id);
         return e ? { e: e, k: norm(e.getAttribute("placeholder")), o: e.getAttribute("placeholder") } : null;
@@ -323,7 +323,43 @@
     });
   });
 
-  // -- Join form: build a mailto (no accounts, no localStorage) --------------
+  // -- Join form: submit a real access request to the backend ----------------
+  // POSTs to the access-requests API, which stores a PENDING request only — it
+  // never creates an account. Localized status messages; graceful error if the
+  // backend is unreachable. No mailto, no account creation from the website.
+  var ACCESS_REQUESTS_URL = "http://127.0.0.1:8000/api/v1/access-requests";
+  var EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  var JF_MSG = {
+    submitting: {
+      en: "Submitting…", ar: "جارٍ الإرسال…", fr: "Envoi…",
+      es: "Enviando…", de: "Wird gesendet…"
+    },
+    invalid: {
+      en: "Please enter your name, a valid email, and a role.",
+      ar: "يرجى إدخال الاسم وبريد إلكتروني صحيح والدور.",
+      fr: "Veuillez saisir votre nom, un e-mail valide et un rôle.",
+      es: "Introduce tu nombre, un correo válido y un rol.",
+      de: "Bitte Name, eine gültige E-Mail und eine Rolle eingeben."
+    },
+    success: {
+      en: "Your request has been submitted successfully. The team will review it and contact you.",
+      ar: "تم تسجيل طلبك بنجاح. سيقوم الفريق بمراجعته والتواصل معك.",
+      fr: "Votre demande a été envoyée avec succès. L'équipe l'examinera et vous contactera.",
+      es: "Tu solicitud se ha enviado correctamente. El equipo la revisará y te contactará.",
+      de: "Ihre Anfrage wurde erfolgreich gesendet. Das Team prüft sie und meldet sich bei Ihnen."
+    },
+    error: {
+      en: "Sorry, we couldn't submit your request right now. Please try again in a moment.",
+      ar: "عذرًا، تعذّر إرسال طلبك الآن. يرجى المحاولة بعد قليل.",
+      fr: "Désolé, l'envoi de votre demande a échoué. Veuillez réessayer dans un instant.",
+      es: "Lo sentimos, no pudimos enviar tu solicitud ahora. Inténtalo de nuevo en un momento.",
+      de: "Entschuldigung, Ihre Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es gleich erneut."
+    }
+  };
+  function jfLang() {
+    var l = (document.documentElement.getAttribute("lang") || "en").slice(0, 2);
+    return JF_MSG.success[l] ? l : "en";
+  }
   if (joinForm) {
     joinForm.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -331,35 +367,44 @@
         var el = document.getElementById(id);
         return el ? el.value.trim() : "";
       };
+      var lang = jfLang();
       var name = val("jfName");
       var email = val("jfEmail");
       var role = val("jfRole");
-      if (!name || !email || !role) {
-        if (jfNote) jfNote.textContent = "Please fill in your name, email, and role.";
+      if (!name || !EMAIL_RE.test(email) || !role) {
+        if (jfNote) jfNote.textContent = JF_MSG.invalid[lang];
         return;
       }
-      var lines = [
-        "Name: " + name,
-        "Email: " + email,
-        "Role: " + role,
-        "Organization / clinic: " + (val("jfOrg") || "-"),
-        "Governorate: " + (val("jfGov") || "-"),
-        "",
-        "Message:",
-        val("jfMsg") || "-",
-        "",
-        "— Sent from the NeuroBridge prototype website (no account created)."
-      ];
-      var subject = "NeuroBridge access request — " + role;
-      var mailto =
-        "mailto:neurobridge.demo@example.com" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(lines.join("\n"));
-      window.location.href = mailto;
-      if (jfNote) {
-        jfNote.textContent =
-          "Opening your email app… If nothing happens, email neurobridge.demo@example.com.";
-      }
+      var submitBtn = joinForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      if (jfNote) jfNote.textContent = JF_MSG.submitting[lang];
+
+      fetch(ACCESS_REQUESTS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: name,
+          email: email,
+          requested_role: role,
+          phone: val("jfPhone") || null,
+          organization: val("jfOrg") || null,
+          message: val("jfMsg") || null
+        })
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("Request failed (" + res.status + ")");
+          return res.json();
+        })
+        .then(function () {
+          if (jfNote) jfNote.textContent = JF_MSG.success[lang];
+          joinForm.reset();
+        })
+        .catch(function () {
+          if (jfNote) jfNote.textContent = JF_MSG.error[lang];
+        })
+        .then(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
     });
   }
 

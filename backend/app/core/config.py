@@ -52,7 +52,13 @@ class Settings(BaseSettings):
     # --- CORS ---
     # Kept as a raw string so values like "[http://localhost:5173,http://localhost:3000]"
     # parse reliably. Use `cors_origins_list` to get the parsed list.
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    # Local dev defaults: the web portal (Vite :5173) and the public marketing
+    # website (static server on :5500). Override with CORS_ORIGINS in any real
+    # environment.
+    cors_origins: str = (
+        "http://localhost:5173,http://localhost:3000,"
+        "http://127.0.0.1:5500,http://localhost:5500,http://127.0.0.1:5173"
+    )
 
     # --- Notifications / email (placeholders for later phases) ---
     fcm_server_key: Optional[str] = None

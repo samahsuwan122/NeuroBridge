@@ -6,6 +6,7 @@ that metadata is complete.
 """
 
 from app.db.base import Base
+from app.models.access_request import AccessRequest
 from app.models.appointment import Appointment
 from app.models.assigned_activity import AssignedActivity
 from app.models.audit_log import AuditLog
@@ -32,6 +33,7 @@ __all__ = [
     "UserRole",
     "MedicalCenter",
     "AuditLog",
+    "AccessRequest",
     "PatientProfile",
     "PatientAssignment",
     "PatientFamilyLink",
