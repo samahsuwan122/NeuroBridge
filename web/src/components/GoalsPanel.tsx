@@ -4,6 +4,7 @@ import {
   listPatientGoals,
   updateGoal,
 } from "../api/goals";
+import { useI18n } from "../i18n/useI18n";
 import type { Goal, GoalStatus } from "../types";
 import {
   Badge,
@@ -53,6 +54,8 @@ function statusTone(status: GoalStatus): "neutral" | "live" | "plan" | "gold" {
 }
 
 export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
+  const { t } = useI18n();
+
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -69,6 +72,12 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
     [goals],
   );
 
+  const statusLabel = (status: GoalStatus): string => {
+    if (status === "completed") return t("goals.status.completed");
+    if (status === "paused") return t("goals.status.paused");
+    return t("goals.status.active");
+  };
+
   const loadGoals = async () => {
     setLoading(true);
     setError(null);
@@ -81,7 +90,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
         ),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load goals.");
+      setError(err instanceof Error ? err.message : t("goals.failedLoad"));
     } finally {
       setLoading(false);
     }
@@ -99,7 +108,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
     const targetValue = Number(form.target_value);
 
     if (!title || !targetType || !Number.isFinite(targetValue) || targetValue < 1) {
-      setError("Please enter a title, target type, and valid target value.");
+      setError(t("goals.invalidCreate"));
       return;
     }
 
@@ -119,10 +128,10 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
       });
 
       setForm(emptyForm);
-      setMessage("Goal created successfully.");
+      setMessage(t("goals.createdSuccess"));
       await loadGoals();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save goal.");
+      setError(err instanceof Error ? err.message : t("goals.failedSave"));
     } finally {
       setSaving(false);
     }
@@ -132,7 +141,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
     const value = Number(draftValues[goal.id]);
 
     if (!Number.isFinite(value) || value < 0) {
-      setError("Current value must be zero or greater.");
+      setError(t("goals.invalidCurrent"));
       return;
     }
 
@@ -142,10 +151,10 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
 
     try {
       await updateGoal(goal.id, { current_value: value });
-      setMessage("Goal updated successfully.");
+      setMessage(t("goals.updatedSuccess"));
       await loadGoals();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update goal.");
+      setError(err instanceof Error ? err.message : t("goals.failedUpdate"));
     } finally {
       setSaving(false);
     }
@@ -158,10 +167,10 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
 
     try {
       await updateGoal(goal.id, { status });
-      setMessage("Goal updated successfully.");
+      setMessage(t("goals.updatedSuccess"));
       await loadGoals();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update goal.");
+      setError(err instanceof Error ? err.message : t("goals.failedUpdate"));
     } finally {
       setSaving(false);
     }
@@ -169,7 +178,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
 
   return (
     <section className="goals-panel">
-      <SectionHeader eyebrow="Care plan" title="Goals" />
+      <SectionHeader eyebrow={t("goals.eyebrow")} title={t("goals.title")} />
 
       {message && <div className="success-banner">{message}</div>}
       {error && <ErrorState message={error} onRetry={loadGoals} />}
@@ -177,18 +186,18 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
       <form className="goals-form" onSubmit={handleCreate}>
         <div className="form-grid">
           <label>
-            <span>Goal title</span>
+            <span>{t("goals.goalTitle")}</span>
             <input
               value={form.title}
               onChange={(event) =>
                 setForm((current) => ({ ...current, title: event.target.value }))
               }
-              placeholder="Example: Complete weekly exercises"
+              placeholder={t("goals.goalTitlePlaceholder")}
             />
           </label>
 
           <label>
-            <span>Target type</span>
+            <span>{t("goals.targetType")}</span>
             <input
               value={form.target_type}
               onChange={(event) =>
@@ -197,12 +206,12 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
                   target_type: event.target.value,
                 }))
               }
-              placeholder="sessions"
+              placeholder={t("goals.targetTypePlaceholder")}
             />
           </label>
 
           <label>
-            <span>Target value</span>
+            <span>{t("goals.targetValue")}</span>
             <input
               type="number"
               min="1"
@@ -217,7 +226,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
           </label>
 
           <label>
-            <span>Due date</span>
+            <span>{t("goals.dueDate")}</span>
             <input
               type="date"
               value={form.due_date}
@@ -232,7 +241,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
         </div>
 
         <label className="field-wide">
-          <span>Description</span>
+          <span>{t("goals.description")}</span>
           <textarea
             value={form.description}
             onChange={(event) =>
@@ -241,19 +250,19 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
                 description: event.target.value,
               }))
             }
-            placeholder="Short follow-up note for this goal"
+            placeholder={t("goals.descriptionPlaceholder")}
           />
         </label>
 
         <button className="btn" type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save goal"}
+          {saving ? t("goals.saving") : t("goals.save")}
         </button>
       </form>
 
       {loading ? (
         <Spinner />
       ) : sortedGoals.length === 0 ? (
-        <EmptyState message="No goals yet." />
+        <EmptyState message={t("goals.noGoals")} />
       ) : (
         <div className="goals-list">
           {sortedGoals.map((goal) => {
@@ -264,14 +273,16 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
                 <div className="goal-card__header">
                   <div>
                     <h3>{goal.title}</h3>
-                    <p>{goal.description || "No description provided."}</p>
+                    <p>{goal.description || t("goals.noDescription")}</p>
                   </div>
-                  <Badge tone={statusTone(goal.status)}>{goal.status}</Badge>
+                  <Badge tone={statusTone(goal.status)}>
+                    {statusLabel(goal.status)}
+                  </Badge>
                 </div>
 
                 <div className="goal-progress">
                   <div className="goal-progress__top">
-                    <span>Progress</span>
+                    <span>{t("goals.progress")}</span>
                     <strong>{progress}%</strong>
                   </div>
                   <div className="goal-progress__bar">
@@ -280,17 +291,23 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
                 </div>
 
                 <div className="goal-meta">
-                  <span>Target type: {goal.target_type}</span>
                   <span>
-                    Value: {goal.current_value} / {goal.target_value}
+                    {t("goals.targetType")}: {goal.target_type}
                   </span>
-                  <span>Due: {formatDateValue(goal.due_date)}</span>
-                  <span>Created: {formatDateValue(goal.created_at)}</span>
+                  <span>
+                    {t("goals.value")}: {goal.current_value} / {goal.target_value}
+                  </span>
+                  <span>
+                    {t("goals.due")}: {formatDateValue(goal.due_date)}
+                  </span>
+                  <span>
+                    {t("goals.created")}: {formatDateValue(goal.created_at)}
+                  </span>
                 </div>
 
                 <div className="goal-actions">
                   <label>
-                    <span>Current value</span>
+                    <span>{t("goals.currentValue")}</span>
                     <input
                       type="number"
                       min="0"
@@ -310,7 +327,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
                     disabled={saving}
                     onClick={() => void handleProgressUpdate(goal)}
                   >
-                    Update goal
+                    {t("goals.update")}
                   </button>
 
                   <select
@@ -322,7 +339,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
                   >
                     {statusOptions.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {statusLabel(status)}
                       </option>
                     ))}
                   </select>
