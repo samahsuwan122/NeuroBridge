@@ -1,0 +1,49 @@
+# NeuroBridge backend dependencies
+# ---------------------------------------------------------------------------
+# Install inside a virtual environment (run from the backend/ folder):
+#
+#     py -3.12 -m venv .venv
+#     .venv\Scripts\activate       (Windows)   |   source .venv/bin/activate (Unix)
+#     python -m pip install -r requirements.txt
+#
+# The backend targets Python 3.12+. All dependencies below ship prebuilt wheels
+# for 3.12, so no C/C++ compiler is required.
+# ---------------------------------------------------------------------------
+
+# ============================ Web / API ===================================
+
+# Web framework / ASGI server (plain uvicorn = no compiled extras required)
+fastapi>=0.110
+uvicorn>=0.29
+
+# Settings / validation / .env loading
+pydantic>=2.6
+pydantic-settings>=2.2
+python-dotenv>=1.0
+
+# ============================ Database ====================================
+
+# ORM + migrations. SQLite is used for local dev; PostgreSQL is the official DB.
+SQLAlchemy>=2.0
+alembic>=1.13
+# PostgreSQL driver (only used when DATABASE_URL points at PostgreSQL).
+psycopg2-binary>=2.9
+
+# ============================ Auth / security (Phase 4) ===================
+
+# JWT access/refresh tokens.
+PyJWT>=2.8
+# Password hashing (used directly; strong bcrypt hashing).
+bcrypt>=4.1
+# Multipart form parsing (required by FastAPI for file uploads, e.g. Memory
+# Album image upload). Login still uses JSON bodies.
+python-multipart>=0.0.9
+
+# Alternatives considered (not used):
+# - passlib[bcrypt]: mis-detects bcrypt>=4.1 backend version on 3.12 (noisy).
+# - python-jose[cryptography]: heavier; PyJWT is sufficient.
+
+# ============================ Testing =====================================
+
+pytest>=8.0
+httpx>=0.27
