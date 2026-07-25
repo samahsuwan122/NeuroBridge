@@ -298,3 +298,45 @@ export interface SlotListResponse {
   success: boolean;
   slots: AvailabilitySlot[];
 }
+export type GoalStatus = "active" | "completed" | "paused";
+
+export interface Goal {
+  id: string;
+  patient_profile_id: string;
+  created_by_user_id: string;
+  title: string;
+  description?: string | null;
+  target_type: string;
+  target_value: number;
+  current_value: number;
+  status: GoalStatus;
+  due_date?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GoalListResponse {
+  success: boolean;
+  total: number;
+  goals: Goal[];
+}
+
+export interface GoalCreatePayload {
+  patient_profile_id: string;
+  title: string;
+  description?: string | null;
+  target_type: string;
+  target_value: number;
+  current_value?: number;
+  due_date?: string | null;
+}
+
+export interface GoalUpdatePayload {
+  title?: string;
+  description?: string | null;
+  target_type?: string;
+  target_value?: number;
+  current_value?: number;
+  status?: GoalStatus;
+  due_date?: string | null;
+}

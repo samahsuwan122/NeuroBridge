@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client";
 import { ActivityBuilder } from "../components/ActivityBuilder";
+import { GoalsPanel } from "../components/GoalsPanel";
 import {
   BarList,
   Badge,
@@ -228,6 +229,10 @@ export function PatientDetailPage() {
       {/* Care-team activity builder */}
       <Card>
         <ActivityBuilder patientProfileId={id} />
+      </Card>
+            {/* Patient goals */}
+      <Card>
+        <GoalsPanel patientProfileId={id} />
       </Card>
 
       {/* Memory album — private to patient & family (not shown to care team) */}
