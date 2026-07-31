@@ -5,6 +5,146 @@
 (function () {
   "use strict";
 
+  // -- Shared light/dark theme ---------------------------------------------
+  var themeStorageKey = "nb_theme";
+
+  function getSavedTheme() {
+    try {
+      return localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
+    } catch (e) {
+      return "light";
+    }
+  }
+
+  function updateThemeButton(theme) {
+    var button = document.getElementById("Darkbutton");
+    if (!button) return;
+    var isDark = theme === "dark";
+    button.textContent = isDark ? "🌝" : "🌛";
+    button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    button.setAttribute("aria-pressed", isDark ? "true" : "false");
+  }
+
+  function applyTheme(theme, persist) {
+    var selected = theme === "dark" ? "dark" : "light";
+    if (selected === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    if (persist) {
+      try { localStorage.setItem(themeStorageKey, selected); } catch (e) {}
+    }
+    updateThemeButton(selected);
+  }
+
+  function setupThemeButton() {
+    var button = document.getElementById("Darkbutton");
+    if (!button || button.dataset.nbThemeReady === "true") return;
+    button.type = "button";
+    button.dataset.nbThemeReady = "true";
+    updateThemeButton(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+    button.addEventListener("click", function () {
+      var nextTheme = document.documentElement.getAttribute("data-theme") === "dark"
+        ? "light"
+        : "dark";
+      applyTheme(nextTheme, true);
+    });
+  }
+
+  applyTheme(getSavedTheme(), false);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupThemeButton);
+  } else {
+    setupThemeButton();
+  }
+
+  // -- Dynamic translation for user-generated content ----------------------
+  // Static interface copy continues to use translations.js and data-i18n.
+  // This separate path is intentionally conservative and currently falls
+  // back to the exact source text until a trusted backend service is added.
+  var dynamicTranslationCache = new Map();
+  var dynamicTranslationPending = new Map();
+  var dynamicProductName = "NeuroBridge";
+
+  function isProtectedDynamicText(text) {
+    var value = text.trim();
+    var email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var phone = /^\+?[\d\s().-]{7,}$/;
+    var date = /^(?:\d{1,4}[\/.\-]\d{1,2}[\/.\-]\d{1,4}|\d{1,2}\s+[A-Za-z]{3,9}\s+\d{2,4}|[A-Za-z]{3,9}\s+\d{1,2},?\s+\d{2,4})$/;
+    var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    var id = /^(?=.*\d)(?=.*[A-Za-z])[A-Za-z0-9_:#.-]{4,}$/;
+    var latinName = /^(?:[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’-]+)(?:\s+[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’-]+){0,4}$/;
+    var arabicName = /^(?:[\u0600-\u06FF'’-]+)(?:\s+[\u0600-\u06FF'’-]+){0,3}$/;
+
+    return email.test(value) || phone.test(value) || date.test(value) ||
+      uuid.test(value) || id.test(value) || latinName.test(value) ||
+      arabicName.test(value);
+  }
+
+  function protectDynamicProductNames(text) {
+    var products = [];
+    var protectedText = text.replace(/NeuroBridge/gi, function (match) {
+      var token = "__NB_PRODUCT_" + products.length + "__";
+      products.push(match);
+      return token;
+    });
+    return { text: protectedText, products: products };
+  }
+
+  function restoreDynamicProductNames(text, products) {
+    return text.replace(/__NB_PRODUCT_(\d+)__/g, function (token, index) {
+      return products[Number(index)] || dynamicProductName;
+    });
+  }
+
+  function requestDynamicTranslation(protectedText, targetLang) {
+    // TODO: Connect this function to an authenticated backend translation API.
+    // Keep credentials on the server, validate language/size limits there, and
+    // require translation-only behavior that never infers or adds medical advice.
+    void targetLang;
+    return Promise.resolve(protectedText);
+  }
+
+  window.translateDynamicText = function translateDynamicText(text, targetLang) {
+    var source = typeof text === "string" ? text : "";
+    var language = typeof targetLang === "string"
+      ? targetLang.toLowerCase().split("-")[0]
+      : "en";
+
+    if (!source.trim() || language === "en" || isProtectedDynamicText(source)) {
+      return Promise.resolve(source);
+    }
+
+    var cacheKey = language + "\u0000" + source;
+    if (dynamicTranslationCache.has(cacheKey)) {
+      return Promise.resolve(dynamicTranslationCache.get(cacheKey));
+    }
+    if (dynamicTranslationPending.has(cacheKey)) {
+      return dynamicTranslationPending.get(cacheKey);
+    }
+
+    var protectedValue = protectDynamicProductNames(source);
+    var request = requestDynamicTranslation(protectedValue.text, language)
+      .then(function (translated) {
+        var result = typeof translated === "string" && translated.trim()
+          ? restoreDynamicProductNames(translated, protectedValue.products)
+          : source;
+        dynamicTranslationCache.set(cacheKey, result);
+        return result;
+      })
+      .catch(function () {
+        dynamicTranslationCache.set(cacheKey, source);
+        return source;
+      })
+      .then(function (result) {
+        dynamicTranslationPending.delete(cacheKey);
+        return result;
+      });
+    dynamicTranslationPending.set(cacheKey, request);
+    return request;
+  };
+
 
   // -- Global language UI: injects the language button and modal on every page --
   (function ensureLanguageUi() {

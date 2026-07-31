@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Request Demo | NeuroBridge</title>
+  <title>Sign in | NeuroBridge</title>
   <link rel="icon" href="assets/favicon.svg" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body>
+<body class="access-page">
   <header class="nav" id="top">
     <div class="container nav__inner">
       <a class="brand" href="index.html">
@@ -26,7 +26,7 @@
         <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
         <a href="clinics.html" data-i18n="Clinics">Clinics</a>
         <a href="resources.html" data-i18n="Resources">Resources</a>
-        <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="Request demo">Request demo</a>
+        <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
       </nav>
 
        <button
@@ -71,89 +71,110 @@
     <path d="M6 9l6 6 6-6" />
   </svg>
 </button>
+      <button
+    class="Darkbutton" id="Darkbutton" type="button" aria-label="Toggle dark mode">
+    🌛
+    </button>
       <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
-  <main>
-    <section class="section page-hero">
-      <div class="container">
-        <div class="section__head reveal">
-          <span class="eyebrow" data-i18n="Request access">Request access</span>
-          <h1 data-i18n="Request a NeuroBridge walkthrough">Request a NeuroBridge walkthrough</h1>
-          <p class="section__sub" data-i18n="Tell us how you would like to join, and our team will review the request before creating an account.">
-            Tell us how you would like to join, and our team will review the request
-            before creating an account.
-          </p>
+  <main class="access-main">
+    <section class="access-hero">
+      <div class="container access-shell">
+        <header class="access-intro reveal">
+          <span class="eyebrow" data-i18n="access.eyebrow">Secure access</span>
+          <h1 data-i18n="access.title">Sign in to NeuroBridge</h1>
+          <p data-i18n="access.subtitle">Choose your account type to continue into a tailored experience for patients, families, care teams, and clinics.</p>
+        </header>
+
+        <div class="access-grid" aria-label="Account types" data-i18n-aria-label="access.rolesLabel">
+          <button class="access-card access-card--primary join-pick reveal" type="button" data-role="patient">
+            <span class="access-card__badge" data-i18n="access.recommended">Recommended</span>
+            <span class="access-card__icon" aria-hidden="true">&#128100;</span>
+            <span class="access-card__title" data-i18n="access.patient">Patient</span>
+            <span class="access-card__desc" data-i18n="access.patientDesc">Continue to daily activities and performance-only progress.</span>
+          </button>
+          <button class="access-card join-pick reveal" type="button" data-role="family">
+            <span class="access-card__icon" aria-hidden="true">&#9829;</span>
+            <span class="access-card__title" data-i18n="access.family">Family</span>
+            <span class="access-card__desc" data-i18n="access.familyDesc">Share encouragement, memories, and supportive follow-up.</span>
+          </button>
+          <button class="access-card join-pick reveal" type="button" data-role="clinic">
+            <span class="access-card__icon" aria-hidden="true">&#127973;</span>
+            <span class="access-card__title" data-i18n="access.clinic">Clinic</span>
+            <span class="access-card__desc" data-i18n="access.clinicDesc">Coordinate users, roles, access, and activity support.</span>
+          </button>
+          <button class="access-card join-pick reveal" type="button" data-role="therapist">
+            <span class="access-card__icon" aria-hidden="true">&#129309;</span>
+            <span class="access-card__title" data-i18n="access.therapist">Therapist</span>
+            <span class="access-card__desc" data-i18n="access.therapistDesc">Review assigned activities and supportive follow-up.</span>
+          </button>
+          <button class="access-card join-pick reveal" type="button" data-role="doctor">
+            <span class="access-card__icon" aria-hidden="true">&#129658;</span>
+            <span class="access-card__title" data-i18n="access.doctor">Doctor</span>
+            <span class="access-card__desc" data-i18n="access.doctorDesc">Open assigned information for care-team review.</span>
+          </button>
         </div>
-      </div>
-    </section>
 
-    <section class="section section--blue">
-      <div class="container">
-        <div class="join-cards">
-          <article class="join-card reveal"><span class="join-card__ic">🩺</span><h3 data-i18n="Doctor">Doctor</h3><p data-i18n="Review assigned patients and reports.">Review assigned patients and reports.</p></article>
-          <article class="join-card reveal"><span class="join-card__ic">🧑‍⚕️</span><h3 data-i18n="Therapist">Therapist</h3><p data-i18n="Support activities and follow-up.">Support activities and follow-up.</p></article>
-          <article class="join-card reveal"><span class="join-card__ic">🏥</span><h3 data-i18n="Clinic">Clinic</h3><p data-i18n="Coordinate users, roles, and requests.">Coordinate users, roles, and requests.</p></article>
-          <article class="join-card reveal"><span class="join-card__ic">💚</span><h3 data-i18n="Family">Family</h3><p data-i18n="Encourage and share memories.">Encourage and share memories.</p></article>
-          <article class="join-card reveal"><span class="join-card__ic">🧑</span><h3 data-i18n="Patient">Patient</h3><p data-i18n="Use daily activities and games.">Use daily activities and games.</p></article>
-        </div>
+        <p class="access-note" data-i18n="access.note">You can use demo credentials or request access from the project team.</p>
 
-        <div class="join-form-wrap reveal">
-          <form class="join-form" id="joinForm">
-            <h3 data-i18n="Request access">Request access</h3>
+        <section class="access-form reveal" aria-labelledby="accessFormTitle">
+          <form class="access-form-card" id="joinForm">
+            <div class="access-form__head">
+              <span class="eyebrow" data-i18n="access.formEyebrow">Request access</span>
+              <h2 id="accessFormTitle" data-i18n="access.formTitle">Request your NeuroBridge access</h2>
+              <p data-i18n="access.formSubtitle">Enter your details and the project team will review your request.</p>
+            </div>
 
-            <div class="jf-grid">
-              <label class="jf-field">
-                Full name <span class="mform__req">*</span>
-                <input id="jfName" type="text" required placeholder="Your name" data-i18n-placeholder="Your name" />
+            <div class="form-grid">
+              <label class="form-field jf-field">
+                <span data-i18n="access.fullName">Full name</span>
+                <input id="jfName" type="text" required placeholder="Enter your full name" data-i18n-placeholder="access.fullNamePlaceholder" />
               </label>
 
-              <label class="jf-field">
-                Email <span class="mform__req">*</span>
-                <input id="jfEmail" type="email" required placeholder="you@example.com" data-i18n-placeholder="you@example.com" />
+              <label class="form-field jf-field">
+                <span data-i18n="access.email">Email</span>
+                <input id="jfEmail" type="email" required placeholder="Enter your email address" data-i18n-placeholder="access.emailPlaceholder" />
               </label>
 
-              <label class="jf-field">
-                Role <span class="mform__req">*</span>
+              <label class="form-field jf-field">
+                <span data-i18n="access.phone">Phone number</span>
+                <input id="jfPhone" type="tel" placeholder="Enter your phone number" data-i18n-placeholder="access.phonePlaceholder" />
+              </label>
+
+              <label class="form-field jf-field">
+                <span data-i18n="access.role">Account type / role</span>
                 <select id="jfRole" required>
-                  <option value="patient" data-i18n="Patient">Patient</option>
-                  <option value="family" data-i18n="Family member">Family member</option>
-                  <option value="doctor" data-i18n="Doctor">Doctor</option>
-                  <option value="therapist" data-i18n="Therapist">Therapist</option>
-                  <option value="clinic" data-i18n="Clinic / Center">Clinic / Center</option>
+                  <option value="" selected disabled data-i18n="access.rolePlaceholder">Choose an account type</option>
+                  <option value="patient" data-i18n="access.patient">Patient</option>
+                  <option value="family" data-i18n="access.family">Family</option>
+                  <option value="clinic" data-i18n="access.clinic">Clinic</option>
+                  <option value="therapist" data-i18n="access.therapist">Therapist</option>
+                  <option value="doctor" data-i18n="access.doctor">Doctor</option>
                 </select>
               </label>
 
-              <label class="jf-field">
-                Organization / clinic <small data-i18n="(optional)">(optional)</small>
-                <input id="jfOrg" type="text" placeholder="Clinic or center name" data-i18n-placeholder="Clinic or center name" />
+              <label class="form-field jf-field form-field--full">
+                <span data-i18n="access.organization">Organization or clinic name</span>
+                <input id="jfOrg" type="text" placeholder="Enter the organization or clinic name" data-i18n-placeholder="access.organizationPlaceholder" />
               </label>
 
-              <label class="jf-field">
-                Phone <small data-i18n="(optional)">(optional)</small>
-                <input id="jfPhone" type="tel" placeholder="Your phone number" data-i18n-placeholder="Your phone number" />
-              </label>
-
-              <label class="jf-field jf-field--full">
-                Message
-                <textarea id="jfMsg" rows="4" placeholder="How would you like to take part?" data-i18n-placeholder="How would you like to take part?"></textarea>
+              <label class="form-field jf-field form-field--full">
+                <span data-i18n="access.message">Short message</span>
+                <textarea id="jfMsg" rows="4" placeholder="Tell us briefly how you would like to use NeuroBridge" data-i18n-placeholder="access.messagePlaceholder"></textarea>
               </label>
             </div>
 
-            <div class="jf-actions">
-              <button class="btn btn--gold" type="submit" data-i18n="Request access">Request access</button>
-              <span class="jf-note" id="jfNote" role="status"></span>
+            <div class="form-actions">
+              <button class="btn btn--gold" type="submit" data-i18n="access.submit">Submit request</button>
+              <a class="btn btn--ghost" href="index.html" data-i18n="access.backHome">Back to home</a>
             </div>
-
-            <p class="jf-legal">
-              <strong>Submit your request and our team will review it before creating an account.</strong>
-              Your details are used only to review your request and contact you.
-            </p>
+            <p class="access-form__status" id="jfNote" role="status" aria-live="polite"></p>
           </form>
-        </div>
+        </section>
       </div>
     </section>
   </main>

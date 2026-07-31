@@ -58,7 +58,7 @@
       <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
       <a href="clinics.html" data-i18n="Clinics">Clinics</a>
       <a href="resources.html" data-i18n="Resources">Resources</a>
-      <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="Request demo">Request demo</a>
+      <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
     </nav>
 
     <button
@@ -105,6 +105,11 @@
     </button>
 
     <button
+    class="Darkbutton" id="Darkbutton" type="button" aria-label="Toggle dark mode">
+    🌛
+    </button>
+
+    <button
       class="nav__toggle"
       id="navToggle"
       aria-label="Toggle menu"
@@ -135,16 +140,8 @@
         appointments, and performance-only progress in one supportive platform.
       </p>
 
-      <div class="chips">
-        <span class="chip" data-i18n="hero.chip1">Patient App</span>
-        <span class="chip" data-i18n="hero.chip2">Family Portal</span>
-        <span class="chip" data-i18n="hero.chip3">Care-Team Portal</span>
-        <span class="chip" data-i18n="hero.chip4">Platform Modules</span>
-        <span class="chip" data-i18n="hero.chip5">Safety & FAQ</span>
-      </div>
-
       <div class="hero__actions">
-        <a href="request-demo.html" class="btn btn--gold" data-i18n="hero.cta1">Request demo</a>
+        <a href="request-demo.html" class="btn btn--gold" data-i18n="hero.cta1">Sign in</a>
         <a href="platform.html" class="btn btn--ghost" data-i18n="hero.cta2">Explore the platform</a>
       </div>
 
@@ -190,10 +187,7 @@
               width="480"
               height="360"
             />
-            <figcaption class="vcard__cap">
-              <b data-i18n="Designed for coordination">Designed for coordination</b>
-              <span data-i18n="Patients · Families · Care teams · Clinics">Patients · Families · Care teams · Clinics</span>
-            </figcaption>
+
           </figure>
         </div>
       </div>
@@ -240,14 +234,12 @@
     <!-- Final CTA -->
     <section class="cta" id="contact">
       <div class="container cta__inner reveal">
-        <h2>
-          <span class="cta__brand">NeuroBridge</span>
-          connects daily cognitive practice with family support and professional review.
+        <h2 data-i18n="cta.title">
+             NeuroBridge connects daily cognitive practice with family support and care-team review.
         </h2>
 
-        <p data-i18n="Request a walkthrough of the patient app, family portal, care-team dashboard, and clinic management experience.">
-          Request a walkthrough of the patient app, family portal, care-team
-          dashboard, and clinic management experience.
+         <p data-i18n="cta.subtitle">
+             Request a walkthrough of the patient app, family portal, care-team dashboard, and clinic management experience.
         </p>
 
         <div class="cta__actions">
@@ -255,9 +247,9 @@
           <a class="btn btn--ghost btn--ghost-light" href="platform.html" data-i18n="Explore platform">Explore platform</a>
         </div>
 
-        <p class="cta__note" data-i18n="Connected care platform · Patients, families, and care teams · Clearer daily follow-up">
-          Connected care platform · Patients, families, and care teams · Clearer daily follow-up
-        </p>
+        <span data-i18n="cta.note">
+  Connected care platform · Patients, families, and care teams · Clearer daily follow-up
+</span>
       </div>
     </section>
 
