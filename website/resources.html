@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resources | NeuroBridge</title>
+  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="nav" id="top">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html">
+        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <span class="brand__text">NeuroBridge</span>
+      </a>
+
+      <nav class="nav__links" id="navLinks">
+        <a href="index.html" data-i18n="Home">Home</a>
+        <a href="about.html" data-i18n="About">About</a>
+        <a href="platform.html" data-i18n="Platform">Platform</a>
+        <a href="patients.html" data-i18n="Patients">Patients</a>
+        <a href="families.html" data-i18n="Families">Families</a>
+        <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
+        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
+        <a href="resources.html" data-i18n="Resources">Resources</a>
+        <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="Request demo">Request demo</a>
+      </nav>
+<button
+  type="button"
+  class="langbtn"
+  id="langBtn"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-controls="langModal"
+  aria-label="Choose your language"
+>
+  <svg
+    class="langbtn__globe"
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3c2.6 2.6 3.9 5.8 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.8-3.9-9S9.4 5.6 12 3z" />
+  </svg>
+
+  <span class="langbtn__label" id="langBtnLabel">EN</span>
+
+  <svg
+    class="langbtn__chev"
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    width="12"
+    height="12"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+</button>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section page-hero">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow" data-i18n="resources.eyebrow">Resources</span>
+          <h1 data-i18n="resources.title">How NeuroBridge works</h1>
+          <p class="section__sub" data-i18n="resources.subtitle">
+            A simple connected loop between daily practice, family support,
+            and care-team review.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint">
+      <div class="container">
+        <div class="steps">
+          <article class="step reveal"><span class="step__num">1</span><h3 data-i18n="resources.step.practice.title">Patient practices</h3><p data-i18n="resources.step.practice.text">Daily activities and games in the patient app.</p></article>
+          <article class="step reveal"><span class="step__num">2</span><h3 data-i18n="resources.step.family.title">Family supports</h3><p data-i18n="resources.step.family.text">Encouragement, memories, and appointments.</p></article>
+          <article class="step reveal"><span class="step__num">3</span><h3 data-i18n="resources.step.review.title">Care team reviews</h3><p data-i18n="resources.step.review.text">Assigned care teams review performance-only progress.</p></article>
+          <article class="step reveal"><span class="step__num">4</span><h3 data-i18n="resources.step.followup.title">Summaries support follow-up</h3><p data-i18n="resources.step.followup.text">Readable summaries support care-team review and supportive follow-up.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container container--narrow">
+        <div class="section__head reveal">
+          <span class="eyebrow" data-i18n="resources.faq.eyebrow">FAQ</span>
+          <h2 data-i18n="resources.faq.title">Common questions</h2>
+        </div>
+
+        <div class="faq reveal">
+          <details>
+            <summary data-i18n="resources.faq.what.question">What does NeuroBridge do?</summary>
+            <p data-i18n="resources.faq.what.answer">NeuroBridge connects patients, families, and care teams to organize daily activities, appointments, messages, and performance-only progress summaries.</p>
+          </details>
+
+          <details>
+            <summary data-i18n="resources.faq.scope.question">What is the scope of NeuroBridge?</summary>
+            <p data-i18n="resources.faq.scope.answer">NeuroBridge supports daily activities, performance-only progress, supportive follow-up, and care-team review.</p>
+          </details>
+
+          <details>
+            <summary data-i18n="resources.faq.memories.question">Can families add memories?</summary>
+            <p data-i18n="resources.faq.memories.answer">Yes. Linked families can add photos, stories, and encouragement within scoped access.</p>
+          </details>
+
+          <details>
+            <summary data-i18n="resources.faq.review.question">Who reviews supportive suggestions?</summary>
+            <p data-i18n="resources.faq.review.answer">Supportive suggestions remain pending care-team review.</p>
+          </details>
+
+          <details>
+            <summary data-i18n="resources.faq.demo.question">Can clinics request a demo?</summary>
+            <p data-i18n="resources.faq.demo.answer">Yes. Clinics can submit a request through the Request demo page.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow eyebrow--gold" data-i18n="resources.safety.eyebrow">Supportive boundaries</span>
+          <h2 data-i18n="resources.safety.title">Supportive review only</h2>
+          <p class="section__sub section__sub--light" data-i18n="resources.safety.subtitle">
+            NeuroBridge focuses on organization, daily activities, family support,
+            messages, appointments, and performance-only progress summaries.
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="card card--glassdark reveal"><h3 data-i18n="resources.safety.followup.title">Supportive follow-up</h3><p data-i18n="resources.safety.followup.text">The platform supports daily activities and performance-only progress.</p></article>
+          <article class="card card--glassdark reveal"><h3 data-i18n="resources.safety.review.title">Care-team review</h3><p data-i18n="resources.safety.review.text">Care-team review remains the final step.</p></article>
+          <article class="card card--glassdark reveal"><h3 data-i18n="resources.safety.access.title">Scoped access</h3><p data-i18n="resources.safety.access.text">Users only see information related to their role and assignment.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+ <!-- Language modal -->
+<div
+  class="lang-modal"
+  id="langModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="langModalTitle"
+  aria-describedby="langModalSub"
+  hidden
+>
+  <div class="lang-modal__overlay" data-close></div>
+
+  <div class="lang-modal__card" role="document">
+    <button
+      class="lang-modal__x"
+      type="button"
+      data-close
+      aria-label="Close language selector"
+    >
+      ✕
+    </button>
+
+    <h2 class="lang-modal__title" id="langModalTitle">Choose your language</h2>
+
+    <p class="lang-modal__sub" id="langModalSub">
+      Select the language you prefer for NeuroBridge.
+    </p>
+
+    <div class="lang-grid" role="listbox" aria-label="Available languages">
+      <button class="lang-opt" type="button" role="option" data-lang="en">
+        <span class="lang-opt__badge" aria-hidden="true">EN</span>
+        <span class="lang-opt__name">English</span>
+        <span class="lang-opt__code">EN</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="ar">
+        <span class="lang-opt__badge" aria-hidden="true" lang="ar">ع</span>
+        <span class="lang-opt__name" lang="ar">العربية</span>
+        <span class="lang-opt__code">AR</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="fr">
+        <span class="lang-opt__badge" aria-hidden="true">FR</span>
+        <span class="lang-opt__name">Français</span>
+        <span class="lang-opt__code">FR</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="es">
+        <span class="lang-opt__badge" aria-hidden="true">ES</span>
+        <span class="lang-opt__name">Español</span>
+        <span class="lang-opt__code">ES</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="de">
+        <span class="lang-opt__badge" aria-hidden="true">DE</span>
+        <span class="lang-opt__name">Deutsch</span>
+        <span class="lang-opt__code">DE</span>
+      </button>
+    </div>
+
+    <p class="lang-soon__head">Coming soon</p>
+
+    <div class="lang-soon" aria-label="Coming soon languages">
+      <span class="lang-soon__item">Italiano <em>Soon</em></span>
+      <span class="lang-soon__item">Português <em>Soon</em></span>
+      <span class="lang-soon__item">Türkçe <em>Soon</em></span>
+      <span class="lang-soon__item" lang="zh">中文 <em>Soon</em></span>
+      <span class="lang-soon__item" lang="ja">日本語 <em>Soon</em></span>
+      <span class="lang-soon__item">Nederlands <em>Soon</em></span>
+      <span class="lang-soon__item">Polski <em>Soon</em></span>
+      <span class="lang-soon__item" lang="ru">Русский <em>Soon</em></span>
+    </div>
+  </div>
+</div>
+  <script src="translations.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

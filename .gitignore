@@ -86,3 +86,13 @@ backend/storage/memory_uploads/*
 !backend/storage/provider_photos/
 backend/storage/provider_photos/*
 !backend/storage/provider_photos/.gitkeep
+
+# Local editor/tool files
+.vscode/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+.DS_Store
+Thumbs.db

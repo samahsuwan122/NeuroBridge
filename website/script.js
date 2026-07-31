@@ -5,6 +5,119 @@
 (function () {
   "use strict";
 
+
+  // -- Global language UI: injects the language button and modal on every page --
+  (function ensureLanguageUi() {
+    var navInner = document.querySelector(".nav__inner");
+    var navToggle = document.getElementById("navToggle");
+
+    if (navInner && !document.getElementById("langBtn")) {
+      var langButton = document.createElement("button");
+      langButton.type = "button";
+      langButton.className = "langbtn";
+      langButton.id = "langBtn";
+      langButton.setAttribute("aria-haspopup", "dialog");
+      langButton.setAttribute("aria-expanded", "false");
+      langButton.setAttribute("aria-controls", "langModal");
+      langButton.setAttribute("aria-label", "Choose your language");
+
+      langButton.innerHTML =
+        '<svg class="langbtn__globe" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">' +
+          '<circle cx="12" cy="12" r="9"></circle>' +
+          '<path d="M3 12h18"></path>' +
+          '<path d="M12 3c2.6 2.6 3.9 5.8 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.8-3.9-9S9.4 5.6 12 3z"></path>' +
+        '</svg>' +
+        '<span class="langbtn__label" id="langBtnLabel">EN</span>' +
+        '<svg class="langbtn__chev" aria-hidden="true" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M6 9l6 6 6-6"></path>' +
+        '</svg>';
+
+      if (navToggle) {
+        navInner.insertBefore(langButton, navToggle);
+      } else {
+        navInner.appendChild(langButton);
+      }
+    }
+
+    if (!document.getElementById("langModal")) {
+      document.body.insertAdjacentHTML("beforeend", `
+        <div
+          class="lang-modal"
+          id="langModal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="langModalTitle"
+          aria-describedby="langModalSub"
+          hidden
+        >
+          <div class="lang-modal__overlay" data-close></div>
+
+          <div class="lang-modal__card" role="document">
+            <button
+              class="lang-modal__x"
+              type="button"
+              data-close
+              aria-label="Close language selector"
+            >
+              ✕
+            </button>
+
+            <h2 class="lang-modal__title" id="langModalTitle">Choose your language</h2>
+
+            <p class="lang-modal__sub" id="langModalSub">
+              Select the language you prefer for NeuroBridge.
+            </p>
+
+            <div class="lang-grid" role="listbox" aria-label="Available languages">
+              <button class="lang-opt" type="button" role="option" data-lang="en">
+                <span class="lang-opt__badge" aria-hidden="true">EN</span>
+                <span class="lang-opt__name">English</span>
+                <span class="lang-opt__code">EN</span>
+              </button>
+
+              <button class="lang-opt" type="button" role="option" data-lang="ar">
+                <span class="lang-opt__badge" aria-hidden="true" lang="ar">ع</span>
+                <span class="lang-opt__name" lang="ar">العربية</span>
+                <span class="lang-opt__code">AR</span>
+              </button>
+
+              <button class="lang-opt" type="button" role="option" data-lang="fr">
+                <span class="lang-opt__badge" aria-hidden="true">FR</span>
+                <span class="lang-opt__name">Français</span>
+                <span class="lang-opt__code">FR</span>
+              </button>
+
+              <button class="lang-opt" type="button" role="option" data-lang="es">
+                <span class="lang-opt__badge" aria-hidden="true">ES</span>
+                <span class="lang-opt__name">Español</span>
+                <span class="lang-opt__code">ES</span>
+              </button>
+
+              <button class="lang-opt" type="button" role="option" data-lang="de">
+                <span class="lang-opt__badge" aria-hidden="true">DE</span>
+                <span class="lang-opt__name">Deutsch</span>
+                <span class="lang-opt__code">DE</span>
+              </button>
+            </div>
+
+            <p class="lang-soon__head">Coming soon</p>
+
+            <div class="lang-soon" aria-label="Coming soon languages">
+              <span class="lang-soon__item">Italiano <em>Soon</em></span>
+              <span class="lang-soon__item">Português <em>Soon</em></span>
+              <span class="lang-soon__item">Türkçe <em>Soon</em></span>
+              <span class="lang-soon__item" lang="zh">中文 <em>Soon</em></span>
+              <span class="lang-soon__item" lang="ja">日本語 <em>Soon</em></span>
+              <span class="lang-soon__item">Nederlands <em>Soon</em></span>
+              <span class="lang-soon__item">Polski <em>Soon</em></span>
+              <span class="lang-soon__item" lang="ru">Русский <em>Soon</em></span>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+  })();
+
   var reduceMotion =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -21,20 +134,85 @@
     var CODE = { en: "EN", ar: "AR", fr: "FR", es: "ES", de: "DE" };
     var norm = function (s) { return (s || "").replace(/\s+/g, " ").trim(); };
     var SEL = [
-      ".nav__links a", ".eyebrow", ".hero__sub-headline", ".lead",
-      ".section__sub", "h2", ".mini-title", ".chip", ".btn", ".hero__note",
-      ".hero__trust span", ".feat-chips span", ".mod h3", ".mod p", ".mtag",
-      ".plat-card__body h3", ".ticks li", ".dash__head h3", ".tag", ".cm",
-      ".quote", ".dash__note", ".ap-approve", ".pcard__spec", ".pcard__demo",
-      ".pill", ".fbtn", ".dir-note", ".tree-note b", ".tree-note small",
-      ".notice", ".card h3", ".card p", ".step h3", ".step p", ".game-card h3",
-      ".game-card p", ".game-card__badge", ".quote-card blockquote",
-      ".quote-card__who", ".quote-card__role", ".story-card figcaption h3",
-      ".story-card figcaption p", ".vcard__cap b", ".vcard__cap span",
-      ".fam__hero-cap b", ".fam__hero-cap span", ".join-card h3", ".join-card p",
-      ".join-form h3", ".jf-legal", ".faq summary", ".faq p", ".cta p",
-      ".cta__note", ".dev-card__role", ".footer__brand p", ".footer__proto",
-      ".footer__col h4", ".footer__col a", ".footer__legal p"
+      ".nav__links a",
+      ".lang-modal__title",
+      ".lang-modal__sub",
+      ".lang-opt__name",
+      ".lang-soon__head",
+      ".lang-soon__item",
+
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "p",
+      "li",
+      "summary",
+
+      ".eyebrow",
+      ".hero__sub-headline",
+      ".lead",
+      ".section__sub",
+      ".mini-title",
+      ".chip",
+      ".btn",
+      ".hero__note",
+      ".hero__trust span",
+
+      ".feat-chips span",
+      ".mod h3",
+      ".mod p",
+      ".mtag",
+      ".plat-card__body h3",
+      ".ticks li",
+      ".dash__head h3",
+      ".tag",
+      ".cm",
+      ".quote",
+      ".dash__note",
+      ".ap-approve",
+      ".pcard__spec",
+      ".pcard__demo",
+      ".pill",
+      ".fbtn",
+      ".dir-note",
+      ".tree-note b",
+      ".tree-note small",
+      ".notice",
+
+      ".card h3",
+      ".card p",
+      ".step h3",
+      ".step p",
+      ".game-card h3",
+      ".game-card p",
+      ".game-card__badge",
+
+      ".quote-card blockquote",
+      ".quote-card__who",
+      ".quote-card__role",
+      ".story-card figcaption h3",
+      ".story-card figcaption p",
+      ".vcard__cap b",
+      ".vcard__cap span",
+      ".fam__hero-cap b",
+      ".fam__hero-cap span",
+
+      ".join-card h3",
+      ".join-card p",
+      ".join-form h3",
+      ".jf-legal",
+      ".faq summary",
+      ".faq p",
+      ".cta p",
+      ".cta__note",
+      ".dev-card__role",
+
+      ".footer__brand p",
+      ".footer__proto",
+      ".footer__col h4",
+      ".footer__col a",
+      ".footer__legal p"
     ].join(",");
 
     var els = [];
@@ -57,6 +235,25 @@
     var roleSel = document.getElementById("jfRole");
     if (roleSel) Array.from(roleSel.options).forEach(function (o) {
       opts.push({ e: o, k: norm(o.textContent), o2: o.textContent });
+    });
+    var dataI18nEls = [];
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      dataI18nEls.push({
+        e: el,
+        k: el.getAttribute("data-i18n"),
+        o: el.textContent
+      });
+    });
+    var dataI18nAttrs = [];
+    ["placeholder", "aria-label", "title"].forEach(function (attr) {
+      document.querySelectorAll("[data-i18n-" + attr + "]").forEach(function (el) {
+        dataI18nAttrs.push({
+          e: el,
+          a: attr,
+          k: el.getAttribute("data-i18n-" + attr),
+          o: el.getAttribute(attr) || ""
+        });
+      });
     });
 
     var tr = function (lang, key) { return (DICT[lang] && DICT[lang][key]) || null; };
@@ -82,6 +279,14 @@
       opts.forEach(function (o) {
         var t = lang === "en" ? null : tr(lang, o.k);
         o.e.textContent = t != null ? t : o.o2;
+      });
+      dataI18nEls.forEach(function (item) {
+        var translated = lang === "en" ? null : tr(lang, item.k);
+        item.e.textContent = translated != null ? translated : item.o;
+      });
+      dataI18nAttrs.forEach(function (item) {
+        var translated = lang === "en" ? null : tr(lang, item.k);
+        item.e.setAttribute(item.a, translated != null ? translated : item.o);
       });
       var lbl = document.getElementById("langBtnLabel");
       if (lbl) lbl.textContent = CODE[lang] || lang.toUpperCase();

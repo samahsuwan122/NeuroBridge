@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patients | NeuroBridge</title>
+  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="nav" id="top">
+    <div class="container nav__inner">
+      <a class="brand" href="index.html">
+        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <span class="brand__text">NeuroBridge</span>
+      </a>
+
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="index.html" data-i18n="Home">Home</a>
+        <a href="about.html" data-i18n="About">About</a>
+        <a href="platform.html" data-i18n="Platform">Platform</a>
+        <a href="patients.html" data-i18n="Patients">Patients</a>
+        <a href="families.html" data-i18n="Families">Families</a>
+        <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
+        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
+        <a href="resources.html" data-i18n="Resources">Resources</a>
+        <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="Request demo">Request demo</a>
+      </nav>
+       <button
+  type="button"
+  class="langbtn"
+  id="langBtn"
+  aria-haspopup="dialog"
+  aria-expanded="false"
+  aria-controls="langModal"
+  aria-label="Choose your language"
+>
+  <svg
+    class="langbtn__globe"
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3c2.6 2.6 3.9 5.8 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.8-3.9-9S9.4 5.6 12 3z" />
+  </svg>
+
+  <span class="langbtn__label" id="langBtnLabel">EN</span>
+
+  <svg
+    class="langbtn__chev"
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    width="12"
+    height="12"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+</button>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+  <section class="section patients-hero" id="patients">
+    <div class="container split patients-split">
+      <div class="split__copy patients-copy reveal">
+        <span class="eyebrow" data-i18n="patients.eyebrow">For patients</span>
+
+        <h1 class="patients-title" data-i18n="patients.title">
+          A calm, elderly-friendly daily companion
+        </h1>
+
+        <p class="section__sub patients-sub" data-i18n="patients.subtitle">
+          The patient app is designed for simple daily practice, large buttons,
+          supportive feedback, memory activities, appointments, and performance-only
+          progress for supportive follow-up and care-team review.
+        </p>
+
+        <div class="feat-chips patients-chips">
+          <span data-i18n="patients.chip.therapy">Today's Therapy</span>
+          <span data-i18n="patients.chip.games">Cognitive Games</span>
+          <span data-i18n="patients.chip.encouragement">Family Encouragement</span>
+          <span data-i18n="patients.chip.album">Memory Album</span>
+          <span data-i18n="patients.chip.appointment">Upcoming Appointment</span>
+          <span data-i18n="patients.chip.progress">Performance-only Progress</span>
+        </div>
+
+        <a class="btn btn--gold patients-btn" href="request-demo.html" data-i18n="patients.request">
+          Request access
+        </a>
+      </div>
+
+      <div class="split__visual patients-visual reveal">
+        <div class="stack-visual patients-stack">
+          <figure class="vcard vcard--cutout">
+            <img
+              class="photo photo--cutout"
+              src="assets/photos/patient-man-cutout.png"
+              alt="Supportive patient portrait"
+              width="520"
+              height="820"
+            />
+          </figure>
+
+          <div class="phone phone--overlap patients-phone" role="img" aria-label="NeuroBridge patient app preview">
+            <div class="phone__island" aria-hidden="true"></div>
+
+            <div class="phone__screen">
+              <div class="phone__status" aria-hidden="true">
+                <span class="phone__time">9:41</span>
+                <span class="phone__signal"><i></i><i></i><i></i><i></i></span>
+              </div>
+
+              <header class="phone__top">
+                <span class="phone__brand">
+                  <img class="phone__mark" src="assets/neurobridge-logo-mark.png" alt="" width="22" height="22" />
+                  <b>NeuroBridge</b>
+                </span>
+                <span class="phone__bell" aria-hidden="true">🔔</span>
+              </header>
+
+              <p class="phone__greet" data-i18n="patients.phone.greet">
+                Good morning, Sami 🌿
+              </p>
+
+              <section class="phone__therapy">
+                <div class="phone__therapy-txt">
+                  <span class="phone__eyebrow" data-i18n="patients.phone.therapyToday">
+                    Today's Therapy
+                  </span>
+                  <b data-i18n="patients.phone.memoryFocus">Memory &amp; focus</b>
+                  <span class="phone__start" data-i18n="patients.phone.start">
+                    Start session →
+                  </span>
+                </div>
+
+                <span class="phone__ring">
+                  <span class="phone__ring-num">68%</span>
+                </span>
+              </section>
+
+              <div class="phone__tiles">
+                <span class="ptile">
+                  <span class="ptile__ic">🎮</span>
+                  <span data-i18n="patients.phone.games">Games</span>
+                </span>
+
+                <span class="ptile">
+                  <span class="ptile__ic">🌳</span>
+                  <span data-i18n="patients.phone.memoryTree">Memory Tree</span>
+                </span>
+
+                <span class="ptile">
+                  <span class="ptile__ic">📈</span>
+                  <span data-i18n="patients.phone.progress">Performance-only Progress</span>
+                </span>
+
+                <span class="ptile">
+                  <span class="ptile__ic">👪</span>
+                  <span data-i18n="patients.phone.family">Family</span>
+                </span>
+              </div>
+
+              <div class="phone__msg">
+                <span class="phone__msg-label" data-i18n="patients.phone.encouragement">
+                  Family encouragement
+                </span>
+                <span data-i18n="patients.phone.quote">
+                  “So proud of you today, Dad.”
+                </span>
+              </div>
+
+              <div class="phone__appt">
+                <span class="phone__appt-ic">🗓️</span>
+                <div>
+                  <b data-i18n="patients.phone.appointment">Upcoming appointment</b>
+                  <small data-i18n="patients.phone.appointmentTime">Therapy · Thu 10:00</small>
+                </div>
+              </div>
+
+              <nav class="phone__nav" aria-hidden="true">
+                <span class="is-active">
+                  <i>🏠</i>
+                  <span data-i18n="patients.phone.home">Home</span>
+                </span>
+
+                <span>
+                  <i>🧩</i>
+                  <span data-i18n="patients.phone.therapy">Therapy</span>
+                </span>
+
+                <span>
+                  <i>🎮</i>
+                  <span data-i18n="patients.phone.games">Games</span>
+                </span>
+
+                <span>
+                  <i>👪</i>
+                  <span data-i18n="patients.phone.family">Family</span>
+                </span>
+
+                <span>
+                  <i>🙂</i>
+                  <span data-i18n="patients.phone.profile">Profile</span>
+                </span>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+ <!-- Language modal -->
+<div
+  class="lang-modal"
+  id="langModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="langModalTitle"
+  aria-describedby="langModalSub"
+  hidden
+>
+  <div class="lang-modal__overlay" data-close></div>
+
+  <div class="lang-modal__card" role="document">
+    <button
+      class="lang-modal__x"
+      type="button"
+      data-close
+      aria-label="Close language selector"
+    >
+      ✕
+    </button>
+
+    <h2 class="lang-modal__title" id="langModalTitle">Choose your language</h2>
+
+    <p class="lang-modal__sub" id="langModalSub">
+      Select the language you prefer for NeuroBridge.
+    </p>
+
+    <div class="lang-grid" role="listbox" aria-label="Available languages">
+      <button class="lang-opt" type="button" role="option" data-lang="en">
+        <span class="lang-opt__badge" aria-hidden="true">EN</span>
+        <span class="lang-opt__name">English</span>
+        <span class="lang-opt__code">EN</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="ar">
+        <span class="lang-opt__badge" aria-hidden="true" lang="ar">ع</span>
+        <span class="lang-opt__name" lang="ar">العربية</span>
+        <span class="lang-opt__code">AR</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="fr">
+        <span class="lang-opt__badge" aria-hidden="true">FR</span>
+        <span class="lang-opt__name">Français</span>
+        <span class="lang-opt__code">FR</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="es">
+        <span class="lang-opt__badge" aria-hidden="true">ES</span>
+        <span class="lang-opt__name">Español</span>
+        <span class="lang-opt__code">ES</span>
+      </button>
+
+      <button class="lang-opt" type="button" role="option" data-lang="de">
+        <span class="lang-opt__badge" aria-hidden="true">DE</span>
+        <span class="lang-opt__name">Deutsch</span>
+        <span class="lang-opt__code">DE</span>
+      </button>
+    </div>
+
+    <p class="lang-soon__head">Coming soon</p>
+
+    <div class="lang-soon" aria-label="Coming soon languages">
+      <span class="lang-soon__item">Italiano <em>Soon</em></span>
+      <span class="lang-soon__item">Português <em>Soon</em></span>
+      <span class="lang-soon__item">Türkçe <em>Soon</em></span>
+      <span class="lang-soon__item" lang="zh">中文 <em>Soon</em></span>
+      <span class="lang-soon__item" lang="ja">日本語 <em>Soon</em></span>
+      <span class="lang-soon__item">Nederlands <em>Soon</em></span>
+      <span class="lang-soon__item">Polski <em>Soon</em></span>
+      <span class="lang-soon__item" lang="ru">Русский <em>Soon</em></span>
+    </div>
+  </div>
+</div>
+  <script src="translations.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
