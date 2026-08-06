@@ -1,0 +1,274 @@
+import 'package:flutter/material.dart';
+
+import '../widgets/auth_background.dart';
+import 'verification_code_screen.dart';
+
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
+
+  @override
+  State<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState
+    extends State<ForgotPasswordScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _emailController = TextEditingController(
+    text: 'patient@neurobridge.com',
+  );
+
+  bool _loading = false;
+
+  static const Color rose = Color(0xFFB87585);
+  static const Color brown = Color(0xFF4F3C38);
+  static const Color muted = Color(0xFF89736F);
+  static const Color border = Color(0xFFEAD8DD);
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendCode() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _loading = true;
+    });
+
+    await Future.delayed(
+      const Duration(milliseconds: 900),
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _loading = false;
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VerificationCodeScreen(
+          email: _emailController.text.trim(),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        body: AuthBackground(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 520,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        _BackButton(),
+
+                        const SizedBox(height: 40),
+
+                        Container(
+                          width: 105,
+                          height: 105,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFE9EF),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: rose.withValues(
+                                  alpha: .13,
+                                ),
+                                blurRadius: 30,
+                                offset: const Offset(0, 12),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.lock_reset_rounded,
+                            size: 52,
+                            color: rose,
+                          ),
+                        ),
+
+                        const SizedBox(height: 28),
+
+                        const Text(
+                          'نسيت كلمة المرور؟',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 29,
+                            fontWeight: FontWeight.w900,
+                            color: brown,
+                          ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        const Text(
+                          'لا تقلق، أدخل بريدك الإلكتروني وسنرسل لك رمزًا لاستعادة حسابك.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            height: 1.8,
+                            fontSize: 15,
+                            color: muted,
+                          ),
+                        ),
+
+                        const SizedBox(height: 35),
+
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType:
+                              TextInputType.emailAddress,
+                          textDirection: TextDirection.ltr,
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty) {
+                              return 'يرجى إدخال البريد الإلكتروني';
+                            }
+
+                            if (!value.contains('@')) {
+                              return 'أدخل بريدًا إلكترونيًا صحيحًا';
+                            }
+
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'البريد الإلكتروني',
+                            hintText: 'example@email.com',
+                            prefixIcon: const Icon(
+                              Icons.mail_outline_rounded,
+                              color: rose,
+                            ),
+                            filled: true,
+                            fillColor: Colors.white
+                                .withValues(alpha: .82),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(18),
+                              borderSide:
+                                  const BorderSide(
+                                color: border,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(18),
+                              borderSide:
+                                  const BorderSide(
+                                color: border,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(18),
+                              borderSide:
+                                  const BorderSide(
+                                color: rose,
+                                width: 1.7,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 25),
+
+                        SizedBox(
+                          width: double.infinity,
+                          height: 58,
+                          child: FilledButton(
+                            onPressed:
+                                _loading ? null : _sendCode,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: rose,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(18),
+                              ),
+                            ),
+                            child: _loading
+                                ? const SizedBox(
+                                    width: 23,
+                                    height: 23,
+                                    child:
+                                        CircularProgressIndicator(
+                                      strokeWidth: 2.4,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'إرسال رمز التحقق',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight:
+                                          FontWeight.w900,
+                                    ),
+                                  ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        const Text(
+                          'للتجربة فقط: لن يتم إرسال بريد حقيقي حتى يتم ربط الـ Backend.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 11,
+                            height: 1.5,
+                            color: Color(0xFFA18D89),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BackButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .75),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: const Color(0xFFEAD8DD),
+          ),
+        ),
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 17,
+          ),
+        ),
+      ),
+    );
+  }
+}
