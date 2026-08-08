@@ -29,6 +29,7 @@ from app.core import database
 from app.core.config import get_settings
 from app.modules.access_requests.routes import router as access_requests_router
 from app.modules.activities.routes import router as activities_router
+from app.modules.ai_chat.routes import router as ai_chat_router
 from app.modules.admin.routes import router as admin_router
 from app.modules.appointments.routes import router as appointments_router
 from app.modules.auth.routes import router as auth_router
@@ -85,6 +86,7 @@ app.include_router(admin_router)
 app.include_router(patients_router)
 app.include_router(games_router)
 app.include_router(activities_router)
+app.include_router(ai_chat_router)
 app.include_router(goals_router)
 app.include_router(memories_router)
 app.include_router(encouragements_router)

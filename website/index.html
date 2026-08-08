@@ -231,6 +231,58 @@
       </div>
     </section>
 
+    <!-- Public AI Companion demo -->
+    <section class="section ai-chat-section" id="ai-companion">
+      <div class="container ai-chat-section__inner">
+        <div class="ai-chat-intro reveal">
+          <span class="eyebrow" data-i18n="NeuroBridge AI Companion">NeuroBridge AI Companion</span>
+          <h2 data-i18n="AI Chat Bot">AI Chat Bot</h2>
+          <p class="ai-chat-intro__lead" data-i18n="Ask the NeuroBridge assistant about activities, family support, appointments, messages, and platform guidance.">
+            Ask the NeuroBridge assistant about activities, family support,
+            appointments, messages, and platform guidance.
+          </p>
+          <p class="ai-chat-note">
+            <span aria-hidden="true">ⓘ</span>
+            <span data-i18n="Supportive guidance only. Not medical advice.">Supportive guidance only. Not medical advice.</span>
+          </p>
+        </div>
+
+        <div class="ai-chat-card reveal">
+          <div class="ai-chat-card__top">
+            <div class="ai-chat-avatar" aria-hidden="true">
+              <span class="ai-chat-avatar__antenna"></span>
+              <span class="ai-chat-avatar__face"><i></i><i></i></span>
+            </div>
+            <div>
+              <span class="ai-chat-badge" data-i18n="Hi!">Hi!</span>
+              <strong data-i18n="NeuroBridge AI Companion">NeuroBridge AI Companion</strong>
+            </div>
+            <span class="ai-chat-status" aria-hidden="true"></span>
+          </div>
+
+          <div class="ai-chat-window" id="aiChatWindow" aria-live="polite" aria-label="Chat messages" data-i18n-aria-label="Chat messages">
+            <div class="ai-chat-message ai-chat-message--bot">
+              <span data-i18n="Hello! How can I help you explore NeuroBridge today?">Hello! How can I help you explore NeuroBridge today?</span>
+            </div>
+          </div>
+
+          <form class="ai-chat-form" id="aiChatForm">
+            <label class="sr-only" for="aiChatInput" data-i18n="Ask about NeuroBridge">Ask about NeuroBridge</label>
+            <input
+              class="ai-chat-input"
+              id="aiChatInput"
+              type="text"
+              maxlength="500"
+              autocomplete="off"
+              placeholder="Ask about NeuroBridge…"
+              data-i18n-placeholder="Ask about NeuroBridge…"
+            />
+            <button class="ai-chat-send" type="submit" data-i18n="Send">Send</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <!-- Final CTA -->
     <section class="cta" id="contact">
       <div class="container cta__inner reveal">
@@ -267,30 +319,46 @@
 
         <div class="dev-grid">
           <article class="dev-card dev-card--a reveal">
+            <span class="dev-card__tab" aria-hidden="true"><span></span></span>
             <span class="dev-card__avatar" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="52" height="52">
-                <circle cx="32" cy="23" r="12" fill="#fff9f0" />
-                <path d="M13 54 C13 41 22 35 32 35 C42 35 51 41 51 54 Z" fill="#fff9f0" />
+                <circle cx="32" cy="22" r="11" fill="currentColor" />
+                <path d="M14 53 C14 41 22 35 32 35 C42 35 50 41 50 53 Z" fill="currentColor" />
               </svg>
+              <i class="dev-card__sparkle dev-card__sparkle--one"></i>
+              <i class="dev-card__sparkle dev-card__sparkle--two"></i>
             </span>
 
-            <h3 class="dev-card__name" lang="ar" dir="rtl">سماح هاني صوان</h3>
-            <p class="dev-card__role" data-i18n="Computer Engineering · An-Najah National University">
-              Computer Engineering · An-Najah National University
+            <span class="dev-card__badge" data-i18n="Developer">Developer</span>
+            <h3 class="dev-card__name" data-i18n="Tala Asaad Mweikat">Tala Asaad Mweikat</h3>
+            <span class="dev-card__accent" aria-hidden="true"></span>
+            <p class="dev-card__role">
+              <svg class="dev-card__cap" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 9 12 4l9.5 5L12 14 2.5 9Zm3 2.1V16c2.8 2.5 10.2 2.5 13 0v-4.9M21.5 9v6" />
+              </svg>
+              <span data-i18n="Computer Engineering - An-Najah National University">Computer Engineering - An-Najah National University</span>
             </p>
           </article>
 
           <article class="dev-card dev-card--b reveal">
+            <span class="dev-card__tab" aria-hidden="true"><span></span></span>
             <span class="dev-card__avatar" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="52" height="52">
-                <circle cx="32" cy="23" r="12" fill="#fff9f0" />
-                <path d="M13 54 C13 41 22 35 32 35 C42 35 51 41 51 54 Z" fill="#fff9f0" />
+                <circle cx="32" cy="22" r="11" fill="currentColor" />
+                <path d="M14 53 C14 41 22 35 32 35 C42 35 50 41 50 53 Z" fill="currentColor" />
               </svg>
+              <i class="dev-card__sparkle dev-card__sparkle--one"></i>
+              <i class="dev-card__sparkle dev-card__sparkle--two"></i>
             </span>
 
-            <h3 class="dev-card__name" lang="ar" dir="rtl">تالا اسعد دويكات</h3>
-            <p class="dev-card__role" data-i18n="Computer Engineering · An-Najah National University">
-              Computer Engineering · An-Najah National University
+            <span class="dev-card__badge" data-i18n="Developer">Developer</span>
+            <h3 class="dev-card__name" data-i18n="Samah Hani Sawan">Samah Hani Sawan</h3>
+            <span class="dev-card__accent" aria-hidden="true"></span>
+            <p class="dev-card__role">
+              <svg class="dev-card__cap" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 9 12 4l9.5 5L12 14 2.5 9Zm3 2.1V16c2.8 2.5 10.2 2.5 13 0v-4.9M21.5 9v6" />
+              </svg>
+              <span data-i18n="Computer Engineering - An-Najah National University">Computer Engineering - An-Najah National University</span>
             </p>
           </article>
         </div>

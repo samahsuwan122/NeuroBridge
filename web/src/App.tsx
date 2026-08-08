@@ -19,6 +19,7 @@ import { FamilyReportsPage } from "./pages/FamilyReportsPage";
 import { ProviderDetailPage } from "./pages/ProviderDetailPage";
 import { AdminAccessRequestsPage } from "./pages/AdminAccessRequestsPage";
 import { RoleAccessPage } from "./pages/RoleAccessPage";
+import { AICompanionPage } from "./pages/AICompanionPage";
 
 function AppRoutes() {
   const { user, isClinician, isFamily, isAdmin, loading } = useAuth();
@@ -56,6 +57,7 @@ function AppRoutes() {
           {isClinician && (
             <Route path="/review-queue" element={<ReviewQueuePage />} />
           )}
+          {isClinician && <Route path="/ai-companion" element={<AICompanionPage />} />}
           {isAdmin && (
             <Route
               path="/admin/access-requests"
@@ -91,6 +93,7 @@ function AppRoutes() {
           />
           <Route path="/messages" element={<FamilyMessagesPage />} />
           <Route path="/reports" element={<FamilyReportsPage />} />
+          <Route path="/ai-companion" element={<AICompanionPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       ) : user ? (

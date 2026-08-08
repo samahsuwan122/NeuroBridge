@@ -753,6 +753,94 @@
     });
   }
 
+  // -- Public AI Companion demo (local, deterministic, no external AI) -------
+  var aiChatForm = document.getElementById("aiChatForm");
+  var aiChatInput = document.getElementById("aiChatInput");
+  var aiChatWindow = document.getElementById("aiChatWindow");
+  var aiChatTimer = null;
+  var AI_CHAT_KEYS = {
+    safety: "I can provide supportive guidance only, not diagnosis, treatment decisions, medication advice, medical instructions, or risk prediction. Please contact your care team to review care-related concerns.",
+    activities: "You can review your assigned daily cognitive activities from the patient dashboard.",
+    family: "Families can share encouragement, memories, and supportive messages.",
+    appointments: "You can check upcoming appointments inside the platform.",
+    messages: "Use the Messages area to send non-urgent questions and follow up with the care team.",
+    navigation: "Use the platform menu to open activities, appointments, messages, memories, and performance summaries.",
+    progress: "NeuroBridge shows performance-only progress summaries for supportive follow-up and care-team review.",
+    fallback: "I can help explain NeuroBridge features, daily activities, family support, appointments, and platform navigation. I provide supportive guidance only, not medical advice."
+  };
+  var AI_CHAT_TERMS = {
+    safety: ["diagnos", "treatment", "medicine", "medication", "dose", "risk", "symptom", "medical", "تشخيص", "علاج", "دواء", "جرعة", "خطر", "أعراض", "طبي"],
+    activities: ["activity", "activities", "exercise", "game", "نشاط", "أنشطة", "تمرين", "ألعاب", "activité", "ejercicio", "aktivität"],
+    family: ["family", "memory", "encouragement", "عائلة", "العائلة", "ذكرى", "ذكريات", "تشجيع", "famille", "familia", "familie"],
+    appointments: ["appointment", "booking", "موعد", "مواعيد", "حجز", "rendez-vous", "cita", "termin"],
+    messages: ["message", "chat", "رسالة", "رسائل", "محادثة", "nachricht", "mensaje"],
+    progress: ["progress", "summary", "performance", "report", "تقدم", "التقدم", "ملخص", "أداء", "تقرير", "progrès", "progreso", "fortschritt"],
+    navigation: ["navigate", "navigation", "where", "find", "open", "استخدام", "أين", "افتح", "انتقل", "navigation", "navegación"]
+  };
+
+  function aiChatLang() {
+    var lang = (document.documentElement.getAttribute("lang") || "en").slice(0, 2);
+    return ["en", "ar", "fr", "es", "de"].indexOf(lang) >= 0 ? lang : "en";
+  }
+
+  function aiChatTranslate(key) {
+    var lang = aiChatLang();
+    return lang !== "en" && window.NB_I18N && window.NB_I18N[lang] && window.NB_I18N[lang][key]
+      ? window.NB_I18N[lang][key]
+      : key;
+  }
+
+  function aiChatResponse(message) {
+    var normalized = message.toLocaleLowerCase();
+    var categories = ["safety", "activities", "family", "appointments", "messages", "progress", "navigation"];
+    for (var i = 0; i < categories.length; i += 1) {
+      var category = categories[i];
+      if (AI_CHAT_TERMS[category].some(function (term) { return normalized.indexOf(term) !== -1; })) {
+        return aiChatTranslate(AI_CHAT_KEYS[category]);
+      }
+    }
+    return aiChatTranslate(AI_CHAT_KEYS.fallback);
+  }
+
+  function appendAiChatMessage(text, type) {
+    var bubble = document.createElement("div");
+    bubble.className = "ai-chat-message ai-chat-message--" + type;
+    bubble.textContent = text;
+    aiChatWindow.appendChild(bubble);
+    aiChatWindow.scrollTop = aiChatWindow.scrollHeight;
+    return bubble;
+  }
+
+  if (aiChatForm && aiChatInput && aiChatWindow) {
+    aiChatForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var message = aiChatInput.value.trim();
+      if (!message || aiChatTimer) return;
+
+      appendAiChatMessage(message, "user");
+      aiChatInput.value = "";
+      aiChatInput.disabled = true;
+      var sendButton = aiChatForm.querySelector(".ai-chat-send");
+      if (sendButton) sendButton.disabled = true;
+
+      var loading = document.createElement("div");
+      loading.className = "ai-chat-message ai-chat-message--bot ai-chat-message--loading";
+      loading.setAttribute("aria-label", aiChatTranslate("Preparing a response…"));
+      loading.innerHTML = "<i></i><i></i><i></i>";
+      aiChatWindow.appendChild(loading);
+      aiChatWindow.scrollTop = aiChatWindow.scrollHeight;
+
+      aiChatTimer = window.setTimeout(function () {
+        loading.remove();
+        appendAiChatMessage(aiChatResponse(message), "bot");
+        aiChatInput.disabled = false;
+        if (sendButton) sendButton.disabled = false;
+        aiChatTimer = null;
+        aiChatInput.focus();
+      }, reduceMotion ? 150 : 650);
+    });
+  }
+
   // -- Subtle parallax on ambient orbs (skipped for reduced motion) ----------
   var orbs = document.querySelectorAll(".orb[data-parallax]");
   if (orbs.length && !reduceMotion) {

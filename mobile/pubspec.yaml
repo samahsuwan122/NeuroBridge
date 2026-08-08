@@ -1,35 +1,36 @@
 name: neurobridge_mobile
-description: "NeuroBridge mobile app (patient and family/caregiver)."
-publish_to: 'none'
-
+description: NeuroBridge mobile application for patients and caregivers.
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.12.1
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-
   cupertino_icons: ^1.0.8
-
-  # Routing
-  go_router: ^14.6.0
-  # HTTP client
-  dio: ^5.7.0
-  # Secure token storage
-  flutter_secure_storage: ^9.2.2
-  # Image selection (gallery) for Memory Album uploads (mobile + web)
-  image_picker: ^1.1.2
-  # Internationalization utilities
-  intl: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/neurobridge_logo.png
+
+  fonts:
+    - family: ArabicElegant
+      fonts:
+        - asset: assets/fonts/ArefRuqaa-Regular.ttf
+        - asset: assets/fonts/ArefRuqaa-Bold.ttf
+          weight: 700
+
+    - family: EnglishScript
+      fonts:
+        - asset: assets/fonts/DancingScript-Regular.ttf
+        - asset: assets/fonts/DancingScript-Bold.ttf
+          weight: 700

@@ -4,6 +4,8 @@ import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { initials } from "../lib";
 import type { UnreadCountResponse } from "../types";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useI18n } from "../i18n/useI18n";
 
 // Family portal navigation. Every visible item is a working page.
 const NAV = [
@@ -12,12 +14,14 @@ const NAV = [
   { to: "/appointments", label: "Appointments", icon: "🗓", end: false },
   { to: "/messages", label: "Messages", icon: "💬", end: false },
   { to: "/reports", label: "Reports", icon: "📄", end: false },
+  { to: "/ai-companion", label: "AI Companion", icon: "✦", end: false },
 ];
 
 // In-app unread poll interval (no browser/push notifications — polling only).
 const UNREAD_POLL_MS = 30000;
 
 export function FamilyLayout() {
+  const { lang } = useI18n();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,7 +83,7 @@ export function FamilyLayout() {
               <span className="navitem__icon" aria-hidden="true">
                 {item.icon}
               </span>
-              {item.label}
+              {item.to === "/ai-companion" && lang === "ar" ? "المساعد الذكي" : item.label}
               {item.to === "/messages" && unread > 0 && (
                 <span className="navitem__badge" aria-label={`${unread} unread`}>
                   {unread}
@@ -104,6 +108,7 @@ export function FamilyLayout() {
             ☰
           </button>
           <div className="topbar__spacer" />
+          <LanguageSwitcher />
           <div className="topbar__user">
             <div className="topbar__meta">
               <strong>{user?.full_name ?? "Family member"}</strong>

@@ -7,6 +7,8 @@ that metadata is complete.
 
 from app.db.base import Base
 from app.models.access_request import AccessRequest
+from app.models.ai_chat_message import AIChatMessage
+from app.models.ai_chat_session import AIChatSession
 from app.models.appointment import Appointment
 from app.models.assigned_activity import AssignedActivity
 from app.models.audit_log import AuditLog
@@ -35,6 +37,8 @@ __all__ = [
     "MedicalCenter",
     "AuditLog",
     "AccessRequest",
+    "AIChatSession",
+    "AIChatMessage",
     "PatientProfile",
     "PatientAssignment",
     "PatientFamilyLink",
