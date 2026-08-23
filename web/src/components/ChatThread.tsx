@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { formatDateTime } from "../lib";
 import { Badge } from "./ui";
 import type { ProviderMessageReply } from "../types";
+import { useI18n } from "../i18n/useI18n";
 
 const MAX = 500;
 
@@ -39,8 +40,9 @@ export function ChatThread({
   title,
   subtitle,
   statusLabel,
-  showSafety = false,
   onBack,
+  avatarUrl,
+  avatarText,
 }: {
   originalId: string;
   originalSenderId: string;
@@ -56,9 +58,11 @@ export function ChatThread({
   title?: string;
   subtitle?: string;
   statusLabel?: string;
-  showSafety?: boolean;
   onBack?: () => void;
+  avatarUrl?: string;
+  avatarText?: string;
 }) {
+  const { t, dir } = useI18n();
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,14 +72,14 @@ export function ChatThread({
     {
       id: originalId,
       senderId: originalSenderId,
-      senderName: originalSenderName || "Family",
+      senderName: originalSenderName || t("family.chatFamily"),
       text: originalText,
       at: originalAt,
     },
     ...replies.map((r) => ({
       id: r.id,
       senderId: r.sender_user_id,
-      senderName: r.sender_name || "Participant",
+      senderName: r.sender_name || t("family.chatParticipant"),
       text: r.body,
       at: r.created_at,
     })),
@@ -93,7 +97,7 @@ export function ChatThread({
       setBody("");
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not send the reply.");
+      setError(err instanceof Error ? err.message : t("family.replyFailed"));
     } finally {
       setSending(false);
     }
@@ -108,23 +112,17 @@ export function ChatThread({
               type="button"
               className="chat__back"
               onClick={onBack}
-              aria-label="Back to conversations"
+              aria-label={t("family.backConversations")}
             >
-              ‹
+              {dir === "rtl" ? "›" : "‹"}
             </button>
           )}
+          <span className="provider-avatar chat__avatar" aria-hidden="true">{avatarUrl ? <img src={avatarUrl} alt="" /> : avatarText}</span>
           <div className="chat__headmain">
             {title && <strong className="chat__title">{title}</strong>}
             {subtitle && <span className="chat__subtitle">{subtitle}</span>}
           </div>
           {statusLabel && <Badge tone="neutral">{statusLabel}</Badge>}
-        </div>
-      )}
-
-      {showSafety && (
-        <div className="chat__safety">
-          <span aria-hidden="true">⚕</span>
-          Non-urgent care coordination only — not emergency care.
         </div>
       )}
 
@@ -140,7 +138,7 @@ export function ChatThread({
             >
               <div className="chat-bubble__head">
                 <span className="chat-bubble__name">
-                  {mine ? "You" : b.senderName}
+                  {mine ? t("family.chatYou") : b.senderName}
                 </span>
                 <span className="chat-bubble__time">
                   {formatDateTime(b.at)}
@@ -162,23 +160,20 @@ export function ChatThread({
               setBody(e.target.value);
               setSent(false);
             }}
-            placeholder="Write a non-urgent message…"
+            placeholder={t("family.writeMessage")}
           />
           <div className="chat__composerow">
-            <span className="chat__hint">
-              {body.length}/{MAX} · Non-urgent care coordination only. Not
-              emergency care.
-            </span>
+            <span className="chat__hint">{body.length}/{MAX}</span>
             <button
               className="btn btn--gold"
               type="submit"
               disabled={sending || !body.trim()}
             >
-              {sending ? "Sending…" : "Send reply"}
+              {sending ? t("family.sending") : t("family.sendReply")}
             </button>
           </div>
           {error && <div className="mform__error">{error}</div>}
-          {sent && <div className="mform__ok">Sent.</div>}
+          {sent && <div className="mform__ok">{t("family.sent")}</div>}
         </form>
       ) : (
         disabledNote && <p className="chat__disabled muted-sub">{disabledNote}</p>

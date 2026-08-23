@@ -1,81 +1,237 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { getAIChatHistory, sendAIChatMessage, type AIChatMessage } from "../api/aiChat";
 import { useAuth } from "../auth/AuthContext";
 import { useI18n } from "../i18n/useI18n";
+import { demoFamilyAssistantResponse, type AssistantTopic } from "../lib/demoFamilyAssistant";
+import type { Lang, TranslationKey } from "../i18n/translations";
+import neurobridgeAiMascot from "../assets/neurobridge-ai-mascot.png";
+import { PatientAvatar,resizePatientAvatar,useCurrentFamilyPatient } from "../currentFamilyPatient";
+import { useFamilyAiPreferences } from "../familyAiPreferences";
+import { readDemoAppointments } from "../lib/familyBookingDemo";
+import { familyBookingCopy } from "../lib/familyBookingCopy";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api/client";
+import type { PatientProfile,Provider,ProviderListResponse } from "../types";
+import { useFamilyMembers } from "../familyMembers";
+import { parseFamilyAiAction,type FamilyAiAction } from "../lib/familyAiActions";
+import { addAiEncouragement,addAiMemory,setAiProviderDraft } from "../lib/familyAiLocalActions";
 
-const copy = {
-  en: {
-    eyebrow: "Supportive guidance", title: "NeuroBridge AI Companion",
-    disclaimer: "This assistant provides supportive guidance and performance-only summaries. It does not provide diagnosis, treatment decisions, or medical advice.",
-    empty: "Start a conversation. Ask for app help, a simple activity explanation, a supportive message, or a performance-only summary.",
-    placeholder: "Type a supportive question…", send: "Send", sending: "Thinking…",
-    retry: "Could not load the conversation. Please try again.",
-    patient: "Hello! I can explain today’s activities, encourage you, and help you use NeuroBridge.",
-    family: "Hello! I can suggest supportive messages, memory ideas, and explain performance summaries in simple language.",
-    care: "Hello! I can draft performance-only activity summaries and follow-up notes for care-team review.",
-  },
-  ar: {
-    eyebrow: "إرشاد داعم", title: "المساعد الذكي من NeuroBridge",
-    disclaimer: "يوفّر هذا المساعد إرشادًا داعمًا وملخصات قائمة على الأداء فقط. لا يقدّم تشخيصًا أو قرارات علاجية أو نصائح طبية.",
-    empty: "ابدأ محادثة. اطلب مساعدة في التطبيق، أو شرحًا بسيطًا لنشاط، أو رسالة داعمة، أو ملخصًا قائمًا على الأداء.",
-    placeholder: "اكتب سؤالًا داعمًا…", send: "إرسال", sending: "جارٍ التفكير…",
-    retry: "تعذّر تحميل المحادثة. يرجى المحاولة مرة أخرى.",
-    patient: "مرحبًا! يمكنني شرح أنشطة اليوم وتشجيعك ومساعدتك في استخدام NeuroBridge.",
-    family: "مرحبًا! يمكنني اقتراح رسائل داعمة وأفكار للذكريات وشرح ملخصات الأداء بلغة بسيطة.",
-    care: "مرحبًا! يمكنني صياغة ملخصات أنشطة قائمة على الأداء وملاحظات متابعة لمراجعة فريق الرعاية.",
-  },
-} as const;
+const STORAGE_KEY = "nb_family_ai_conversations";
+type LocalText=Record<Lang,string>;
+type SmartSuggestion={id:string;topic:AssistantTopic;title:LocalText;helper:LocalText;context?:"appointment"|"payment"};
+const local=(en:string,ar:string,fr:string,es:string,de:string):LocalText=>({en,ar,fr,es,de});
+const SUGGESTIONS:SmartSuggestion[]=[
+  {id:"report",topic:"reports",title:local("Explain the latest report","اشرح أحدث تقرير","Expliquer le dernier rapport","Explicar el último informe","Neuesten Bericht erklären"),helper:local("Turn results into plain language","حوّل النتائج إلى لغة بسيطة","Comprendre les résultats simplement","Entender los resultados fácilmente","Ergebnisse einfach verstehen")},
+  {id:"activity",topic:"activities",title:local("Review recent activity","راجع النشاط الأخير","Voir l’activité récente","Revisar actividad reciente","Letzte Aktivität prüfen"),helper:local("Notice progress and patterns","لاحظ التقدم والأنماط","Repérer les progrès et tendances","Ver progreso y patrones","Fortschritt und Muster erkennen")},
+  {id:"appointment",topic:"appointments",context:"appointment",title:local("Prepare for the next appointment","استعد للموعد القادم","Préparer le prochain rendez-vous","Preparar la próxima cita","Nächsten Termin vorbereiten"),helper:local("Create useful care-team questions","أنشئ أسئلة مفيدة لفريق الرعاية","Créer des questions utiles","Crear preguntas útiles","Hilfreiche Fragen erstellen")},
+  {id:"payment",topic:"billing",context:"payment",title:local("Check appointment payment","تحقق من دفع الموعد","Vérifier le paiement du rendez-vous","Revisar el pago de la cita","Terminzahlung prüfen"),helper:local("Use saved appointment details","استخدم تفاصيل الموعد المحفوظة","Utiliser les détails enregistrés","Usar los datos guardados","Gespeicherte Details verwenden")},
+  {id:"encouragement",topic:"encouragement",title:local("Write an encouraging message","اكتب رسالة تشجيعية","Écrire un message encourageant","Escribir un mensaje de ánimo","Ermutigende Nachricht schreiben"),helper:local("Warm, supportive wording","صياغة دافئة وداعمة","Des mots chaleureux","Palabras cálidas","Warme, unterstützende Worte")},
+  {id:"memory",topic:"memories",title:local("Create a memory idea","أنشئ فكرة لذكرى","Créer une idée de souvenir","Crear una idea de recuerdo","Erinnerungsidee erstellen"),helper:local("A simple photo or voice prompt","اقتراح بسيط لصورة أو صوت","Une idée photo ou vocale","Una idea de foto o voz","Einfache Foto- oder Sprachidee")},
+  {id:"care",topic:"care",title:local("Questions for the care team","أسئلة لفريق الرعاية","Questions pour l’équipe soignante","Preguntas para el equipo de atención","Fragen an das Betreuungsteam"),helper:local("Organize what you want to ask","رتّب ما تريد سؤاله","Organiser vos questions","Organizar tus preguntas","Fragen übersichtlich ordnen")},
+  {id:"messages",topic:"messages",title:local("Draft a provider message","اكتب مسودة رسالة لمقدم الرعاية","Rédiger un message au soignant","Redactar un mensaje al profesional","Nachricht an Behandelnde entwerfen"),helper:local("Keep it clear and respectful","اجعلها واضحة ومحترمة","Rester clair et respectueux","Que sea claro y respetuoso","Klar und respektvoll formulieren")},
+  {id:"navigation",topic:"usage",title:local("How do I use NeuroBridge?","كيف أستخدم NeuroBridge؟","Comment utiliser NeuroBridge ?","¿Cómo uso NeuroBridge?","Wie nutze ich NeuroBridge?"),helper:local("Find the right portal feature","اعثر على الميزة المناسبة","Trouver la bonne fonction","Encontrar la función adecuada","Die passende Funktion finden")},
+  {id:"settings",topic:"settings",title:local("Adjust family settings","عدّل إعدادات العائلة","Régler les paramètres famille","Ajustar configuración familiar","Familieneinstellungen anpassen"),helper:local("Language, comfort, and profiles","اللغة والراحة والملفات","Langue, confort et profils","Idioma, comodidad y perfiles","Sprache, Komfort und Profile")}
+];
+
+const ATTACH_COPY:Record<Lang,Record<string,string>>={
+  en:{add:"Add attachment",photo:"Add photo",file:"Add file",voice:"Record voice",close:"Close",remove:"Remove",send:"Send",start:"Start recording",stop:"Stop",recording:"Recording",permission:"Microphone access is unavailable. Check browser permission and try again.",limitation:"The attachment has been added to the conversation. Attachment analysis will be available when the assistant is connected to the AI service.",newChat:"New conversation"},
+  ar:{add:"إضافة مرفق",photo:"إضافة صورة",file:"إضافة ملف",voice:"تسجيل صوتي",close:"إغلاق",remove:"إزالة",send:"إرسال",start:"بدء التسجيل",stop:"إيقاف",recording:"جارٍ التسجيل",permission:"تعذر الوصول إلى الميكروفون. تحقق من إذن المتصفح وحاول مرة أخرى.",limitation:"تمت إضافة المرفق إلى المحادثة. تحليل المرفقات سيكون متاحًا عند ربط المساعد بخدمة الذكاء الاصطناعي.",newChat:"محادثة جديدة"},
+  fr:{add:"Ajouter une pièce jointe",photo:"Ajouter une photo",file:"Ajouter un fichier",voice:"Enregistrer un message vocal",close:"Fermer",remove:"Supprimer",send:"Envoyer",start:"Démarrer l’enregistrement",stop:"Arrêter",recording:"Enregistrement",permission:"L’accès au microphone est indisponible. Vérifiez l’autorisation du navigateur et réessayez.",limitation:"La pièce jointe a été ajoutée à la conversation. Son analyse sera disponible lorsque l’assistant sera connecté au service d’IA.",newChat:"Nouvelle conversation"},
+  es:{add:"Añadir archivo adjunto",photo:"Añadir foto",file:"Añadir archivo",voice:"Grabar voz",close:"Cerrar",remove:"Eliminar",send:"Enviar",start:"Iniciar grabación",stop:"Detener",recording:"Grabando",permission:"No se puede acceder al micrófono. Comprueba el permiso del navegador e inténtalo de nuevo.",limitation:"El archivo adjunto se añadió a la conversación. Su análisis estará disponible cuando el asistente se conecte al servicio de IA.",newChat:"Nueva conversación"},
+  de:{add:"Anhang hinzufügen",photo:"Foto hinzufügen",file:"Datei hinzufügen",voice:"Sprachnachricht aufnehmen",close:"Schließen",remove:"Entfernen",send:"Senden",start:"Aufnahme starten",stop:"Stoppen",recording:"Aufnahme",permission:"Der Mikrofonzugriff ist nicht verfügbar. Prüfen Sie die Browserberechtigung und versuchen Sie es erneut.",limitation:"Der Anhang wurde zur Unterhaltung hinzugefügt. Die Analyse ist verfügbar, sobald der Assistent mit dem KI-Dienst verbunden ist.",newChat:"Neue Unterhaltung"}
+};
+const HISTORY_COPY:Record<Lang,{search:string;empty:string}>={
+  en:{search:"Search conversations...",empty:"No conversations here yet."},
+  ar:{search:"ابحث في المحادثات...",empty:"لا توجد محادثات هنا بعد."},
+  fr:{search:"Rechercher dans les conversations...",empty:"Aucune conversation ici pour le moment."},
+  es:{search:"Buscar en las conversaciones...",empty:"Todavía no hay conversaciones aquí."},
+  de:{search:"Unterhaltungen durchsuchen...",empty:"Hier gibt es noch keine Unterhaltungen."}
+};
+const ACTION_COPY:Record<Lang,Record<string,string>>={
+ en:{avatar:"Change patient photo",avatarAsk:"Set the attached image as {name}'s profile photo?",setPhoto:"Set photo",memory:"Add memory",memoryAsk:"Add this image to {name}'s memories?",newMemory:"New memory",addMemory:"Add memory",encouragement:"Encouragement message",encDefault:"I'm proud of you and every step you take today 💛",send:"Send",provider:"Message to {name}",open:"Open conversation",cancel:"Cancel",edit:"Edit",attach:"Attach the photo you'd like to use first.",choosePatient:"Which patient is this for? Please use their exact name.",chooseProvider:"Which care provider do you mean? Please use their exact name.",avatarDone:"✓ {name}'s photo has been updated.",memoryDone:"✓ The memory was added to {name}'s memories.",encDone:"✓ The encouragement was added for {name}.",switched:"✓ Current patient changed to {name}.",failed:"I couldn't complete this action. Please try again.",medical:"I can't make medication, treatment, or diagnosis changes. I can help prepare a question for the care team.",payment:"I can't complete payments. I can open Billing so you can review it safely."},
+ ar:{avatar:"تغيير صورة المريض",avatarAsk:"هل تريد تعيين الصورة المرفقة كصورة شخصية لـ {name}؟",setPhoto:"تعيين الصورة",memory:"إضافة ذكرى",memoryAsk:"هل تريد إضافة هذه الصورة إلى ذكريات {name}؟",newMemory:"ذكرى جديدة",addMemory:"إضافة الذكرى",encouragement:"رسالة تشجيع",encDefault:"أنا فخور فيك وبكل خطوة تعملها اليوم 💛",send:"إرسال",provider:"رسالة إلى {name}",open:"فتح المحادثة",cancel:"إلغاء",edit:"تعديل",attach:"أرسل الصورة التي تريد استخدامها أولًا.",choosePatient:"لأي مريض تريد تنفيذ هذا الإجراء؟ اذكر الاسم بوضوح.",chooseProvider:"أي مقدم رعاية تقصد؟ اذكر الاسم بوضوح.",avatarDone:"✓ تم تحديث صورة {name}.",memoryDone:"✓ تمت إضافة الذكرى إلى ذكريات {name}.",encDone:"✓ تمت إضافة رسالة التشجيع لـ {name}.",switched:"✓ تم تغيير المريض الحالي إلى {name}.",failed:"لم أتمكن من تنفيذ هذا الإجراء. يمكنك المحاولة مرة أخرى.",medical:"لا يمكنني تغيير الدواء أو العلاج أو التشخيص. يمكنني مساعدتك في تجهيز سؤال لفريق الرعاية.",payment:"لا يمكنني تنفيذ الدفع. يمكنني فتح المدفوعات لتراجعها بأمان."},
+ fr:{avatar:"Changer la photo du patient",avatarAsk:"Définir l’image jointe comme photo de profil de {name} ?",setPhoto:"Définir la photo",memory:"Ajouter un souvenir",memoryAsk:"Ajouter cette image aux souvenirs de {name} ?",newMemory:"Nouveau souvenir",addMemory:"Ajouter le souvenir",encouragement:"Message d’encouragement",encDefault:"Je suis fier de toi et de chaque pas que tu fais aujourd’hui 💛",send:"Envoyer",provider:"Message à {name}",open:"Ouvrir la conversation",cancel:"Annuler",edit:"Modifier",attach:"Joignez d’abord la photo que vous souhaitez utiliser.",choosePatient:"Pour quel patient ? Indiquez son nom exact.",chooseProvider:"Quel soignant souhaitez-vous contacter ? Indiquez son nom exact.",avatarDone:"✓ La photo de {name} a été mise à jour.",memoryDone:"✓ Le souvenir a été ajouté pour {name}.",encDone:"✓ L’encouragement a été ajouté pour {name}.",switched:"✓ Le patient actuel est maintenant {name}.",failed:"Je n’ai pas pu effectuer cette action. Réessayez.",medical:"Je ne peux pas modifier un médicament, un traitement ou un diagnostic. Je peux préparer une question pour l’équipe soignante.",payment:"Je ne peux pas effectuer un paiement. Je peux ouvrir la facturation pour que vous la vérifiiez."},
+ es:{avatar:"Cambiar foto del paciente",avatarAsk:"¿Usar la imagen adjunta como foto de perfil de {name}?",setPhoto:"Establecer foto",memory:"Añadir recuerdo",memoryAsk:"¿Añadir esta imagen a los recuerdos de {name}?",newMemory:"Nuevo recuerdo",addMemory:"Añadir recuerdo",encouragement:"Mensaje de ánimo",encDefault:"Estoy orgulloso de ti y de cada paso que das hoy 💛",send:"Enviar",provider:"Mensaje para {name}",open:"Abrir conversación",cancel:"Cancelar",edit:"Editar",attach:"Adjunta primero la foto que quieres usar.",choosePatient:"¿Para qué paciente? Indica su nombre exacto.",chooseProvider:"¿Qué profesional quieres contactar? Indica su nombre exacto.",avatarDone:"✓ Se actualizó la foto de {name}.",memoryDone:"✓ El recuerdo se añadió para {name}.",encDone:"✓ El mensaje de ánimo se añadió para {name}.",switched:"✓ El paciente actual ahora es {name}.",failed:"No pude completar esta acción. Inténtalo de nuevo.",medical:"No puedo cambiar medicación, tratamiento ni diagnósticos. Puedo ayudarte a preparar una pregunta para el equipo asistencial.",payment:"No puedo realizar pagos. Puedo abrir Pagos para que lo revises."},
+ de:{avatar:"Patientenfoto ändern",avatarAsk:"Das angehängte Bild als Profilfoto von {name} festlegen?",setPhoto:"Foto festlegen",memory:"Erinnerung hinzufügen",memoryAsk:"Dieses Bild zu den Erinnerungen von {name} hinzufügen?",newMemory:"Neue Erinnerung",addMemory:"Erinnerung hinzufügen",encouragement:"Ermutigung",encDefault:"Ich bin stolz auf dich und auf jeden Schritt, den du heute gehst 💛",send:"Senden",provider:"Nachricht an {name}",open:"Unterhaltung öffnen",cancel:"Abbrechen",edit:"Bearbeiten",attach:"Fügen Sie zuerst das gewünschte Foto hinzu.",choosePatient:"Für welchen Patienten? Nennen Sie den genauen Namen.",chooseProvider:"Welche Betreuungsperson meinen Sie? Nennen Sie den genauen Namen.",avatarDone:"✓ Das Foto von {name} wurde aktualisiert.",memoryDone:"✓ Die Erinnerung wurde für {name} hinzugefügt.",encDone:"✓ Die Ermutigung wurde für {name} hinzugefügt.",switched:"✓ Aktueller Patient ist jetzt {name}.",failed:"Diese Aktion konnte nicht ausgeführt werden. Versuchen Sie es erneut.",medical:"Ich kann Medikamente, Behandlungen oder Diagnosen nicht ändern. Ich kann eine Frage für das Betreuungsteam vorbereiten.",payment:"Ich kann keine Zahlung ausführen. Ich kann die Abrechnung zur sicheren Prüfung öffnen."}
+};
+const fill=(value:string,name:string)=>value.replace("{name}",name);
+
+type AttachmentKind="image"|"file"|"voice";
+interface LocalAttachment{kind:AttachmentKind;url:string;name:string;size:number;duration?:number;}
+interface AttachmentDraft extends LocalAttachment{}
+
+type SystemTemplateKey="attachmentLimitation"|"attach"|"choosePatient"|"chooseProvider"|"avatarDone"|"memoryDone"|"encDone"|"switched"|"failed"|"medical"|"payment"|"cancel";
+interface SystemTemplate{key:SystemTemplateKey;name?:string;}
+interface FamilyAIMessage { id: string; role: "user" | "assistant"; text?: string; systemTemplate?:SystemTemplate; attachment?:LocalAttachment; action?:FamilyAiAction; responseKey?: TranslationKey; topic?: AssistantTopic; followUpKeys?: TranslationKey[]; createdAt: string; feedback?: "helpful" | "not-helpful"; variant?:number; }
+interface FamilyAIChat { id: string; title: string; messages: FamilyAIMessage[]; createdAt: string; updatedAt: string; archived: boolean; patientId?:string|null; }
+
+const id = () => `ai-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const now = () => new Date().toISOString();
+const formatLocalSize=(bytes:number)=>bytes<1024?`${bytes} B`:bytes<1048576?`${(bytes/1024).toFixed(1)} KB`:`${(bytes/1048576).toFixed(1)} MB`;
+const hasUsefulTitle = (title: unknown) => typeof title === "string" && title.trim().length > 0 && !/^(?:-+|null|undefined)$/i.test(title.trim());
+
+const namedSystemKeys=["avatarDone","memoryDone","encDone","switched"] as const;
+const staticSystemKeys=["attach","choosePatient","chooseProvider","failed","medical","payment","cancel"] as const;
+function legacySystemTemplate(text?:string):SystemTemplate|undefined{if(!text)return;for(const copy of Object.values(ATTACH_COPY))if(text===copy.limitation)return{key:"attachmentLimitation"};for(const copy of Object.values(ACTION_COPY)){for(const key of staticSystemKeys)if(text===copy[key])return{key};for(const key of namedSystemKeys){const template=copy[key],marker="{name}",index=template.indexOf(marker);if(index<0)continue;const start=template.slice(0,index),end=template.slice(index+marker.length);if(text.startsWith(start)&&text.endsWith(end))return{key,name:text.slice(start.length,end?text.length-end.length:undefined)}}}}
+function readChats(): FamilyAIChat[] {
+  try { const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); return Array.isArray(value) ? value.map((chat:FamilyAIChat)=>({...chat,messages:Array.isArray(chat.messages)?chat.messages.map(message=>message.role==="assistant"&&!message.systemTemplate?{...message,systemTemplate:legacySystemTemplate(message.text)}:message):[]})) : []; } catch { return []; }
+}
 
 export function AICompanionPage() {
   const { roles } = useAuth();
-  const { lang } = useI18n();
-  const c = lang === "ar" ? copy.ar : copy.en;
-  const [messages, setMessages] = useState<AIChatMessage[]>([]);
+  return roles.includes("family") ? <FamilyAICompanion /> : <LegacyAICompanion />;
+}
+
+function FamilyAICompanion() {
+  const {user}=useAuth();
+  const { t, lang, dir } = useI18n();
+  const navigate=useNavigate();
+  const {patient,patients,setPatient,copy:patientCopy,name:patientName,setAvatar}=useCurrentFamilyPatient();
+  const {active:familyMember,label:familyMemberLabel}=useFamilyMembers();
+  const {profile:aiProfile,global:aiGlobal,score:preferenceScore,recordSuggestion,recordFeedback}=useFamilyAiPreferences();
+  const [chats, setChats] = useState<FamilyAIChat[]>(readChats);
+  const [activeId, setActiveId] = useState<string | null>(() => readChats().find((chat) => !chat.archived)?.id ?? null);
+  const [view, setView] = useState<"active" | "archived">("active");
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [menuId, setMenuId] = useState<string | null>(null);
+  const [historySearch, setHistorySearch] = useState("");
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+  const [mascotFailed, setMascotFailed] = useState(false);
+  const [attachmentOpen,setAttachmentOpen]=useState(false);
+  const [draft,setDraft]=useState<AttachmentDraft|null>(null);
+  const [recording,setRecording]=useState(false);
+  const [recordSeconds,setRecordSeconds]=useState(0);
+  const [attachmentError,setAttachmentError]=useState("");
+  const [providers,setProviders]=useState<Provider[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
-  const welcome = roles.includes("doctor") || roles.includes("therapist")
-    ? c.care : roles.includes("family") ? c.family : c.patient;
+  const timerRef = useRef<number | null>(null);
+  const attachmentWrapRef=useRef<HTMLDivElement>(null);
+  const photoInputRef=useRef<HTMLInputElement>(null);
+  const fileInputRef=useRef<HTMLInputElement>(null);
+  const recorderRef=useRef<MediaRecorder|null>(null);
+  const recordingStreamRef=useRef<MediaStream|null>(null);
+  const recordingTimerRef=useRef<number|null>(null);
+  const recordingChunksRef=useRef<Blob[]>([]);
+  const recordingSecondsRef=useRef(0);
+  const objectUrlsRef=useRef(new Set<string>());
+  const ac=ATTACH_COPY[lang];
+  const hc=HISTORY_COPY[lang];
+  const xc=ACTION_COPY[lang];
 
-  useEffect(() => {
-    let active = true;
-    getAIChatHistory().then((result) => active && setMessages(result.messages))
-      .catch(() => active && setError(c.retry)).finally(() => active && setLoading(false));
-    return () => { active = false; };
-  }, [c.retry]);
+  const active = chats.find((chat) => chat.id === activeId&&chat.patientId===patient?.id) ?? null;
+  const visibleChats = useMemo(() => { const query = historySearch.trim().toLowerCase(); return chats.filter((chat) => chat.patientId===patient?.id&&chat.archived === (view === "archived") && (!query || chat.title.toLowerCase().includes(query))).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)); }, [chats, view, historySearch,patient?.id]);
+  const historyCounts=useMemo(()=>{const query=historySearch.trim().toLowerCase(),matches=chats.filter(chat=>chat.patientId===patient?.id&&(!query||chat.title.toLowerCase().includes(query)));return{active:matches.filter(chat=>!chat.archived).length,archived:matches.filter(chat=>chat.archived).length}},[chats,historySearch,patient?.id]);
+  const patientAppointments=useMemo(()=>readDemoAppointments().filter(item=>item.patientId===patient?.id),[patient?.id,chats.length]);
+  const smartSuggestions=useMemo(()=>SUGGESTIONS.map((item,index)=>({item,index,rank:preferenceScore(item.topic)+(item.context==="appointment"&&patientAppointments.some(a=>a.appointmentStatus!=="cancelled")?4:0)+(item.context==="payment"&&patientAppointments.some(a=>a.paymentStatus==="pending"||a.paymentStatus==="failed")?5:0)})).sort((a,b)=>b.rank-a.rank||a.index-b.index).reduce<SmartSuggestion[]>((chosen,{item})=>chosen.some(value=>value.topic===item.topic)&&chosen.length<3?chosen:[...chosen,item],[]).slice(0,4),[aiProfile,aiGlobal.personalizeSuggestions,patientAppointments]);
+  const contextualWelcome=patient&&aiGlobal.usePatientContext?local(`I can help you follow ${patientName(patient)}'s journey and use NeuroBridge.`,`يمكنني مساعدتك في متابعة رحلة ${patientName(patient)} واستخدام NeuroBridge.`,`Je peux vous aider à suivre le parcours de ${patientName(patient)} et à utiliser NeuroBridge.`,`Puedo ayudarte a seguir el proceso de ${patientName(patient)} y a usar NeuroBridge.`,`Ich kann Sie dabei unterstützen, den Weg von ${patientName(patient)} zu verfolgen und NeuroBridge zu nutzen.`)[lang]:t("ai.family.welcomeHelp");
 
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
-
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    const value = text.trim();
-    if (!value || sending) return;
-    setSending(true); setError("");
-    try {
-      const saved = await sendAIChatMessage(value);
-      setMessages((items) => [...items, saved]); setText("");
-    } catch { setError(c.retry); } finally { setSending(false); }
+  const localizeAssistantEnums=(value:string)=>value.replace(/\b(pending|paid|failed|refunded|confirmed|completed|cancelled)\b/g,(status)=>familyBookingCopy[lang][status as "pending"|"paid"|"failed"|"refunded"|"confirmed"|"completed"|"cancelled"]);
+  const systemTemplateText=(template:SystemTemplate)=>template.key==="attachmentLimitation"?ac.limitation:fill(xc[template.key],template.name||"");
+  const responseText=(message:FamilyAIMessage)=>{
+    const template=message.systemTemplate||legacySystemTemplate(message.text);
+    let value=template?systemTemplateText(template):message.responseKey?t(message.responseKey):message.text||"";
+    if(aiGlobal.usePatientContext&&patient&&message.topic==="appointments"&&patientAppointments.length){const appointment=[...patientAppointments].sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))[0];value=local(`For ${patientName(patient)}, the saved appointment is with ${appointment.providerName} on ${appointment.date} at ${appointment.time}. Payment status: ${appointment.paymentStatus}. I can help you prepare questions, but I cannot make clinical decisions.`,`لدى ${patientName(patient)} موعد محفوظ مع ${appointment.providerName} بتاريخ ${appointment.date} الساعة ${appointment.time}. حالة الدفع: ${appointment.paymentStatus}. يمكنني مساعدتك في إعداد الأسئلة، لكن لا يمكنني اتخاذ قرارات سريرية.`,`Pour ${patientName(patient)}, le rendez-vous enregistré est avec ${appointment.providerName} le ${appointment.date} à ${appointment.time}. Statut du paiement : ${appointment.paymentStatus}. Je peux préparer des questions, sans prendre de décision clinique.`,`Para ${patientName(patient)}, la cita guardada es con ${appointment.providerName} el ${appointment.date} a las ${appointment.time}. Estado del pago: ${appointment.paymentStatus}. Puedo preparar preguntas, pero no tomar decisiones clínicas.`,`Für ${patientName(patient)} ist ein Termin bei ${appointment.providerName} am ${appointment.date} um ${appointment.time} gespeichert. Zahlungsstatus: ${appointment.paymentStatus}. Ich kann Fragen vorbereiten, aber keine klinischen Entscheidungen treffen.`)[lang]}
+    if(message.topic==="appointments"&&!patientAppointments.length)value=local("I don't see an upcoming appointment in the current frontend data. You can check Appointments or ask me to help prepare questions once one is booked.","لا أرى موعدًا قادمًا مسجلًا في بيانات الواجهة الحالية. يمكنك مراجعة المواعيد أو طلب مساعدتي في إعداد الأسئلة بعد الحجز.","Je ne vois aucun rendez-vous à venir dans les données actuelles. Consultez Rendez-vous ou demandez-moi de préparer des questions après une réservation.","No veo una próxima cita en los datos actuales. Puedes revisar Citas o pedirme que prepare preguntas después de reservar.","In den aktuellen Frontend-Daten ist kein bevorstehender Termin gespeichert. Prüfen Sie Termine oder lassen Sie mich nach einer Buchung Fragen vorbereiten.")[lang];
+    if(message.topic==="billing"){const appointment=[...patientAppointments].sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0];value=appointment?local(`The saved payment for this appointment is ${appointment.paymentStatus}. Payer: ${appointment.payerName}. ${appointment.receiptReference?`Receipt: ${appointment.receiptReference}.`:"No receipt reference is saved."}`,`حالة الدفع المسجلة لهذا الموعد: ${appointment.paymentStatus}. الدافع: ${appointment.payerName}. ${appointment.receiptReference?`الإيصال: ${appointment.receiptReference}.`:"لا يوجد رقم إيصال محفوظ."}`,`Le paiement enregistré est ${appointment.paymentStatus}. Payeur : ${appointment.payerName}. ${appointment.receiptReference?`Reçu : ${appointment.receiptReference}.`:"Aucune référence de reçu n’est enregistrée."}`,`El pago guardado está ${appointment.paymentStatus}. Pagador: ${appointment.payerName}. ${appointment.receiptReference?`Recibo: ${appointment.receiptReference}.`:"No hay referencia de recibo guardada."}`,`Der gespeicherte Zahlungsstatus ist ${appointment.paymentStatus}. Zahler: ${appointment.payerName}. ${appointment.receiptReference?`Beleg: ${appointment.receiptReference}.`:"Keine Belegnummer gespeichert."}`)[lang]:local("No payment information is available for the current patient in the current frontend data.","لا تتوفر معلومات دفع للمريض الحالي في بيانات الواجهة الحالية.","Aucune information de paiement n’est disponible pour le patient actuel.","No hay información de pago disponible para el paciente actual.","Für den aktuellen Patienten sind keine Zahlungsinformationen verfügbar.")[lang]}
+    value=localizeAssistantEnums(value);
+    if(aiProfile.responseStyle==="short")return value.split(/(?<=[.!?؟])\s/).slice(0,1).join(" ");
+    if(aiProfile.responseStyle==="detailed")return `${value}\n\n${local("If you want, tell me the specific part you want broken into practical next steps.","إذا رغبت، أخبرني بالجزء المحدد الذي تريد تقسيمه إلى خطوات عملية.","Si vous le souhaitez, indiquez la partie à détailler en étapes pratiques.","Si quieres, dime qué parte deseas dividir en pasos prácticos.","Wenn Sie möchten, nenne mir den Teil, den ich in praktische Schritte gliedern soll.")[lang]}`;
+    return value;
   };
 
-  return (
-    <section className="ai-companion" aria-labelledby="ai-companion-title">
-      <header className="ai-companion__header"><span className="ai-companion__mark" aria-hidden="true">✦</span><div><span className="eyebrow">{c.eyebrow}</span><h1 id="ai-companion-title">{c.title}</h1></div></header>
-      <p className="ai-companion__disclaimer"><span aria-hidden="true">ⓘ</span>{c.disclaimer}</p>
-      <div className="ai-companion__thread" aria-live="polite" aria-busy={loading || sending}>
-        <div className="ai-bubble ai-bubble--assistant"><span className="ai-bubble__avatar" aria-hidden="true">NB</span><p>{welcome}</p></div>
-        {!loading && messages.length === 0 && <p className="ai-companion__empty">{c.empty}</p>}
-        {messages.map((item) => <div className="ai-exchange" key={item.id}><div className="ai-bubble ai-bubble--user"><p>{item.message}</p></div><div className="ai-bubble ai-bubble--assistant"><span className="ai-bubble__avatar" aria-hidden="true">NB</span><p>{item.assistant_response}</p></div></div>)}
-        {sending && <div className="ai-bubble ai-bubble--assistant"><span className="ai-bubble__avatar" aria-hidden="true">NB</span><p className="ai-typing"><i></i><i></i><i></i><span className="sr-only">{c.sending}</span></p></div>}
-        <div ref={endRef} />
-      </div>
-      {error && <p className="ai-companion__error" role="alert">{error}</p>}
-      <form className="ai-composer" onSubmit={submit}>
-        <label className="sr-only" htmlFor="ai-message">{c.placeholder}</label>
-        <textarea id="ai-message" rows={2} maxLength={2000} value={text} onChange={(e) => setText(e.target.value)} placeholder={c.placeholder} disabled={sending} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} />
-        <button className="btn btn--gold" type="submit" disabled={sending || !text.trim()}>{sending ? c.sending : c.send}</button>
-      </form>
+  useEffect(() => { try { const normalized=chats.map(chat=>({...chat,messages:chat.messages.map(message=>{const systemTemplate=message.role==="assistant"?(message.systemTemplate||legacySystemTemplate(message.text)):undefined;return systemTemplate?{...message,text:undefined,systemTemplate}:message})}));localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized)); } catch { /* session state remains usable */ } }, [chats]);
+  useEffect(() => { setChats((items) => items.map((chat) => hasUsefulTitle(chat.title) ? chat : { ...chat, title: t("ai.family.newTitle") })); }, [t]);
+  useEffect(()=>{if(!patient)return;setChats(items=>items.map(chat=>chat.patientId===undefined?{...chat,patientId:patient.id}:chat));const next=chats.find(chat=>chat.patientId===patient.id&&!chat.archived);setActiveId(next?.id??null)},[patient?.id]);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [active?.messages, thinking]);
+  useEffect(() => { if (!drawerOpen) return; const panel = document.querySelector(".family-ai-history"); const closeOnConversation = (event: Event) => { if ((event.target as HTMLElement).closest(".family-ai-history__item > button:first-child")) setDrawerOpen(false); }; panel?.addEventListener("click", closeOnConversation); return () => panel?.removeEventListener("click", closeOnConversation); }, [drawerOpen]);
+  useEffect(()=>{if(!attachmentOpen)return;const close=(event:MouseEvent)=>{if(!attachmentWrapRef.current?.contains(event.target as Node))setAttachmentOpen(false)};const escape=(event:globalThis.KeyboardEvent)=>{if(event.key==="Escape")setAttachmentOpen(false)};document.addEventListener("pointerdown",close);document.addEventListener("keydown",escape);return()=>{document.removeEventListener("pointerdown",close);document.removeEventListener("keydown",escape)}},[attachmentOpen]);
+  useEffect(()=>{api<ProviderListResponse>("/providers").then(value=>setProviders(value.providers)).catch(()=>setProviders([]))},[]);
+  useEffect(() => () => { if (timerRef.current) window.clearTimeout(timerRef.current);if(recordingTimerRef.current)window.clearInterval(recordingTimerRef.current);const recorder=recorderRef.current;if(recorder?.state==="recording"){recorder.onstop=null;recorder.stop()}recordingStreamRef.current?.getTracks().forEach(track=>track.stop());objectUrlsRef.current.forEach(url=>URL.revokeObjectURL(url));window.speechSynthesis?.cancel(); }, []);
+
+  const newChat = () => {
+    const stamp = now(); const chat: FamilyAIChat = { id: id(), title: t("ai.family.newTitle"), messages: [], createdAt: stamp, updatedAt: stamp, archived: false,patientId:patient?.id??null };
+    setChats((items) => [chat, ...items]); setActiveId(chat.id); setView("active"); setHistoryOpen(true); setDrawerOpen(false); setMenuId(null);
+    return chat.id;
+  };
+
+  const sendText = (value: string, targetId = activeId) => {
+    const prompt = value.trim(); if (!prompt || thinking) return;
+    const chatId = targetId ?? newChat();
+    const imageUrl=[...(active?.messages||[])].reverse().find(message=>message.attachment?.kind==="image")?.attachment?.url;
+    const parsed=parseFamilyAiAction(prompt,patients,patient,providers,imageUrl);
+    const userMessage: FamilyAIMessage = { id: id(), role: "user", text: prompt, createdAt: now() };
+    if(parsed.medical||parsed.payment||parsed.missing||parsed.action){setText("");const text=parsed.medical?xc.medical:parsed.payment?xc.payment:parsed.missing==="image"?xc.attach:parsed.missing==="patient"?xc.choosePatient:parsed.missing==="provider"?xc.chooseProvider:undefined;setChats(items=>items.map(chat=>chat.id===chatId?{...chat,title:chat.messages.length?chat.title:prompt.slice(0,55),updatedAt:now(),messages:[...chat.messages,userMessage,...(text?[{id:id(),role:"assistant" as const,text,createdAt:now()}]:parsed.action&&parsed.action.type!=="navigate"&&parsed.action.type!=="switch_patient"&&!(parsed.action.type==="open_provider_chat"&&!parsed.action.draftMessage)?[{id:id(),role:"assistant" as const,action:parsed.action,createdAt:now()}]:[])]}:chat));if(parsed.action?.type==="navigate")navigate(parsed.action.route);else if(parsed.action?.type==="switch_patient"){const patientId=parsed.action.patientId,target=patients.find(item=>item.id===patientId);if(target){setPatient(target.id);const stamp=now(),success:FamilyAIChat={id:id(),title:xc.switched.replace("{name}",patientName(target)),patientId:target.id,createdAt:stamp,updatedAt:stamp,archived:false,messages:[{id:id(),role:"assistant",text:fill(xc.switched,patientName(target)),createdAt:stamp}]};setChats(items=>[success,...items]);setActiveId(success.id)}}else if(parsed.action?.type==="open_provider_chat"&&!parsed.action.draftMessage&&parsed.action.providerId){setAiProviderDraft({patientId:parsed.action.patientId,providerId:parsed.action.providerId,body:""});navigate("/messages")}return}
+    const reply = demoFamilyAssistantResponse(prompt, lang);
+    setText(""); setThinking(true);
+    setChats((items) => items.map((chat) => chat.id === chatId ? { ...chat, title: chat.messages.length ? chat.title : t(reply.titleKey), updatedAt: now(), messages: [...chat.messages, userMessage] } : chat));
+    timerRef.current = window.setTimeout(() => {
+      const assistant: FamilyAIMessage = { id: id(), role: "assistant", responseKey: reply.responseKey, topic: reply.topic, followUpKeys: reply.followUpKeys, createdAt: now() };
+      setChats((items) => items.map((chat) => chat.id === chatId ? { ...chat, updatedAt: now(), messages: [...chat.messages, assistant] } : chat));
+      setThinking(false);
+    }, 650);
+  };
+
+  const submit = (event: FormEvent) => { event.preventDefault(); draft?sendAttachment():sendText(text); };
+  const keyboardSend = (event: KeyboardEvent<HTMLTextAreaElement>) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } };
+  const updateChat = (chatId: string, change: (chat: FamilyAIChat) => FamilyAIChat) => setChats((items) => items.map((chat) => chat.id === chatId ? change(chat) : chat));
+  const rename = (chat: FamilyAIChat) => { const title = window.prompt(t("ai.family.renamePrompt"), hasUsefulTitle(chat.title) ? chat.title : t("ai.family.newTitle"))?.trim(); if (hasUsefulTitle(title)) updateChat(chat.id, (item) => ({ ...item, title: title! })); setMenuId(null); };
+  const archive = (chat: FamilyAIChat) => { updateChat(chat.id, (item) => ({ ...item, archived: !item.archived })); setMenuId(null); if (activeId === chat.id) setActiveId(null); };
+  const remove = (chat: FamilyAIChat) => { if (!window.confirm(`${t("ai.family.deleteTitle")}\n\n${t("ai.family.deleteDescription")}`)) return; chat.messages.forEach(message=>{if(message.attachment?.url&&objectUrlsRef.current.delete(message.attachment.url))URL.revokeObjectURL(message.attachment.url)});setChats((items) => items.filter((item) => item.id !== chat.id)); if (activeId === chat.id) setActiveId(null); setMenuId(null); };
+
+  const copy = async (message: FamilyAIMessage) => { const value = responseText(message); try { await navigator.clipboard.writeText(value); setCopiedId(message.id); window.setTimeout(() => setCopiedId(null), 1500); } catch { /* clipboard unavailable */ } };
+  const feedback = (messageId: string, value: "helpful" | "not-helpful") => {const message=active?.messages.find(item=>item.id===messageId);if(message?.topic)recordFeedback(message.topic,value==="helpful");if(activeId)setChats((items) => items.map((chat) => chat.id === activeId ? { ...chat, messages: chat.messages.map((item) => item.id === messageId ? { ...item, feedback: value } : item) } : chat));};
+  const retry = (message: FamilyAIMessage) => { if (!activeId || !message.responseKey) return; setThinking(true); timerRef.current = window.setTimeout(() => { updateChat(activeId, (chat) => ({ ...chat, updatedAt: now(), messages: chat.messages.map((item) => item.id === message.id ? { ...item, id: id(),variant:(item.variant||0)+1, createdAt: now() } : item) })); setThinking(false); }, 600); };
+
+  const createObjectUrl=(blob:Blob)=>{const url=URL.createObjectURL(blob);objectUrlsRef.current.add(url);return url};
+  const clearDraft=()=>{setDraft(current=>{if(current?.url&&objectUrlsRef.current.delete(current.url))URL.revokeObjectURL(current.url);return null})};
+  const chooseAttachment=(kind:"image"|"file",file?:File)=>{if(!file)return;clearDraft();setAttachmentError("");setDraft({kind,url:createObjectUrl(file),name:file.name,size:file.size});setAttachmentOpen(false)};
+  const stopRecording=()=>{if(recordingTimerRef.current){window.clearInterval(recordingTimerRef.current);recordingTimerRef.current=null}if(recorderRef.current?.state==="recording")recorderRef.current.stop()};
+  const startRecording=async()=>{setAttachmentOpen(false);setAttachmentError("");clearDraft();try{if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==="undefined")throw new Error("unsupported");const stream=await navigator.mediaDevices.getUserMedia({audio:true});recordingStreamRef.current=stream;recordingChunksRef.current=[];const recorder=new MediaRecorder(stream);recorderRef.current=recorder;recorder.ondataavailable=event=>{if(event.data.size)recordingChunksRef.current.push(event.data)};recorder.onstop=()=>{const blob=new Blob(recordingChunksRef.current,{type:recorder.mimeType||"audio/webm"});stream.getTracks().forEach(track=>track.stop());recordingStreamRef.current=null;recorderRef.current=null;setDraft({kind:"voice",url:createObjectUrl(blob),name:"voice-message.webm",size:blob.size,duration:Math.max(1,recordingSecondsRef.current)});setRecording(false)};recordingSecondsRef.current=0;setRecordSeconds(0);setRecording(true);recorder.start();const started=Date.now();recordingTimerRef.current=window.setInterval(()=>{const seconds=Math.floor((Date.now()-started)/1000);recordingSecondsRef.current=seconds;setRecordSeconds(seconds)},1000)}catch{setRecording(false);setAttachmentError(ac.permission)}};
+  function sendAttachment(){if(!draft||thinking)return;const chatId=activeId??newChat();const attachment=draft;const userMessage:FamilyAIMessage={id:id(),role:"user",attachment,createdAt:now()};const assistant:FamilyAIMessage={id:id(),role:"assistant",systemTemplate:{key:"attachmentLimitation"},createdAt:now()};setDraft(null);setChats(items=>items.map(chat=>chat.id===chatId?{...chat,title:chat.messages.length?chat.title:attachment.name,updatedAt:now(),messages:[...chat.messages,userMessage,assistant]}:chat));}
+  const actionPatient=(action:FamilyAiAction)=>"patientId" in action?patients.find(item=>item.id===action.patientId):undefined;
+  const updateAction=(messageId:string,action:FamilyAiAction,text?:string)=>{if(!activeId)return;const systemTemplate=legacySystemTemplate(text);updateChat(activeId,chat=>({...chat,updatedAt:now(),messages:chat.messages.map(message=>message.id===messageId?{...message,action,text:systemTemplate?undefined:text,systemTemplate:systemTemplate||message.systemTemplate}:message)}))};
+  const executeAction=async(message:FamilyAIMessage)=>{const action=message.action;if(!action)return;const target=actionPatient(action),name=target?patientName(target):patientCopy.patient;try{updateAction(message.id,{...action,status:"confirmed"});if(action.type==="change_patient_avatar"){const blob=await fetch(action.attachmentUrl).then(value=>value.blob()),data=await resizePatientAvatar(new File([blob],"avatar",{type:blob.type}));setAvatar(action.patientId,data);updateAction(message.id,{...action,status:"completed"},fill(xc.avatarDone,name))}else if(action.type==="add_memory"){const media=action.attachmentUrl?await fetch(action.attachmentUrl).then(value=>value.blob()).then(blob=>new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(reader.error);reader.onload=()=>resolve(String(reader.result));reader.readAsDataURL(blob)})):undefined;addAiMemory({id:`ai-memory-${Date.now()}`,patient_profile_id:action.patientId,uploaded_by_user_id:user?.id||"frontend-family",title:action.title||xc.newMemory,description:undefined,person_name:familyMember?.name,relationship:familyMemberLabel(familyMember),media_type:media?"image/jpeg":undefined,media_url:media,created_at:now(),updated_at:now()});updateAction(message.id,{...action,status:"completed"},fill(xc.memoryDone,name))}else if(action.type==="create_encouragement"){addAiEncouragement({id:`ai-enc-${Date.now()}`,patientId:action.patientId,sender:familyMemberLabel(familyMember),message:action.text||xc.encDefault,createdAt:now()});updateAction(message.id,{...action,status:"completed"},fill(xc.encDone,name))}else if(action.type==="open_provider_chat"&&action.providerId){setAiProviderDraft({patientId:action.patientId,providerId:action.providerId,body:action.draftMessage||""});updateAction(message.id,{...action,status:"completed"});navigate("/messages")}}catch{updateAction(message.id,{...action,status:"failed"},xc.failed)}};
+  const cancelAction=(message:FamilyAIMessage)=>{if(message.action)updateAction(message.id,{...message.action,status:"cancelled"},xc.cancel)};
+
+  const speak = (message: FamilyAIMessage) => {
+    if (!("speechSynthesis" in window) || !message.responseKey) return;
+    if (speakingId === message.id) { window.speechSynthesis.cancel(); setSpeakingId(null); return; }
+    window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(responseText(message)); utterance.lang = lang; utterance.onend = () => setSpeakingId(null); utterance.onerror = () => setSpeakingId(null); setSpeakingId(message.id); window.speechSynthesis.speak(utterance);
+  };
+
+  return <div className="family-ai-page page page--wide">
+    <div className="page__head"><div><span className="eyebrow">{t("ai.family.eyebrow")}</span><p className="page__sub">{t("ai.family.description")}</p>{patient&&<small className="patient-context-line">{patientCopy.patient}: {patientName(patient)}</small>}</div></div>
+    <section className={`family-ai-workspace ${historyOpen ? "family-ai-workspace--open" : ""} ${drawerOpen ? "family-ai-workspace--drawer-open" : ""}`}>
+      <button className="family-ai-drawer-backdrop" type="button" aria-label={t("ai.family.backHistory")} onClick={() => setDrawerOpen(false)} />
+
+      <aside className="family-ai-history"><header><strong>{t("ai.family.conversations")}</strong><button type="button" onClick={newChat} aria-label={ac.newChat}>＋ {t("ai.family.new")}</button></header><label className="family-ai-history-search"><span aria-hidden="true">⌕</span><input value={historySearch} onChange={(event) => setHistorySearch(event.target.value)} placeholder={hc.search} aria-label={hc.search}/></label><div className="family-ai-tabs"><button className={view === "active" ? "is-active" : ""} onClick={() => setView("active")}><span>{t("ai.family.active")}</span><small>{historyCounts.active}</small></button><button className={view === "archived" ? "is-active" : ""} onClick={() => setView("archived")}><span>{t("ai.family.archived")}</span><small>{historyCounts.archived}</small></button></div><div className="family-ai-history__list">{visibleChats.map((chat) => <div className={`family-ai-history__item ${activeId === chat.id ? "is-active" : ""}`} key={chat.id}><button type="button" onClick={() => { setActiveId(chat.id); setHistoryOpen(true); }}><strong>{chat.title}</strong><time>{new Intl.DateTimeFormat(lang, { dateStyle: "medium" }).format(new Date(chat.updatedAt))}</time></button><button type="button" onClick={() => setMenuId(menuId === chat.id ? null : chat.id)} aria-label={t("ai.family.chatMenu")}>⋯</button>{menuId === chat.id && <div className="family-ai-chat-menu"><button onClick={() => rename(chat)}>{t("ai.family.rename")}</button><button onClick={() => archive(chat)}>{chat.archived ? t("ai.family.restore") : t("ai.family.archive")}</button><button className="is-danger" onClick={() => remove(chat)}>{t("ai.family.delete")}</button></div>}</div>)}{!visibleChats.length && <div className="family-ai-history__empty">{hc.empty}</div>}</div></aside>
+      <main className="family-ai-chat"><header className="family-ai-chat__header"><button className="family-ai-back" type="button" onClick={() => setDrawerOpen((value) => !value)} aria-label={t("ai.family.conversations")}>{dir === "rtl" ? "›" : "‹"}</button><span className="family-ai-mark" aria-hidden="true">✦</span><div><strong>NeuroBridge AI</strong><span>{t("ai.family.supportiveAssistant")}</span></div><div className="family-ai-header-actions"><button type="button" onClick={() => setDrawerOpen((value) => !value)} aria-label={t("ai.family.conversations")} title={t("ai.family.conversations")}>☰</button><button type="button" onClick={newChat} aria-label={ac.newChat} title={ac.newChat}>＋</button></div></header><div className="family-ai-safety">{t("ai.family.safety")}</div>
+        <div className="family-ai-thread" aria-live="polite" aria-busy={thinking}>
+          {(!active || !active.messages.length) && <div className="family-ai-welcome"><span className={mascotFailed ? "is-fallback" : ""} aria-hidden="true"><img src={neurobridgeAiMascot} alt="" onError={(event) => { event.currentTarget.hidden = true; setMascotFailed(true); }} /></span><h2>{t("ai.family.pageTitle")}</h2><p>{contextualWelcome}</p><div className="family-ai-suggestions">{smartSuggestions.map((suggestion) => <button type="button" key={suggestion.id} onClick={() => {recordSuggestion(suggestion.topic);sendText(suggestion.title[lang])}}><strong>{suggestion.title[lang]}</strong><small>{suggestion.helper[lang]}</small><i aria-hidden="true">›</i></button>)}</div></div>}
+          {active?.messages.map((message) => message.role === "user" ? <div className="family-ai-message family-ai-message--user" key={message.id}><div dir="auto">{message.attachment?<div className="family-ai-attachment-message">{message.attachment.kind==="image"?<img src={message.attachment.url} alt={message.attachment.name}/>:message.attachment.kind==="voice"?<audio src={message.attachment.url} controls preload="metadata"/>:<span aria-hidden="true">▤</span>}<strong>{message.attachment.name}</strong><small>{formatLocalSize(message.attachment.size)}</small></div>:message.text}</div></div> : <div className="family-ai-message family-ai-message--assistant" key={message.id}><span className="family-ai-message__avatar" aria-hidden="true">✦</span><article>{message.action&&(message.action.status==="pending"||message.action.status==="confirmed")?<FamilyAiActionCard action={message.action} patient={actionPatient(message.action)} patientName={patientName} copy={xc} onChange={action=>updateAction(message.id,action)} onCancel={()=>cancelAction(message)} onConfirm={()=>void executeAction(message)}/>:<div className="family-ai-response" dir="auto">{responseText(message)}</div>}<div className="family-ai-response-actions"><button onClick={() => copy(message)}>{copiedId === message.id ? t("ai.family.copied") : t("ai.family.copy")}</button><button onClick={() => feedback(message.id, "helpful")} className={message.feedback === "helpful" ? "is-active" : ""} aria-label={t("ai.family.helpful")}>👍</button><button onClick={() => feedback(message.id, "not-helpful")} className={message.feedback === "not-helpful" ? "is-active" : ""} aria-label={t("ai.family.notHelpful")}>👎</button><button onClick={() => speak(message)} aria-label={speakingId === message.id ? t("ai.family.stopReading") : t("ai.family.readAloud")}>{speakingId === message.id ? "■" : "🔊"}</button><button onClick={() => retry(message)}>{t("ai.family.tryAgain")}</button></div>{message.followUpKeys && message.followUpKeys.length > 0 && <div className="family-ai-followups">{message.followUpKeys.map((key) => <button key={key} onClick={() => sendText(t(key))}>{t(key)}</button>)}</div>}</article></div>)}
+          {thinking && <div className="family-ai-message family-ai-message--assistant"><span className="family-ai-message__avatar">✦</span><div className="family-ai-thinking"><span>{t("ai.family.thinking")}</span><i/><i/><i/></div></div>}<div ref={endRef}/>
+        </div>
+        {attachmentError&&<div className="family-ai-error" role="alert">{attachmentError}</div>}{recording&&<div className="family-ai-recording"><span><i/>{ac.recording} <b>{Math.floor(recordSeconds/60)}:{String(recordSeconds%60).padStart(2,"0")}</b></span><button type="button" onClick={stopRecording}>{ac.stop}</button></div>}{draft&&<div className="family-ai-draft">{draft.kind==="image"?<img src={draft.url} alt=""/>:draft.kind==="voice"?<audio src={draft.url} controls preload="metadata"/>:<span aria-hidden="true">▤</span>}<div><strong>{draft.name}</strong><small>{formatLocalSize(draft.size)}</small></div><button type="button" onClick={clearDraft}>{ac.remove}</button><button type="button" className="is-send" onClick={sendAttachment}>{ac.send}</button></div>}<form className="family-ai-composer" onSubmit={submit}><div className="family-ai-attachment-wrap" ref={attachmentWrapRef}><button type="button" className="family-ai-add" aria-label={ac.add} aria-expanded={attachmentOpen} onClick={()=>setAttachmentOpen(value=>!value)}>＋</button>{attachmentOpen&&<div className="family-ai-attachment-menu"><button type="button" onClick={()=>photoInputRef.current?.click()}>{ac.photo}</button><button type="button" onClick={()=>fileInputRef.current?.click()}>{ac.file}</button><button type="button" onClick={()=>void startRecording()}>{ac.voice}</button><button type="button" onClick={()=>setAttachmentOpen(false)}>{ac.close}</button></div>}<input ref={photoInputRef} type="file" accept="image/*" onChange={event=>{chooseAttachment("image",event.target.files?.[0]);event.currentTarget.value=""}}/><input ref={fileInputRef} type="file" accept=".pdf,.txt,.doc,.docx,application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={event=>{chooseAttachment("file",event.target.files?.[0]);event.currentTarget.value=""}}/></div><textarea rows={1} maxLength={2000} value={text} onChange={(event) => setText(event.target.value)} onKeyDown={keyboardSend} placeholder={t("ai.family.placeholder")} aria-label={t("ai.family.placeholder")} /><button className="btn btn--gold" disabled={thinking || (!text.trim()&&!draft)}>{t("ai.send")}</button></form>
+      </main>
     </section>
-  );
+  </div>;
+}
+
+function FamilyAiActionCard({action,patient,patientName,copy,onChange,onCancel,onConfirm}:{action:FamilyAiAction;patient?:PatientProfile;patientName:(value?:PatientProfile|null)=>string;copy:Record<string,string>;onChange:(action:FamilyAiAction)=>void;onCancel:()=>void;onConfirm:()=>void}){
+ const name=patientName(patient),isAvatar=action.type==="change_patient_avatar",isMemory=action.type==="add_memory",isEnc=action.type==="create_encouragement",isProvider=action.type==="open_provider_chat";
+ const title=isAvatar?copy.avatar:isMemory?copy.memory:isEnc?copy.encouragement:fill(copy.provider,action.type==="open_provider_chat"?action.providerName||"":"");
+ const confirm=isAvatar?copy.setPhoto:isMemory?copy.addMemory:isEnc?copy.send:copy.open;
+ return <section className="family-ai-action-card"><header><span aria-hidden="true">✦</span><div><strong>{title}</strong>{patient&&<small>{name}</small>}</div></header>{(isAvatar||isMemory)&&action.attachmentUrl&&<img src={action.attachmentUrl} alt=""/>}{isAvatar&&<div className="family-ai-action-patient"><PatientAvatar patient={patient||null}/><p>{fill(copy.avatarAsk,name)}</p></div>}{isMemory&&<><p>{fill(copy.memoryAsk,name)}</p><label>{copy.memory}<input value={action.title} placeholder={copy.newMemory} onChange={event=>onChange({...action,title:event.target.value})}/></label></>}{isEnc&&<textarea rows={3} value={action.text||copy.encDefault} onChange={event=>onChange({...action,text:event.target.value})}/>} {isProvider&&<textarea rows={3} value={action.draftMessage||""} onChange={event=>onChange({...action,draftMessage:event.target.value})}/>}<footer><button type="button" disabled={action.status==="confirmed"} onClick={onCancel}>{copy.cancel}</button><button type="button" disabled={action.status==="confirmed"} className="is-confirm" onClick={onConfirm}>{confirm}</button></footer></section>
+}
+
+function LegacyAICompanion() {
+  const { roles } = useAuth(); const { t } = useI18n(); const [messages, setMessages] = useState<AIChatMessage[]>([]); const [text, setText] = useState(""); const [loading, setLoading] = useState(true); const [sending, setSending] = useState(false); const [error, setError] = useState("");
+  const welcome = roles.includes("doctor") || roles.includes("therapist") ? t("ai.careWelcome") : t("ai.patientWelcome");
+  useEffect(() => { let active = true; getAIChatHistory().then((result) => active && setMessages(result.messages)).catch(() => active && setError(t("ai.retry"))).finally(() => active && setLoading(false)); return () => { active = false; }; }, [t]);
+  const submit = async (event: FormEvent) => { event.preventDefault(); const value = text.trim(); if (!value || sending) return; setSending(true); try { const saved = await sendAIChatMessage(value); setMessages((items) => [...items, saved]); setText(""); } catch { setError(t("ai.retry")); } finally { setSending(false); } };
+  return <section className="ai-companion"><header className="ai-companion__header"><span className="ai-companion__mark">✦</span><div><span className="eyebrow">{t("ai.eyebrow")}</span><h1>{t("ai.title")}</h1></div></header><div className="ai-companion__thread"><div className="ai-bubble ai-bubble--assistant"><p>{welcome}</p></div>{!loading && messages.map((item) => <div className="ai-exchange" key={item.id}><div className="ai-bubble ai-bubble--user"><p>{item.message}</p></div><div className="ai-bubble ai-bubble--assistant"><p>{item.assistant_response}</p></div></div>)}</div>{error && <p className="ai-companion__error">{error}</p>}<form className="ai-composer" onSubmit={submit}><textarea value={text} onChange={(event) => setText(event.target.value)} /><button className="btn btn--gold">{t("ai.send")}</button></form></section>;
 }
