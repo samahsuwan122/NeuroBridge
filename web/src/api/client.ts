@@ -67,6 +67,6 @@ export async function api<T>(path: string, opts: RequestInit = {}): Promise<T> {
 // Resolve a possibly-relative media URL (e.g. "/static/...") against the API origin.
 export function resolveMediaUrl(url?: string | null): string | null {
   if (!url) return null;
-  if (/^https?:\/\//i.test(url)) return url;
+  if (/^(?:https?:\/\/|blob:|data:)/i.test(url)) return url;
   return `${API_ORIGIN}${url.startsWith("/") ? "" : "/"}${url}`;
 }

@@ -14,6 +14,7 @@ const CLINICIAN_NAV: NavItem[] = [
   { to: "/appointments", key: "nav.appointments", icon: "🗓", end: false },
   { to: "/reports", key: "nav.reports", icon: "📄", end: false },
   { to: "/review-queue", key: "nav.reviewQueue", icon: "✦", end: false },
+  { to: "/ai-companion", key: "nav.aiCompanion", icon: "✦", end: false },
 ];
 
 const ADMIN_NAV: NavItem[] = [

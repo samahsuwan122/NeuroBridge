@@ -239,7 +239,6 @@ export function PatientReportPage() {
       {/* Deterministic, non-diagnostic summary */}
       <div className="report-summary">
         <p>{summary}</p>
-        <span className="report-summary__note">{t("pr.summaryNote")}</span>
       </div>
 
       {/* Performance summary */}

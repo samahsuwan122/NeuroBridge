@@ -360,7 +360,6 @@ export function DoctorAppointmentsPage() {
                 <ErrorState message={threadError} />
               ) : thread ? (
                 <ChatThread
-                  showSafety
                   originalId={thread.id}
                   originalSenderId={thread.sender_user_id}
                   originalSenderName={thread.sender_name}

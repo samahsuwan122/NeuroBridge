@@ -13,17 +13,26 @@ import { PatientReportPage } from "./pages/PatientReportPage";
 import { ReviewQueuePage } from "./pages/ReviewQueuePage";
 import { FamilyDashboardPage } from "./pages/FamilyDashboardPage";
 import { FamilyEncouragementPage } from "./pages/FamilyEncouragementPage";
+import { FamilyMemoriesPage } from "./pages/FamilyMemoriesPage";
+import { FamilySettingsPage } from "./pages/FamilySettingsPage";
 import { FamilyAppointmentsPage } from "./pages/FamilyAppointmentsPage";
+import { FamilyBillingPage } from "./pages/FamilyBillingPage";
 import { FamilyMessagesPage } from "./pages/FamilyMessagesPage";
 import { FamilyReportsPage } from "./pages/FamilyReportsPage";
 import { ProviderDetailPage } from "./pages/ProviderDetailPage";
 import { AdminAccessRequestsPage } from "./pages/AdminAccessRequestsPage";
 import { RoleAccessPage } from "./pages/RoleAccessPage";
+import { AICompanionPage } from "./pages/AICompanionPage";
+import { useI18n } from "./i18n/useI18n";
+import { FamilyMemberProvider } from "./familyMembers";
+import { CurrentFamilyPatientProvider } from "./currentFamilyPatient";
+import { FamilyAiPreferencesProvider } from "./familyAiPreferences";
 
 function AppRoutes() {
   const { user, isClinician, isFamily, isAdmin, loading } = useAuth();
+  const { t } = useI18n();
 
-  if (loading) return <Spinner label="Restoring your session…" />;
+  if (loading) return <Spinner label={t("common.loading")} />;
 
   const supported = isClinician || isFamily || isAdmin;
 
@@ -56,6 +65,7 @@ function AppRoutes() {
           {isClinician && (
             <Route path="/review-queue" element={<ReviewQueuePage />} />
           )}
+          {isClinician && <Route path="/ai-companion" element={<AICompanionPage />} />}
           {isAdmin && (
             <Route
               path="/admin/access-requests"
@@ -84,13 +94,17 @@ function AppRoutes() {
         <Route element={<FamilyLayout />}>
           <Route path="/" element={<FamilyDashboardPage />} />
           <Route path="/encouragement" element={<FamilyEncouragementPage />} />
+          <Route path="/memories" element={<FamilyMemoriesPage />} />
           <Route path="/appointments" element={<FamilyAppointmentsPage />} />
+          <Route path="/billing" element={<FamilyBillingPage />} />
           <Route
             path="/providers/:providerId"
             element={<ProviderDetailPage />}
           />
           <Route path="/messages" element={<FamilyMessagesPage />} />
           <Route path="/reports" element={<FamilyReportsPage />} />
+          <Route path="/ai-companion" element={<AICompanionPage />} />
+          <Route path="/settings" element={<FamilySettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       ) : user ? (
@@ -107,9 +121,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <FamilyMemberProvider>
+        <CurrentFamilyPatientProvider><FamilyAiPreferencesProvider><BrowserRouter><AppRoutes /></BrowserRouter></FamilyAiPreferencesProvider></CurrentFamilyPatientProvider>
+      </FamilyMemberProvider>
     </AuthProvider>
   );
 }

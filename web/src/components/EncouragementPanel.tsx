@@ -3,6 +3,7 @@ import { api, ApiError } from "../api/client";
 import { formatDateTime } from "../lib";
 import { EmptyState, Spinner } from "./ui";
 import type { Encouragement, EncouragementListResponse } from "../types";
+import { useI18n } from "../i18n/useI18n";
 
 const MAX_LEN = 300;
 
@@ -12,6 +13,7 @@ const MAX_LEN = 300;
  * Family support only — never medical advice.
  */
 export function EncouragementPanel({ patientId }: { patientId: string }) {
+  const { t } = useI18n();
   const [items, setItems] = useState<Encouragement[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -44,7 +46,7 @@ export function EncouragementPanel({ patientId }: { patientId: string }) {
     setSuccess(null);
     const text = message.trim();
     if (!text) {
-      setError("Please write a short message.");
+      setError(t("family.writeShortMessage"));
       return;
     }
     setSending(true);
@@ -55,14 +57,14 @@ export function EncouragementPanel({ patientId }: { patientId: string }) {
       });
       setItems((prev) => [created, ...prev]);
       setMessage("");
-      setSuccess("Encouragement sent.");
+      setSuccess(t("family.encouragementSent"));
     } catch (err) {
       setError(
         err instanceof ApiError
           ? err.status === 403
-            ? "This account isn't linked to this patient, so it can't send encouragement."
+            ? t("family.notLinkedSend")
             : err.message
-          : "Could not send the message. Please try again.",
+          : t("family.sendFailed"),
       );
     } finally {
       setSending(false);
@@ -71,12 +73,6 @@ export function EncouragementPanel({ patientId }: { patientId: string }) {
 
   return (
     <div className="encourage">
-      <p className="mform__note">
-        A supportive message for <strong>family encouragement</strong> and
-        emotional support — <strong>not medical advice</strong>. For medical
-        concerns, please contact the care team.
-      </p>
-
       <form className="encourage__form" onSubmit={onSubmit}>
         <textarea
           className="encourage__input"
@@ -84,11 +80,11 @@ export function EncouragementPanel({ patientId }: { patientId: string }) {
           maxLength={MAX_LEN}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Write a short, supportive message…"
+          placeholder={t("family.writeEncouragement")}
         />
         <div className="encourage__row">
           <button className="btn btn--gold" type="submit" disabled={sending}>
-            {sending ? "Sending…" : "Send encouragement"}
+            {sending ? t("family.sending") : t("family.sendEncouragement")}
           </button>
           <span className="encourage__count">
             {message.trim().length}/{MAX_LEN}
@@ -100,9 +96,9 @@ export function EncouragementPanel({ patientId }: { patientId: string }) {
 
       <div className="encourage__list">
         {loading ? (
-          <Spinner label="Loading messages…" />
+          <Spinner label={t("family.loading")} />
         ) : items.length === 0 ? (
-          <EmptyState message="No encouragement messages yet." />
+          <EmptyState message={t("family.noEncouragement")} />
         ) : (
           <ul className="activity">
             {items.map((m) => (

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, ApiError, resolveMediaUrl } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { useI18n } from "../i18n/useI18n";
 import { ChatThread } from "../components/ChatThread";
 import {
   Badge,
@@ -24,11 +25,6 @@ import type {
   SlotListResponse,
 } from "../types";
 
-const modeLabel = (mode: string) => (mode === "online" ? "Online" : "In-person");
-const roleLabel = (role: string) =>
-  role === "therapist" ? "Therapist" : "Doctor";
-const whereLabel = (mode: string, location?: string | null) =>
-  mode === "online" ? "Online session" : location || "In-person";
 
 const INQUIRY_MAX = 500;
 
@@ -64,6 +60,10 @@ function groupByDate(slots: AvailabilitySlot[]) {
  * Coordination only — not emergency care.
  */
 export function ProviderDetailPage() {
+  const { t } = useI18n();
+  const modeLabel = (mode: string) => mode === "online" ? t("family.online") : t("family.inPerson");
+  const roleLabel = (role: string) => role === "therapist" ? t("family.therapist") : t("family.doctor");
+  const whereLabel = (mode: string, location?: string | null) => mode === "online" ? t("family.online") : location || t("family.inPerson");
   const { providerId = "" } = useParams();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -120,7 +120,7 @@ export function ProviderDetailPage() {
       setPatient(pickLinkedPatient(pats.patients, user?.id));
       setThreads(msgs.messages);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load provider.");
+      setError(err instanceof Error ? err.message : t("family.providerLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -144,7 +144,7 @@ export function ProviderDetailPage() {
     if (!patient || !provider) return;
     const text = newBody.trim();
     if (!text) {
-      setCreateError("Please enter a message.");
+      setCreateError(t("family.writeShortMessage"));
       return;
     }
     setCreating(true);
@@ -166,9 +166,9 @@ export function ProviderDetailPage() {
       setCreateError(
         err instanceof ApiError
           ? err.status === 403
-            ? "This account isn't linked to this patient, so it can't send an inquiry."
+            ? t("family.notLinkedSend")
             : err.message
-          : "Could not send the inquiry. Please try again.",
+          : t("family.sendFailed"),
       );
     } finally {
       setCreating(false);
@@ -192,7 +192,7 @@ export function ProviderDetailPage() {
       );
     } catch (err) {
       setThreadError(
-        err instanceof Error ? err.message : "Could not open the thread.",
+        err instanceof Error ? err.message : t("appt.couldNotOpenThread"),
       );
     } finally {
       setThreadLoading(false);
@@ -221,9 +221,9 @@ export function ProviderDetailPage() {
     );
   };
 
-  if (loading) return <Spinner label="Loading provider…" />;
+  if (loading) return <Spinner label={t("family.providerLoad")} />;
   if (error) return <ErrorState message={error} onRetry={load} />;
-  if (!provider) return <EmptyState message="Provider not found." />;
+  if (!provider) return <EmptyState message={t("family.providerNotFound")} />;
 
   const photo = resolveMediaUrl(provider.photo_url);
   const place = [provider.city, provider.governorate].filter(Boolean).join(", ");
@@ -258,18 +258,18 @@ export function ProviderDetailPage() {
           <div className="prov-hero__facts">
             {place && (
               <span>
-                <strong>Location</strong> {place}
+                <strong>{t("family.location")}</strong> {place}
                 {provider.location ? ` · ${provider.location}` : ""}
               </span>
             )}
             {provider.experience_label && (
               <span>
-                <strong>Experience</strong> {provider.experience_label}
+                <strong>{t("family.experience")}</strong> {provider.experience_label}
               </span>
             )}
             {provider.rating_average != null && (
               <span>
-                <strong>Rating (demo)</strong>{" "}
+                <strong>{t("family.ratingDemo")}</strong>{" "}
                 {provider.rating_average.toFixed(1)} ★ · {provider.rating_count}{" "}
                 demo ratings
               </span>
@@ -277,9 +277,9 @@ export function ProviderDetailPage() {
           </div>
           <div className="prov-hero__modes">
             {provider.in_person_available && (
-              <Badge tone="live">In-person</Badge>
+              <Badge tone="live">{t("family.inPerson")}</Badge>
             )}
-            {provider.online_available && <Badge tone="gold">Online</Badge>}
+            {provider.online_available && <Badge tone="gold">{t("family.online")}</Badge>}
           </div>
           <div className="prov-hero__cta">
             <Link className="btn btn--gold" to="/appointments">
@@ -294,57 +294,49 @@ export function ProviderDetailPage() {
 
       {/* Contact (demo) */}
       <Card>
-        <SectionHeader eyebrow="Contact (demo)" title="Provider contact" />
+        <SectionHeader eyebrow={t("family.contactDemo")} title={t("family.providerContact")} />
         <div className="care-grid">
           <div className="care-row">
-            <span className="care-row__label">Demo contact</span>
+            <span className="care-row__label">{t("family.demoContact")}</span>
             <span className="care-row__value">
               {provider.phone_number_demo ?? "—"}
             </span>
           </div>
           <div className="care-row">
-            <span className="care-row__label">Clinic</span>
+            <span className="care-row__label">{t("family.clinic")}</span>
             <span className="care-row__value">
               {provider.clinic_name ?? "—"}
             </span>
           </div>
           <div className="care-row">
-            <span className="care-row__label">City / governorate</span>
+            <span className="care-row__label">{t("family.cityGovernorate")}</span>
             <span className="care-row__value">{place || "—"}</span>
           </div>
           <div className="care-row">
-            <span className="care-row__label">Location</span>
+            <span className="care-row__label">{t("family.location")}</span>
             <span className="care-row__value">{provider.location ?? "—"}</span>
           </div>
           <div className="care-row">
-            <span className="care-row__label">Visit modes</span>
+            <span className="care-row__label">{t("family.visitModes")}</span>
             <span className="care-row__value">
               {provider.in_person_available && (
-                <Badge tone="live">In-person</Badge>
+                <Badge tone="live">{t("family.inPerson")}</Badge>
               )}{" "}
-              {provider.online_available && <Badge tone="gold">Online</Badge>}
+              {provider.online_available && <Badge tone="gold">{t("family.online")}</Badge>}
               {!provider.in_person_available &&
                 !provider.online_available &&
                 "—"}
             </span>
           </div>
         </div>
-        <p className="muted-sub" style={{ marginTop: "0.8rem", marginBottom: 0 }}>
-          Demo contact only — not emergency care. For urgent concerns, contact
-          local emergency services.
-        </p>
       </Card>
 
       {/* Send inquiry / chat */}
       <Card id="inquiry" className="inquiry-card">
         <div ref={inquiryRef} />
-        <SectionHeader eyebrow="Message provider" title="Send inquiry" />
-        <p className="muted-sub" style={{ marginTop: 0 }}>
-          Non-urgent care coordination message only. Not emergency care. For
-          urgent concerns, contact local emergency services.
-        </p>
+        <SectionHeader eyebrow={t("family.messageProvider")} title={t("family.sendInquiry")} />
         {!patient ? (
-          <EmptyState message="No linked patient yet. Once a patient is linked to your account, you can send an inquiry here." />
+          <EmptyState message={t("family.noLinkedInquiry")} />
         ) : (
           <form className="mform" onSubmit={createInquiry}>
             <label className="mform__full">
@@ -357,21 +349,21 @@ export function ProviderDetailPage() {
                   setNewBody(e.target.value);
                   setCreatedOk(false);
                 }}
-                placeholder="e.g. Could we confirm the next available in-person time?"
+                placeholder={t("family.inquiryPlaceholder")}
               />
             </label>
             <div className="mform__hint">
               {newBody.length}/{INQUIRY_MAX}
             </div>
             {createError && <div className="mform__error">{createError}</div>}
-            {createdOk && <div className="mform__ok">Inquiry sent.</div>}
+            {createdOk && <div className="mform__ok">{t("family.inquirySent")}</div>}
             <div className="mform__actions">
               <button
                 className="btn btn--gold"
                 type="submit"
                 disabled={creating || !newBody.trim()}
               >
-                {creating ? "Sending…" : "Send inquiry"}
+                {creating ? t("family.sending") : t("family.sendInquiry")}
               </button>
             </div>
           </form>
@@ -379,7 +371,7 @@ export function ProviderDetailPage() {
 
         {threads.length > 0 && (
           <div className="inquiry-recent">
-            <h4>Your conversations with {provider.full_name}</h4>
+            <h4>{t("family.yourConversations", { name: provider.full_name })}</h4>
             <ul className="inquiry-list">
               {threads.map((m) => {
                 const unread = m.unread_reply_count ?? 0;
@@ -419,7 +411,7 @@ export function ProviderDetailPage() {
         {(threadLoading || threadError || openThread) && (
           <div className="chat-card" style={{ marginTop: "1.2rem" }}>
             <div className="chat-card__head">
-              <h4 style={{ margin: 0 }}>Conversation</h4>
+              <h4 style={{ margin: 0 }}>{t("family.conversation")}</h4>
               {openThread && (
                 <button
                   className="btn btn--ghost btn--sm"
@@ -430,12 +422,11 @@ export function ProviderDetailPage() {
               )}
             </div>
             {threadLoading ? (
-              <Spinner label="Opening chat…" />
+              <Spinner label={t("family.openingChat")} />
             ) : threadError ? (
               <ErrorState message={threadError} />
             ) : openThread ? (
               <ChatThread
-                showSafety
                 originalId={openThread.id}
                 originalSenderId={openThread.sender_user_id}
                 originalSenderName={openThread.sender_name}
@@ -454,15 +445,15 @@ export function ProviderDetailPage() {
 
       {provider.bio_short && (
         <Card>
-          <SectionHeader eyebrow="About" title="Focus" />
+          <SectionHeader eyebrow={t("family.about")} title={t("family.focus")} />
           <p>{provider.bio_short}</p>
         </Card>
       )}
 
       <Card>
-        <SectionHeader eyebrow="Availability" title="Available times" />
+        <SectionHeader eyebrow={t("family.available")} title={t("family.availableTimes")} />
         {slots.length === 0 ? (
-          <EmptyState message="No available slots right now." />
+          <EmptyState message={t("family.noSlots")} />
         ) : (
           <div className="slot-days">
             {groupByDate(slots).map((group) => (
@@ -502,17 +493,6 @@ export function ProviderDetailPage() {
         </p>
       </Card>
 
-      <div className="safety">
-        <span className="safety__mark" aria-hidden="true">
-          ⚕
-        </span>
-        <p>
-          <strong>Appointment requests are for care coordination only</strong>{" "}
-          and are <strong>not emergency care</strong>. For medical concerns,
-          contact the care team; for urgent concerns, contact local emergency
-          services.
-        </p>
-      </div>
     </div>
   );
 }

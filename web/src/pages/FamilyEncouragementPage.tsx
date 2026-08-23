@@ -1,74 +1,38 @@
-import { useEffect, useState } from "react";
-import { api } from "../api/client";
-import { useAuth } from "../auth/AuthContext";
-import { EncouragementPanel } from "../components/EncouragementPanel";
-import {
-  Card,
-  EmptyState,
-  ErrorState,
-  FamilySafetyNote,
-  Spinner,
-} from "../components/ui";
-import { patientName, pickLinkedPatient } from "../lib";
-import type { PatientListResponse, PatientProfile } from "../types";
+import { MultimediaEncouragementComposer } from "../components/MultimediaEncouragementComposer";
+import { useI18n } from "../i18n/useI18n";
+import familyEncouragementHero from "../assets/family-encouragement-hero.png";
 
-/**
- * Dedicated Family Encouragement page. Hosts the full send-form + message
- * history for the family member's linked patient. Family support only — not
- * medical advice.
- */
 export function FamilyEncouragementPage() {
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [patient, setPatient] = useState<PatientProfile | null>(null);
-
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Backend scopes /patients to the family member's linked patient(s); pick
-      // the profile this user is actually linked to for create actions.
-      const p = await api<PatientListResponse>("/patients?limit=50");
-      setPatient(pickLinkedPatient(p.patients, user?.id));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void load();
-  }, []);
+  const { t } = useI18n();
 
   return (
-    <div className="page">
-      <div className="page__head">
-        <div>
-          <span className="eyebrow">Family encouragement</span>
-          <h1>Family Encouragement</h1>
-          <p className="page__sub">
-            Send supportive messages to{" "}
-            {patient ? patientName(patient.user) : "your family member"} —{" "}
-            supportive messages only, not medical advice.
-          </p>
+    <div className="page page--wide encouragement-page">
+      <section className="enc-hero" aria-labelledby="encouragement-page-title">
+        <div className="enc-hero__content">
+          <span className="eyebrow">{t("encourage.eyebrow")}</span>
+          <h1 id="encouragement-page-title">{t("encourage.title")}</h1>
+          <p className="enc-hero__phrase">{t("encourage.phrase")}</p>
+          <p className="enc-hero__description">{t("encourage.description")}</p>
+          <a className="enc-hero__cta" href="#encouragement-composer">
+            <span aria-hidden="true">＋</span>
+            {t("encourage.heroCta")}
+          </a>
         </div>
-      </div>
+        <div className="enc-hero__visual" aria-hidden="true">
+          <div className="enc-hero__photo-slot">
+            <img src={familyEncouragementHero} alt="" />
+          </div>
+          <span className="enc-hero__heart">♡</span>
+          <div className="enc-hero__visual-copy">
+            <strong>{t("encourage.visualTitle")}</strong>
+            <small>{t("encourage.visualHint")}</small>
+          </div>
+        </div>
+        <span className="enc-hero__orb enc-hero__orb--one" aria-hidden="true" />
+        <span className="enc-hero__orb enc-hero__orb--two" aria-hidden="true" />
+      </section>
 
-      {loading ? (
-        <Spinner label="Loading…" />
-      ) : error ? (
-        <ErrorState message={error} onRetry={load} />
-      ) : !patient ? (
-        <EmptyState message="No linked patient yet. Once a patient is linked to your account, you can send encouragement here." />
-      ) : (
-        <Card>
-          <EncouragementPanel patientId={patient.id} />
-        </Card>
-      )}
-
-      <FamilySafetyNote />
+      <MultimediaEncouragementComposer />
     </div>
   );
 }

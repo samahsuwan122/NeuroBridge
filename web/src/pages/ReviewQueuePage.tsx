@@ -221,8 +221,6 @@ export function ReviewQueuePage() {
         </div>
       </div>
 
-      <p className="queue-note">{t("queue.note")}</p>
-
       {queue.length === 0 ? (
         <EmptyState message={t("queue.empty")} />
       ) : (
