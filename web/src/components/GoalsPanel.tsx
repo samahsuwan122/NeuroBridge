@@ -63,6 +63,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [form, setForm] = useState<GoalFormState>(emptyForm);
   const [draftValues, setDraftValues] = useState<Record<string, string>>({});
+  const [createOpen, setCreateOpen] = useState(false);
 
   const sortedGoals = useMemo(
     () =>
@@ -77,6 +78,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
     if (status === "paused") return t("goals.status.paused");
     return t("goals.status.active");
   };
+  const targetTypeLabel = (value: string) => value === "sessions" ? t("goals.targetSessions") : value;
 
   const loadGoals = async () => {
     setLoading(true);
@@ -183,7 +185,13 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
       {message && <div className="success-banner">{message}</div>}
       {error && <ErrorState message={error} onRetry={loadGoals} />}
 
-      <form className="goals-form" onSubmit={handleCreate}>
+      <div className="goals-panel__create-toggle">
+        <button className="btn btn--gold btn--sm" type="button" onClick={() => setCreateOpen((open) => !open)} aria-expanded={createOpen}>
+          {createOpen ? t("common.cancel") : t("goals.create")}
+        </button>
+      </div>
+
+      {createOpen && <form className="goals-form" onSubmit={handleCreate}>
         <div className="form-grid">
           <label>
             <span>{t("goals.goalTitle")}</span>
@@ -257,12 +265,12 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
         <button className="btn" type="submit" disabled={saving}>
           {saving ? t("goals.saving") : t("goals.save")}
         </button>
-      </form>
+      </form>}
 
       {loading ? (
         <Spinner />
       ) : sortedGoals.length === 0 ? (
-        <EmptyState message={t("goals.noGoals")} />
+        <EmptyState message={t("goals.noGoals")} icon="goal" />
       ) : (
         <div className="goals-list">
           {sortedGoals.map((goal) => {
@@ -292,7 +300,7 @@ export function GoalsPanel({ patientProfileId }: GoalsPanelProps) {
 
                 <div className="goal-meta">
                   <span>
-                    {t("goals.targetType")}: {goal.target_type}
+                    {t("goals.targetType")}: {targetTypeLabel(goal.target_type)}
                   </span>
                   <span>
                     {t("goals.value")}: {goal.current_value} / {goal.target_value}

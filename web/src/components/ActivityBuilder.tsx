@@ -252,7 +252,7 @@ export function ActivityBuilder({
 
       <div className="activity-list">
         {activities.length === 0 ? (
-          <EmptyState message={t("ab.noneAssigned")} />
+          <EmptyState message={t("ab.noneAssigned")} icon="activities" />
         ) : (
           <ul className="activity-list__items">
             {activities.map((a) => (

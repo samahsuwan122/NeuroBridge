@@ -138,9 +138,10 @@ export function ErrorState({
   );
 }
 
-export function EmptyState({ message }: { message: string }) {
+export function EmptyState({ message, icon }: { message: string; icon?: "session" | "performance" | "activities" | "goal" | "care" }) {
   return (
     <div className="state state--empty">
+      {icon && <span className={`workspace-empty-icon workspace-empty-icon--${icon}`} aria-hidden="true" />}
       <p>{message}</p>
     </div>
   );
