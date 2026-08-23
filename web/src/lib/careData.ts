@@ -41,6 +41,7 @@ export interface PatientAggregate {
 export interface CareData {
   patients: PatientAggregate[];
   gameName: (id: string) => string;
+  availableActivities: number;
 }
 
 const RECENT_DAYS = 14;
@@ -140,7 +141,7 @@ export async function loadCareData(): Promise<CareData> {
     };
   });
 
-  return { patients, gameName };
+  return { patients, gameName, availableActivities: g.games.length };
 }
 
 function groupBy<T>(items: T[], key: (x: T) => string): Map<string, T[]> {

@@ -5,6 +5,7 @@ import { initials } from "../lib";
 import { useI18n } from "../i18n/useI18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import type { TranslationKey } from "../i18n/translations";
+import { useFamilyPreferences } from "../familyPreferences";
 
 type NavItem = { to: string; key: TranslationKey; icon: string; end: boolean };
 
@@ -22,6 +23,7 @@ const ADMIN_NAV: NavItem[] = [
 ];
 
 export function Layout() {
+  useFamilyPreferences();
   const { user, roles, isClinician, isAdmin, logout } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -49,8 +51,8 @@ export function Layout() {
         : t("role.clinician");
 
   return (
-    <div className="shell">
-      <aside className={`sidebar ${open ? "sidebar--open" : ""}`}>
+    <div className={`shell provider-shell ${isClinician ? "provider-shell--clinician" : "provider-shell--admin"}`}>
+      <aside className={`sidebar provider-sidebar ${open ? "sidebar--open" : ""}`}>
         <div className="sidebar__brand">
           <span
             className={`brand-mark brand-mark--logo ${logoFailed ? "brand-mark--fallback" : ""}`}
@@ -75,8 +77,8 @@ export function Layout() {
           </div>
         </div>
 
-        <nav className="sidebar__nav" aria-label="Primary">
-          <span className="sidebar__group">{t("app.subtitle")}</span>
+        <nav className="sidebar__nav" aria-label={t("provider.primaryNavigation")}>
+          <span className="sidebar__group">{isClinician ? t("provider.portal") : t("app.subtitle")}</span>
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -97,7 +99,7 @@ export function Layout() {
       </aside>
 
       <div className="main">
-        <header className="topbar">
+        <header className="topbar provider-topbar">
           <button
             className="topbar__burger"
             aria-label={t("nav.toggle")}
@@ -107,14 +109,14 @@ export function Layout() {
           </button>
           <div className="topbar__spacer" />
           <LanguageSwitcher />
-          <div className="topbar__user">
-            <div className="topbar__meta">
-              <strong>{user?.full_name ?? t("role.clinician")}</strong>
-              <span>{clinicianRole}</span>
-            </div>
-            <span className="avatar" aria-hidden="true">
+          <div className="topbar__user provider-identity">
+            <span className="avatar provider-identity__avatar" aria-hidden="true">
               {initials(user?.full_name)}
             </span>
+            <div className="topbar__meta">
+              <strong>{user?.full_name ?? t("role.clinician")}</strong>
+              <span>{isClinician ? `${clinicianRole} · ${t("provider.careProvider")}` : clinicianRole}</span>
+            </div>
             <button className="btn btn--ghost btn--sm" onClick={handleLogout}>
               {t("action.logout")}
             </button>

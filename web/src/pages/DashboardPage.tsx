@@ -1,200 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import {
-  Card,
-  EmptyState,
-  ErrorState,
-  SectionHeader,
-  Spinner,
-  StatCard,
-} from "../components/ui";
-import { formatDateTime, patientName, scorePercent } from "../lib";
+import { ErrorState, Spinner } from "../components/ui";
+import { loadCareData, reviewStatus, type CareData } from "../lib/careData";
+import { formatDateTime, scorePercent } from "../lib";
 import { useI18n } from "../i18n/useI18n";
-import type {
-  GameDefinition,
-  GameListResponse,
-  GameResult,
-  GameResultListResponse,
-  PatientListResponse,
-  PatientProfile,
-} from "../types";
 
 export function DashboardPage() {
   const { user } = useAuth();
   const { t } = useI18n();
+  const [data, setData] = useState<CareData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [patients, setPatients] = useState<PatientProfile[]>([]);
-  const [games, setGames] = useState<GameDefinition[]>([]);
-  const [results, setResults] = useState<GameResult[]>([]);
-
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [p, g, r] = await Promise.all([
-        api<PatientListResponse>("/patients?limit=200"),
-        api<GameListResponse>("/games"),
-        api<GameResultListResponse>("/games/results?limit=100"),
-      ]);
-      setPatients(p.patients);
-      setGames(g.games);
-      setResults(r.results);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load dashboard.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void load();
-  }, []);
-
-  const gameName = useMemo(() => {
-    const map = new Map(games.map((g) => [g.id, g.name]));
-    return (id: string) => map.get(id) ?? "Exercise";
-  }, [games]);
-
-  const patientById = useMemo(() => {
-    const map = new Map(patients.map((p) => [p.id, p]));
-    return (id: string) => map.get(id);
-  }, [patients]);
-
-  const completedCount = results.filter((r) => r.completed).length;
-  const completionRate = results.length
-    ? Math.round((completedCount / results.length) * 100)
-    : 0;
-  const recent = [...results]
-    .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
-    .slice(0, 8);
-
+  const load = async () => { setLoading(true); setError(null); try { setData(await loadCareData()); } catch (e) { setError(e instanceof Error ? e.message : t("dash.couldNotLoad")); } finally { setLoading(false); } };
+  useEffect(() => { void load(); }, []);
+  const results = useMemo(() => (data?.patients.flatMap((p) => p.results.map((r) => ({ r, p }))) ?? []).sort((a,b) => +new Date(b.r.created_at) - +new Date(a.r.created_at)), [data]);
+  const appointments = useMemo(() => (data?.patients.flatMap((p) => p.appointments.map((a) => ({ a, p }))) ?? []).filter(({a}) => +new Date(`${a.preferred_date}T${a.preferred_time || "23:59"}`) >= Date.now()).sort((x,y) => x.a.preferred_date.localeCompare(y.a.preferred_date)), [data]);
   if (loading) return <Spinner />;
-  if (error) return <ErrorState message={error} onRetry={load} />;
+  if (error || !data) return <ErrorState message={error ?? t("dash.couldNotLoad")} onRetry={load} />;
+  const sessions = data.patients.reduce((n,p) => n + p.totalSessions, 0);
+  const completed = data.patients.reduce((n,p) => n + p.completedActivities, 0);
+  const reviews = data.patients.reduce((c,p) => { c[reviewStatus(p).status]++; return c; }, { pending: 0, ready: 0, idle: 0 });
+  const metrics = [
+    [t("dash.stat.assignedPatients"), data.patients.length, t("dash.stat.assignedPatientsHint")],
+    [t("dash.stat.recordedSessions"), sessions, t("dash.stat.recordedSessionsHint")],
+    [t("dash.stat.completedActivities"), completed, t("dash.stat.completedActivitiesHint")],
+    [t("dash.stat.availableActivities"), data.availableActivities, t("dash.stat.availableActivitiesHint")],
+  ];
 
-  return (
-    <div className="page">
-      <div className="page__head">
-        <div>
-          <span className="eyebrow">{t("dash.eyebrow")}</span>
-          <h1>
-            {t("dash.welcomeBack", {
-              name: user?.full_name?.split(" ")[0] ?? t("role.doctor"),
-            })}
-          </h1>
-          <p className="page__sub">{t("dash.sub")}</p>
-        </div>
-      </div>
-
-      <section className="welcome-card" aria-label="A note for the care team">
-        <span className="welcome-card__label" dir="rtl" lang="ar">
-          رسالة لفريق الرعاية
-        </span>
-        <blockquote className="welcome-card__quote" dir="rtl" lang="ar">
-          <p className="welcome-card__lead">
-            خلف كل ملاحظة تقدّم هناك إنسان يستحق الصبر، الرعاية، والمتابعة الواعية
-          </p>
-          <span className="welcome-card__cta-ar">هيا بنا لنتابع</span>
-        </blockquote>
-      </section>
-
-      <div className="stat-grid">
-        <StatCard
-          icon="☰"
-          label={t("dash.stat.assignedPatients")}
-          value={patients.length}
-          hint={t("dash.stat.assignedPatientsHint")}
-        />
-        <StatCard
-          icon="✦"
-          label={t("dash.stat.recordedSessions")}
-          value={results.length}
-          hint={t("dash.stat.recordedSessionsHint")}
-        />
-        <StatCard
-          icon="✓"
-          label={t("dash.stat.completionRate")}
-          value={`${completionRate}%`}
-          hint={t("common.acrossSessions")}
-        />
-        <StatCard
-          icon="◆"
-          label={t("dash.stat.exercisesAvailable")}
-          value={games.length}
-          hint={t("dash.stat.exercisesAvailableHint")}
-        />
-      </div>
-
-      <div className="grid-2">
-        <Card>
-          <SectionHeader
-            eyebrow={t("dash.recentActivity")}
-            title={t("dash.latestSessions")}
-            action={<Link className="link" to="/patients">{t("dash.allPatients")}</Link>}
-          />
-          {recent.length === 0 ? (
-            <EmptyState message={t("dash.noSessions")} />
-          ) : (
-            <ul className="activity">
-              {recent.map((r) => {
-                const p = patientById(r.patient_profile_id);
-                const pct = scorePercent(r);
-                return (
-                  <li className="activity__row" key={r.id}>
-                    <div className="activity__main">
-                      <strong>{gameName(r.game_definition_id)}</strong>
-                      <span>
-                        {p ? (
-                          <Link className="link" to={`/patients/${p.id}`}>
-                            {patientName(p.user)}
-                          </Link>
-                        ) : (
-                          t("common.patient")
-                        )}
-                        {" · "}
-                        {formatDateTime(r.created_at)}
-                      </span>
-                    </div>
-                    <div className="activity__meta">
-                      {pct != null && <span className="pill">{pct}%</span>}
-                      <span
-                        className={`dotlabel ${r.completed ? "dotlabel--ok" : ""}`}
-                      >
-                        {r.completed ? t("common.completed") : t("common.inProgress")}
-                      </span>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </Card>
-
-        <Card>
-          <SectionHeader eyebrow={t("dash.yourPatients")} title={t("dash.quickAccess")} />
-          {patients.length === 0 ? (
-            <EmptyState message={t("dash.noPatients")} />
-          ) : (
-            <ul className="minilist">
-              {patients.slice(0, 6).map((p) => (
-                <li key={p.id}>
-                  <Link className="minilist__item" to={`/patients/${p.id}`}>
-                    <span className="avatar avatar--sm" aria-hidden="true">
-                      {patientName(p.user).slice(0, 1)}
-                    </span>
-                    <span>{patientName(p.user)}</span>
-                    <span className="minilist__go" aria-hidden="true">
-                      →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
-      </div>
+  return <div className="page provider-overview">
+    <div className="page__head provider-overview__intro"><div><span className="eyebrow">{t("dash.eyebrow")}</span><h1>{t("dash.welcomeBack", {name:user?.full_name?.split(" ")[0] ?? t("role.doctor")})}</h1><p className="page__sub">{t("dash.sub")}</p></div></div>
+    <section className="provider-hero"><div className="provider-hero__content"><span className="eyebrow">{t("dash.carePerspective")}</span><h2>{t("dash.careTitle")}</h2><p>{t("dash.careBody")}</p><Link className="btn btn--primary provider-hero__cta" to="/patients">{t("dash.viewPatients")}</Link></div></section>
+    <section className="provider-kpis">{metrics.map(([label,value,hint]) => <article className="provider-kpi" key={String(label)}><span>{label}</span><strong>{value}</strong><small>{hint}</small></article>)}</section>
+    <div className="provider-workspace">
+      <section className="provider-panel provider-panel--activity"><header><div><span className="eyebrow">{t("dash.recentActivity")}</span><h2>{t("dash.latestSessions")}</h2></div><Link className="link" to="/patients">{t("dash.allPatients")}</Link></header>{results.length===0?<div className="provider-empty"><span className="provider-empty__icon provider-empty__icon--history" aria-hidden="true"/><strong>{t("dash.noSessions")}</strong><p>{t("dash.noSessionsHelp")}</p></div>:<ul className="provider-activity-list">{results.slice(0,6).map(({r,p})=>{const pct=scorePercent(r);return <li key={r.id}><span className="provider-patient-avatar">{p.name.slice(0,1)}</span><div><Link to={`/patients/${p.profile.id}`}>{p.name}</Link><span>{data.gameName(r.game_definition_id)} · {formatDateTime(r.created_at)}</span></div><strong>{pct==null?t("dash.recorded"):`${pct}%`}</strong></li>})}</ul>}</section>
+      <section className="provider-panel provider-panel--followup"><header><div><span className="eyebrow">{t("dash.yourPatients")}</span><h2>{t("dash.followUp")}</h2></div></header>{data.patients.length===0?<div className="provider-empty"><span aria-hidden="true">◎</span><strong>{t("dash.noPatients")}</strong></div>:<ul className="provider-patient-list">{data.patients.slice(0,5).map(p=>{const s=reviewStatus(p);return <li key={p.profile.id}><Link to={`/patients/${p.profile.id}`}><span className="provider-patient-avatar">{p.name.slice(0,1)}</span><span><strong>{p.name}</strong><small>{p.lastActivityAt?formatDateTime(p.lastActivityAt):t("status.noRecentActivity")}</small></span><span className={`provider-status provider-status--${s.tone}`}>{t(s.labelKey)}</span><i aria-hidden="true">→</i></Link></li>})}</ul>}</section>
+      <section className="provider-panel provider-panel--appointments"><header><div><span className="eyebrow">{t("nav.appointments")}</span><h2>{t("dash.upcomingAppointments")}</h2></div><Link className="link" to="/appointments">{t("dash.viewAll")}</Link></header>{appointments.length===0?<div className="provider-empty provider-empty--compact"><span className="provider-empty__icon provider-empty__icon--calendar" aria-hidden="true"/><strong>{t("dash.noAppointments")}</strong><p>{t("dash.noAppointmentsHelp")}</p><Link className="link" to="/appointments">{t("nav.appointments")}</Link></div>:<ul className="provider-appointment-list">{appointments.slice(0,4).map(({a,p})=><li key={a.id}><div><strong>{p.name}</strong><span>{a.preferred_date} · {a.preferred_time||"—"}</span></div><small>{a.appointment_mode} · {a.status}</small></li>)}</ul>}</section>
+      <section className="provider-panel provider-review-summary"><header><div><span className="eyebrow">{t("nav.reviewQueue")}</span><h2>{t("dash.reviewSummary")}</h2></div><span className="provider-panel__icon" aria-hidden="true">✓</span></header><div className="provider-review-counts"><span><strong>{reviews.pending}</strong>{t("status.pendingActivity")}</span><span><strong>{reviews.ready}</strong>{t("status.readyForReview")}</span><span><strong>{reviews.idle}</strong>{t("status.noRecentActivity")}</span></div><Link className="btn btn--ghost" to="/review-queue">{t("dash.openReviewQueue")}</Link></section>
     </div>
-  );
+    <nav className="provider-quick-actions" aria-label={t("dash.quickActions")}><strong>{t("dash.quickActions")}</strong><Link to="/patients"><i>◎</i><b>{t("nav.patients")}</b><span>→</span></Link><Link to="/appointments"><i>□</i><b>{t("nav.appointments")}</b><span>→</span></Link><Link to="/reports"><i>▤</i><b>{t("nav.reports")}</b><span>→</span></Link><Link to="/review-queue"><i>✓</i><b>{t("nav.reviewQueue")}</b><span>→</span></Link></nav>
+  </div>;
 }
