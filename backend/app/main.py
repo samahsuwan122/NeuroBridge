@@ -34,6 +34,10 @@ from app.modules.admin.routes import router as admin_router
 from app.modules.appointments.routes import router as appointments_router
 from app.modules.auth.routes import router as auth_router
 from app.modules.encouragements.routes import router as encouragements_router
+from app.modules.encouragements.media import (
+    MEDIA_URL_PREFIX as ENCOURAGEMENT_MEDIA_URL_PREFIX,
+    encouragement_uploads_dir,
+)
 from app.modules.games.routes import router as games_router
 from app.modules.goals.routes import router as goals_router
 from app.modules.memories.media import MEDIA_URL_PREFIX, memory_uploads_dir
@@ -104,6 +108,15 @@ app.mount(
     MEDIA_URL_PREFIX,
     StaticFiles(directory=str(_memory_media_dir)),
     name="memory_media",
+)
+
+# Serve supportive encouragement uploads read-only from controlled storage.
+_encouragement_media_dir = encouragement_uploads_dir()
+_encouragement_media_dir.mkdir(parents=True, exist_ok=True)
+app.mount(
+    ENCOURAGEMENT_MEDIA_URL_PREFIX,
+    StaticFiles(directory=str(_encouragement_media_dir)),
+    name="encouragement_media",
 )
 
 # Serve uploaded provider photos read-only (demo images only; git-ignored).

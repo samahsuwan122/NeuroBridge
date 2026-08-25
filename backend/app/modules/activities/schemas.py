@@ -5,25 +5,37 @@ prediction, or scoring of any condition.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class ActivityAssignRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     patient_profile_id: UUID
     template_type: str = Field(min_length=1, max_length=64)
-    difficulty: str = Field(default="easy", max_length=32)
+    difficulty: Literal["easy", "medium", "hard"] = "easy"
     duration_minutes: int = Field(default=10, ge=1, le=60)
     # Optional overrides; blank/omitted falls back to the template defaults.
     title: Optional[str] = Field(default=None, max_length=255)
     instructions: Optional[str] = None
 
+    @field_validator("template_type")
+    @classmethod
+    def clean_template_type(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("template_type must not be empty")
+        return value
+
 
 class ActivityCompleteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     # Either mark completed (default) or skipped.
-    status: str = Field(default="completed", max_length=16)
+    status: Literal["completed", "skipped"] = "completed"
 
 
 class AssignedActivityResponse(BaseModel):
@@ -37,7 +49,7 @@ class AssignedActivityResponse(BaseModel):
     instructions: Optional[str] = None
     difficulty: str
     duration_minutes: int
-    status: str
+    status: Literal["assigned", "completed", "skipped"]
     generated_content: Optional[Dict[str, Any]] = None
     created_at: datetime
     completed_at: Optional[datetime] = None

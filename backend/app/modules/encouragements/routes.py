@@ -12,14 +12,24 @@ import uuid
 from contextlib import contextmanager
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    Request,
+    UploadFile,
+    status,
+)
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models import User
 from app.modules.auth.dependencies import get_current_active_user
 from app.modules.auth.service import get_role_names
-from app.modules.encouragements import service
+from app.modules.encouragements import media, service
 from app.modules.encouragements.schemas import (
     EncouragementCreate,
     EncouragementListResponse,
@@ -99,4 +109,98 @@ def create_encouragement(
             ip_address=ip_address,
             device_info=device_info,
         )
+    return EncouragementResponse.model_validate(encouragement)
+
+
+@router.post(
+    "/media",
+    response_model=EncouragementResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_media_encouragement(
+    request: Request,
+    patient_profile_id: uuid.UUID = Form(...),
+    message: Optional[str] = Form(default=None, max_length=300),
+    caption: Optional[str] = Form(default=None, max_length=180),
+    media_duration_seconds: Optional[int] = Form(default=None, ge=0),
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db),
+) -> EncouragementResponse:
+    form = await request.form()
+    allowed_fields = {
+        "patient_profile_id",
+        "message",
+        "caption",
+        "media_duration_seconds",
+        "file",
+    }
+    if any(key not in allowed_fields for key in form.keys()):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Unsupported multipart field.",
+        )
+
+    clean_message = message.strip() if message is not None else None
+    clean_caption = caption.strip() if caption is not None else None
+    if message is not None and not clean_message:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="message must not be empty when supplied.",
+        )
+    if caption is not None and not clean_caption:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="caption must not be empty when supplied.",
+        )
+    if not media.safe_original_filename(file.filename):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Unsafe upload filename.",
+        )
+
+    mime_type = media.normalize_content_type(file.content_type)
+    rule = media.media_rule(mime_type)
+    if rule is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Unsupported encouragement media type.",
+        )
+    media_type, extension, maximum_bytes = rule
+    data = await file.read(maximum_bytes + 1)
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="The file is empty."
+        )
+    if len(data) > maximum_bytes:
+        raise HTTPException(
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            detail="The media file is too large.",
+        )
+
+    filename = media.save_media_bytes(data, extension)
+    media_url = media.public_url(filename)
+    roles = get_role_names(db, current_user.id)
+    ip_address, device_info = _client_info(request)
+    try:
+        with _translate_errors():
+            encouragement = service.create_encouragement(
+                db,
+                sender=current_user,
+                roles=roles,
+                patient_profile_id=patient_profile_id,
+                message=clean_message,
+                caption=clean_caption,
+                media_type=media_type,
+                media_url=media_url,
+                media_mime_type=mime_type,
+                media_size_bytes=len(data),
+                media_duration_seconds=media_duration_seconds,
+                ip_address=ip_address,
+                device_info=device_info,
+            )
+    except Exception:
+        db.rollback()
+        media.delete_local_media(media_url)
+        raise
     return EncouragementResponse.model_validate(encouragement)

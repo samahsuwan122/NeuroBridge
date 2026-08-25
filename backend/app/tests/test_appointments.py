@@ -7,11 +7,12 @@ coordination content only — never emergency care, diagnosis, or assessment.
 import struct
 import zlib
 from datetime import date, timedelta
+from uuid import UUID
 
 import pytest
 from sqlalchemy import select
 
-from app.models import AuditLog, ProviderAvailabilitySlot, ProviderProfile
+from app.models import Appointment, AuditLog, ProviderAvailabilitySlot, ProviderProfile
 from app.modules.providers import media as provider_media
 from app.scripts.seed_roles import seed_roles
 
@@ -59,6 +60,54 @@ def _login(client, email):
     )
     assert resp.status_code == 200, resp.text
     return {"Authorization": f"Bearer {resp.json()['access_token']}"}
+
+
+def test_provider_can_read_and_update_own_profile(client, user_factory, seeded_roles):
+    provider = user_factory(email="self-provider@example.test", roles=("doctor",))
+    headers = _login(client, provider.email)
+    assert client.get("/api/v1/providers/me", headers=headers).status_code == 200
+
+    response = client.patch(
+        "/api/v1/providers/me",
+        headers=headers,
+        json={
+            "display_name": "Dr. Updated Name",
+            "specialty": "Cognitive follow-up",
+            "bio_short": "Supportive follow-up and care coordination.",
+            "languages": ["ar", "en"],
+            "clinic_name": "NeuroBridge Center",
+            "location": "Room 4",
+        },
+    )
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data["full_name"] == "Dr. Updated Name"
+    assert data["languages"] == ["ar", "en"]
+    assert client.get("/api/v1/providers/me", headers=headers).json()["bio_short"] == data["bio_short"]
+
+
+def test_provider_self_profile_authorization_and_validation(client, user_factory, seeded_roles):
+    family = user_factory(email="profile-family@example.test", roles=("family",))
+    family_headers = _login(client, family.email)
+    assert client.get("/api/v1/providers/me", headers=family_headers).status_code == 403
+
+    provider = user_factory(email="validated-provider@example.test", roles=("therapist",))
+    headers = _login(client, provider.email)
+    invalid = client.patch("/api/v1/providers/me", headers=headers, json={"languages": ["xx"]})
+    assert invalid.status_code == 422
+    assert client.patch("/api/v1/providers/me", headers=headers, json={"bio_short": "x" * 501}).status_code == 422
+
+
+def test_provider_can_upload_own_photo(client, user_factory, seeded_roles):
+    provider = user_factory(email="photo-provider@example.test", roles=("doctor",))
+    headers = _login(client, provider.email)
+    response = client.post(
+        "/api/v1/providers/me/photo",
+        headers=headers,
+        files={"file": ("ignored-name.png", _tiny_png(), "image/png")},
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["photo_url"].startswith("/media/provider_photos/")
 
 
 def _create_patient(client, admin_headers, user_factory, email):
@@ -310,6 +359,138 @@ def test_availability_lists_available_slots(
     assert slots[0]["meeting_url"]
 
 
+# --- provider self-service availability -------------------------------------
+
+
+@pytest.mark.parametrize("role", ["doctor", "therapist"])
+def test_provider_creates_and_lists_own_availability(
+    client, user_factory, seeded_roles, role
+):
+    provider = _provider(user_factory, f"availability-{role}@example.test", role)
+    headers = _login(client, provider.email)
+    created = _create_own_slot(client, headers)
+    assert created.status_code == 201, created.text
+    data = created.json()
+    assert data["provider_user_id"] == str(provider.id)
+    assert data["start_time"] == "13:00"
+    assert data["end_time"] == "13:30"
+    assert data["is_available"] is True
+    listed = client.get("/api/v1/providers/me/availability", headers=headers)
+    assert listed.status_code == 200
+    assert data["id"] in {item["id"] for item in listed.json()["slots"]}
+
+
+@pytest.mark.parametrize("role", ["family", "patient"])
+def test_non_provider_cannot_manage_availability(
+    client, user_factory, seeded_roles, role
+):
+    user = user_factory(email=f"availability-{role}@example.test", roles=(role,))
+    headers = _login(client, user.email)
+    assert client.get("/api/v1/providers/me/availability", headers=headers).status_code == 403
+    assert _create_own_slot(client, headers).status_code == 403
+
+
+def test_provider_cannot_remove_another_providers_slot(
+    client, db_session, user_factory, seeded_roles
+):
+    owner = _provider(user_factory, "slot-owner@example.test")
+    other = _provider(user_factory, "slot-other@example.test", "therapist")
+    slot = _make_slot(db_session, owner, start="14:00")
+    headers = _login(client, other.email)
+    response = client.delete(
+        f"/api/v1/providers/me/availability/{slot.id}", headers=headers
+    )
+    assert response.status_code == 403
+
+
+@pytest.mark.parametrize(
+    ("start_time", "end_time"), [("13:30", "13:00"), ("13:00", "13:00")]
+)
+def test_invalid_availability_time_range_rejected(
+    client, user_factory, seeded_roles, start_time, end_time
+):
+    provider = _provider(
+        user_factory, f"invalid-range-{start_time}-{end_time}@example.test"
+    )
+    headers = _login(client, provider.email)
+    response = _create_own_slot(
+        client, headers, start_time=start_time, end_time=end_time
+    )
+    assert response.status_code == 422
+
+
+def test_past_availability_rejected(client, user_factory, seeded_roles):
+    provider = _provider(user_factory, "past-slot@example.test")
+    headers = _login(client, provider.email)
+    response = _create_own_slot(
+        client, headers, slot_date=date.today() - timedelta(days=1)
+    )
+    assert response.status_code == 400
+
+
+def test_overlapping_availability_rejected(client, user_factory, seeded_roles):
+    provider = _provider(user_factory, "overlap-slot@example.test")
+    headers = _login(client, provider.email)
+    assert _create_own_slot(
+        client, headers, start_time="13:00", end_time="14:00"
+    ).status_code == 201
+    response = _create_own_slot(
+        client, headers, start_time="13:30", end_time="14:30"
+    )
+    assert response.status_code == 409
+
+
+def test_availability_creation_rejects_provider_id_and_extra_fields(
+    client, user_factory, seeded_roles
+):
+    provider = _provider(user_factory, "forged-slot@example.test")
+    other = _provider(user_factory, "forged-slot-other@example.test")
+    headers = _login(client, provider.email)
+    response = _create_own_slot(
+        client, headers, provider_user_id=str(other.id), unsupported=True
+    )
+    assert response.status_code == 422
+
+
+def test_provider_removes_unused_future_slot(
+    client, db_session, user_factory, seeded_roles
+):
+    provider = _provider(user_factory, "remove-slot@example.test")
+    slot = _make_slot(db_session, provider, start="15:00")
+    headers = _login(client, provider.email)
+    response = client.delete(
+        f"/api/v1/providers/me/availability/{slot.id}", headers=headers
+    )
+    assert response.status_code == 204
+    db_session.refresh(slot)
+    assert slot.deleted_at is not None
+
+
+def test_provider_cannot_remove_consumed_slot(
+    client, admin_headers, db_session, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "consumed-slot-patient@example.test"
+    )
+    family = _link_family(
+        client, admin_headers, user_factory, profile["id"],
+        "consumed-slot-family@example.test",
+    )
+    provider = _provider(user_factory, "consumed-slot-provider@example.test")
+    slot = _make_slot(db_session, provider, start="16:00")
+    family_headers = _login(client, family.email)
+    assert _book(
+        client, family_headers, profile["id"], provider.id, slot.id
+    ).status_code == 201
+    provider_headers = _login(client, provider.email)
+    response = client.delete(
+        f"/api/v1/providers/me/availability/{slot.id}", headers=provider_headers
+    )
+    assert response.status_code == 409
+    db_session.refresh(slot)
+    assert slot.deleted_at is None
+
+
 # --- booking / RBAC ----------------------------------------------------------
 
 
@@ -329,6 +510,10 @@ def test_linked_family_can_book(client, admin_headers, db_session, user_factory)
     assert data["location"] == "Clinic Room 1"
     assert data["preferred_date"] == SLOT_DATE
     assert data["preferred_time"] == "10:00"
+    persisted = db_session.get(Appointment, UUID(data["id"]))
+    assert persisted is not None
+    assert persisted.provider_user_id == doctor.id
+    assert persisted.availability_slot_id == slot.id
 
 
 def test_unlinked_family_cannot_book(client, admin_headers, db_session, user_factory):
@@ -376,6 +561,74 @@ def test_invalid_slot_blocked(client, admin_headers, user_factory):
         client, headers, profile["id"], doctor.id,
         "00000000-0000-0000-0000-000000000000",
     )
+    assert resp.status_code == 400
+
+
+def test_slot_provider_mismatch_rejected(
+    client, admin_headers, db_session, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "mismatch-patient@example.test"
+    )
+
+
+def _create_own_slot(
+    client,
+    headers,
+    *,
+    slot_date=None,
+    start_time="13:00",
+    end_time="13:30",
+    **extra,
+):
+    return client.post(
+        "/api/v1/providers/me/availability",
+        headers=headers,
+        json={
+            "slot_date": (slot_date or date.today() + timedelta(days=4)).isoformat(),
+            "start_time": start_time,
+            "end_time": end_time,
+            "appointment_mode": "in_person",
+            "location": "Clinic Room 2",
+            **extra,
+        },
+    )
+    _link_family(
+        client, admin_headers, user_factory, profile["id"], "mismatch-family@example.test"
+    )
+    selected_provider = _provider(user_factory, "selected-provider@example.test")
+    slot_provider = _provider(user_factory, "slot-provider@example.test")
+    slot = _make_slot(db_session, slot_provider)
+    headers = _login(client, "mismatch-family@example.test")
+
+    resp = _book(
+        client, headers, profile["id"], selected_provider.id, slot.id
+    )
+
+    assert resp.status_code == 400
+
+
+def test_explicitly_unavailable_slot_rejected(
+    client, admin_headers, db_session, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "unavailable-patient@example.test"
+    )
+    _link_family(
+        client,
+        admin_headers,
+        user_factory,
+        profile["id"],
+        "unavailable-family@example.test",
+    )
+    doctor = _provider(user_factory, "unavailable-doctor@example.test")
+    slot = _make_slot(db_session, doctor)
+    slot.is_available = False
+    db_session.commit()
+    headers = _login(client, "unavailable-family@example.test")
+
+    resp = _book(client, headers, profile["id"], doctor.id, slot.id)
+
     assert resp.status_code == 400
 
 
@@ -439,8 +692,25 @@ def test_family_cannot_set_status(client, admin_headers, db_session, user_factor
             "status": "approved",
         },
     )
-    assert resp.status_code == 201
-    assert resp.json()["status"] == "pending"
+    assert resp.status_code == 422
+    db_session.refresh(slot)
+    assert slot.is_available is True
+
+
+def test_admin_cannot_use_family_booking_flow(
+    client, admin_headers, db_session, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "admin-book-patient@example.test"
+    )
+    doctor = _provider(user_factory, "admin-book-doctor@example.test")
+    slot = _make_slot(db_session, doctor)
+
+    resp = _book(
+        client, admin_headers, profile["id"], doctor.id, slot.id
+    )
+
+    assert resp.status_code == 403
 
 
 # --- visibility --------------------------------------------------------------

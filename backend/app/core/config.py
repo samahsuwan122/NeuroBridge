@@ -1,8 +1,8 @@
 """Application configuration for the NeuroBridge backend.
 
 Settings are loaded from environment variables (and an optional project-root
-`.env` file). Sensible defaults are provided so the app can run for local
-development and tests even without a `.env` file.
+`.env` file). Non-sensitive settings have local defaults; secrets must be
+provided explicitly through the environment.
 
 Phase 2 scope: configuration only. No auth, no models, no business logic.
 """
@@ -11,6 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Project root is four levels up from this file:
@@ -44,7 +45,7 @@ class Settings(BaseSettings):
     postgres_database_url: Optional[str] = None
 
     # --- JWT (defined here for later phases; no auth logic implemented yet) ---
-    jwt_secret_key: str = "change_me"
+    jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 30
     jwt_refresh_token_expire_days: int = 7
@@ -70,6 +71,16 @@ class Settings(BaseSettings):
     # --- Files / AI mode ---
     file_storage_path: str = "./storage"
     ai_mode: str = "rule_based"
+
+    @field_validator("jwt_secret_key")
+    @classmethod
+    def validate_jwt_secret_key(cls, value: str) -> str:
+        """Require sufficient HMAC key material for every runtime environment."""
+        if len(value.encode("utf-8")) < 32:
+            raise ValueError(
+                "JWT_SECRET_KEY must contain at least 32 bytes."
+            )
+        return value
 
     @property
     def cors_origins_list(self) -> List[str]:

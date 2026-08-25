@@ -64,6 +64,7 @@ class ProviderMessageResponse(BaseModel):
     # Display helpers filled in by the route (names, not stored on the row).
     provider_name: Optional[str] = None
     sender_name: Optional[str] = None
+    sender_relationship: Optional[str] = None
     patient_name: Optional[str] = None
     # Reply/thread activity (relative to the current viewer).
     latest_reply_preview: Optional[str] = None

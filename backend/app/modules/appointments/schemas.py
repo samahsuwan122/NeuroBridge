@@ -15,6 +15,8 @@ APPOINTMENT_STATUSES = ("pending", "approved", "cancelled", "completed")
 
 
 class AppointmentCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     patient_profile_id: UUID
     provider_user_id: UUID
     availability_slot_id: UUID
@@ -30,6 +32,8 @@ class AppointmentCreate(BaseModel):
 
 
 class AppointmentStatusUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     status: Literal["pending", "approved", "cancelled", "completed"]
 
 
@@ -43,11 +47,11 @@ class AppointmentResponse(BaseModel):
     provider_name: Optional[str] = None
     preferred_date: date
     preferred_time: Optional[str] = None
-    appointment_mode: str
+    appointment_mode: Literal["in_person", "online"]
     location: Optional[str] = None
     meeting_url: Optional[str] = None
     reason: str
-    status: str
+    status: Literal["pending", "approved", "cancelled", "completed"]
     created_at: datetime
     updated_at: datetime
 

@@ -20,6 +20,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models import (
+    PatientFamilyLink,
     PatientProfile,
     ProviderMessage,
     ProviderMessageReply,
@@ -92,6 +93,17 @@ def _fill_thread_fields(
 ) -> None:
     resp.provider_name = _name(db, msg.provider_user_id)
     resp.sender_name = _name(db, msg.sender_user_id)
+    family_link = (
+        db.query(PatientFamilyLink)
+        .filter(
+            PatientFamilyLink.patient_profile_id == msg.patient_profile_id,
+            PatientFamilyLink.family_user_id == msg.sender_user_id,
+            PatientFamilyLink.active.is_(True),
+        )
+        .one_or_none()
+    )
+    if family_link is not None:
+        resp.sender_relationship = family_link.relationship
     profile = db.get(PatientProfile, msg.patient_profile_id)
     if profile is not None:
         resp.patient_name = _name(db, profile.user_id)

@@ -5,13 +5,15 @@ diagnosis, or assessment.
 """
 
 from datetime import datetime
-from typing import List
+from typing import List, Literal, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class EncouragementCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     patient_profile_id: UUID
     message: str = Field(max_length=300)
 
@@ -30,7 +32,13 @@ class EncouragementResponse(BaseModel):
     id: UUID
     patient_profile_id: UUID
     sender_user_id: UUID
-    message: str
+    message: Optional[str] = None
+    caption: Optional[str] = None
+    media_type: Optional[Literal["image", "video", "voice"]] = None
+    media_url: Optional[str] = None
+    media_mime_type: Optional[str] = None
+    media_size_bytes: Optional[int] = None
+    media_duration_seconds: Optional[int] = None
     created_at: datetime
 
 

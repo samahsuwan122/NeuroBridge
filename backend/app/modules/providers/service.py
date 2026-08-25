@@ -11,7 +11,7 @@ values only — not real clinicians. Scheduling/coordination content only.
 """
 
 import uuid
-from datetime import date
+from datetime import date, datetime, time, timezone
 from typing import Dict, List, Optional, Tuple
 
 from sqlalchemy import select
@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 
 from app.core.permissions import ROLE_DOCTOR, ROLE_THERAPIST
 from app.models import (
+    Appointment,
     ProviderAvailabilitySlot,
     ProviderProfile,
     Role,
@@ -33,6 +34,30 @@ _DEFAULT_FOCUS = {
     ROLE_DOCTOR: "Cognitive follow-up",
     ROLE_THERAPIST: "Therapy support",
 }
+
+
+class AvailabilityError(Exception):
+    """Base class for provider availability management errors."""
+
+
+class SlotNotFoundError(AvailabilityError):
+    """The requested slot does not exist."""
+
+
+class SlotNotOwnedError(AvailabilityError):
+    """The provider does not own the requested slot."""
+
+
+class InvalidSlotError(AvailabilityError):
+    """The requested slot is not a valid future availability period."""
+
+
+class OverlappingSlotError(AvailabilityError):
+    """The requested slot overlaps existing provider availability."""
+
+
+class ConsumedSlotError(AvailabilityError):
+    """A booked slot cannot be removed."""
 
 
 class ProviderDetail:
@@ -57,6 +82,7 @@ class ProviderDetail:
             else _DEFAULT_FOCUS.get(role)
         )
         self.bio_short = profile.bio_short if profile else None
+        self.languages = [value for value in (profile.languages or "").split(",") if value] if profile else []
         self.clinic_name = profile.clinic_name if profile else None
         self.governorate = profile.governorate if profile else None
         self.city = profile.city if profile else None
@@ -256,6 +282,31 @@ def set_provider_photo(
     return profile.photo_url
 
 
+def update_self_profile(session: Session, user: User, changes: dict) -> ProviderDetail:
+    """Update only editable professional fields for an authenticated provider."""
+    if "display_name" in changes:
+        user.full_name = changes.pop("display_name")
+        session.add(user)
+    profile = session.execute(
+        select(ProviderProfile).where(
+            ProviderProfile.provider_user_id == user.id,
+            ProviderProfile.deleted_at.is_(None),
+        )
+    ).scalar_one_or_none()
+    if profile is None:
+        profile = ProviderProfile(provider_user_id=user.id)
+    if "languages" in changes:
+        changes["languages"] = ",".join(changes["languages"] or []) or None
+    for field in ("specialty", "bio_short", "languages", "clinic_name", "location"):
+        if field in changes:
+            setattr(profile, field, changes[field])
+    session.add(profile)
+    session.commit()
+    detail = get_provider_detail(session, user.id)
+    assert detail is not None
+    return detail
+
+
 def get_available_slots(
     session: Session, provider_user_id: uuid.UUID
 ) -> List[ProviderAvailabilitySlot]:
@@ -277,3 +328,98 @@ def get_available_slots(
         .scalars()
         .all()
     )
+
+
+def list_own_slots(
+    session: Session, provider_user_id: uuid.UUID
+) -> List[ProviderAvailabilitySlot]:
+    """List the provider's non-deleted future slots, including consumed slots."""
+    today = date.today()
+    return list(
+        session.execute(
+            select(ProviderAvailabilitySlot)
+            .where(
+                ProviderAvailabilitySlot.provider_user_id == provider_user_id,
+                ProviderAvailabilitySlot.deleted_at.is_(None),
+                ProviderAvailabilitySlot.slot_date >= today,
+            )
+            .order_by(
+                ProviderAvailabilitySlot.slot_date,
+                ProviderAvailabilitySlot.start_time,
+            )
+        )
+        .scalars()
+        .all()
+    )
+
+
+def create_own_slot(
+    session: Session,
+    provider_user_id: uuid.UUID,
+    *,
+    slot_date: date,
+    start_time: time,
+    end_time: time,
+    appointment_mode: str,
+    location: Optional[str] = None,
+    meeting_url: Optional[str] = None,
+) -> ProviderAvailabilitySlot:
+    now = datetime.now()
+    starts_at = datetime.combine(slot_date, start_time)
+    if starts_at <= now:
+        raise InvalidSlotError()
+
+    start_value = start_time.strftime("%H:%M")
+    end_value = end_time.strftime("%H:%M")
+    overlap = session.execute(
+        select(ProviderAvailabilitySlot.id).where(
+            ProviderAvailabilitySlot.provider_user_id == provider_user_id,
+            ProviderAvailabilitySlot.slot_date == slot_date,
+            ProviderAvailabilitySlot.deleted_at.is_(None),
+            ProviderAvailabilitySlot.start_time < end_value,
+            ProviderAvailabilitySlot.end_time > start_value,
+        )
+    ).first()
+    if overlap is not None:
+        raise OverlappingSlotError()
+
+    slot = ProviderAvailabilitySlot(
+        provider_user_id=provider_user_id,
+        slot_date=slot_date,
+        start_time=start_value,
+        end_time=end_value,
+        appointment_mode=appointment_mode,
+        location=location,
+        meeting_url=meeting_url,
+        is_available=True,
+    )
+    session.add(slot)
+    session.commit()
+    return slot
+
+
+def remove_own_slot(
+    session: Session, provider_user_id: uuid.UUID, slot_id: uuid.UUID
+) -> None:
+    slot = session.get(ProviderAvailabilitySlot, slot_id)
+    if slot is None or slot.deleted_at is not None:
+        raise SlotNotFoundError()
+    if slot.provider_user_id != provider_user_id:
+        raise SlotNotOwnedError()
+
+    starts_at = datetime.combine(slot.slot_date, time.fromisoformat(slot.start_time))
+    if starts_at <= datetime.now():
+        raise InvalidSlotError()
+
+    booked = session.execute(
+        select(Appointment.id).where(
+            Appointment.availability_slot_id == slot.id,
+            Appointment.deleted_at.is_(None),
+        )
+    ).first()
+    if not slot.is_available or booked is not None:
+        raise ConsumedSlotError()
+
+    slot.deleted_at = datetime.now(timezone.utc)
+    session.add(slot)
+    session.commit()

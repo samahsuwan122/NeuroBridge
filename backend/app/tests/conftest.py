@@ -9,6 +9,13 @@ exercised end-to-end. Because they live in conftest (imported only by pytest),
 they never exist in the production app served by `uvicorn app.main:app`.
 """
 
+import os
+
+# Settings are created while app.main is imported below. Supply deterministic,
+# synthetic HMAC key material first; production secrets always come from the
+# deployment environment and are never stored in source.
+os.environ.setdefault("JWT_SECRET_KEY", "test-" + ("x" * 32))
+
 import pytest
 from fastapi import Depends
 from fastapi.testclient import TestClient

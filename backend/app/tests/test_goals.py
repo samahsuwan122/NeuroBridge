@@ -206,6 +206,52 @@ def test_doctor_updates_goal_active_to_completed(client, admin_headers, user_fac
     assert data["current_value"] == 5
 
 
+@pytest.mark.parametrize("status_value", ["active", "paused", "completed"])
+def test_all_supported_goal_statuses_are_accepted(
+    client, admin_headers, user_factory, status_value
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, f"status-{status_value}@example.test"
+    )
+    _, doc_headers = _assign_doctor(
+        client,
+        admin_headers,
+        user_factory,
+        profile["id"],
+        email=f"status-doc-{status_value}@example.test",
+    )
+    goal = _create_goal(client, doc_headers, profile["id"]).json()
+
+    resp = client.patch(
+        f"/api/v1/goals/{goal['id']}",
+        headers=doc_headers,
+        json={"status": status_value},
+    )
+
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["status"] == status_value
+
+
+def test_unassigned_doctor_cannot_update_goal(client, admin_headers, user_factory):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "protected-goal@example.test"
+    )
+    _, assigned_headers = _assign_doctor(
+        client, admin_headers, user_factory, profile["id"]
+    )
+    goal = _create_goal(client, assigned_headers, profile["id"]).json()
+    user_factory(email="unassigned-goal-doc@example.test", roles=("doctor",))
+    unassigned_headers = _login(client, "unassigned-goal-doc@example.test")
+
+    resp = client.patch(
+        f"/api/v1/goals/{goal['id']}",
+        headers=unassigned_headers,
+        json={"current_value": 1},
+    )
+
+    assert resp.status_code == 403
+
+
 # --- validation --------------------------------------------------------------
 
 
@@ -233,6 +279,81 @@ def test_current_value_negative_rejected(client, admin_headers, user_factory):
     _, doc_headers = _assign_doctor(client, admin_headers, user_factory, profile["id"])
 
     resp = _create_goal(client, doc_headers, profile["id"], current_value=-1)
+    assert resp.status_code == 422
+
+
+@pytest.mark.parametrize("field", ["title", "target_type"])
+def test_required_goal_text_is_trimmed_and_rejects_whitespace(
+    client, admin_headers, user_factory, field
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, f"blank-{field}@example.test"
+    )
+    _, doc_headers = _assign_doctor(
+        client,
+        admin_headers,
+        user_factory,
+        profile["id"],
+        email=f"blank-{field}-doc@example.test",
+    )
+
+    rejected = _create_goal(client, doc_headers, profile["id"], **{field: "   "})
+    assert rejected.status_code == 422
+
+    accepted = _create_goal(
+        client, doc_headers, profile["id"], **{field: "  meaningful value  "}
+    )
+    assert accepted.status_code == 201, accepted.text
+    assert accepted.json()[field] == "meaningful value"
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected_status"),
+    [
+        ({"target_value": 0}, 422),
+        ({"current_value": -1}, 422),
+        ({"title": None}, 422),
+        ({"status": None}, 422),
+        ({"unexpected": "value"}, 422),
+    ],
+)
+def test_invalid_goal_updates_are_rejected(
+    client, admin_headers, user_factory, payload, expected_status
+):
+    _, profile = _create_patient(
+        client,
+        admin_headers,
+        user_factory,
+        f"invalid-update-{len(str(payload))}@example.test",
+    )
+    _, doc_headers = _assign_doctor(
+        client,
+        admin_headers,
+        user_factory,
+        profile["id"],
+        email=f"invalid-update-doc-{len(str(payload))}@example.test",
+    )
+    goal = _create_goal(client, doc_headers, profile["id"]).json()
+
+    resp = client.patch(
+        f"/api/v1/goals/{goal['id']}", headers=doc_headers, json=payload
+    )
+
+    assert resp.status_code == expected_status
+
+
+def test_goal_creation_rejects_unexpected_fields(
+    client, admin_headers, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "extra-goal@example.test"
+    )
+    _, doc_headers = _assign_doctor(
+        client, admin_headers, user_factory, profile["id"]
+    )
+
+    resp = _create_goal(client, doc_headers, profile["id"], status="completed")
+
     assert resp.status_code == 422
 
 

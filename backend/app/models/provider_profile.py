@@ -31,6 +31,8 @@ class ProviderProfile(
     )
     specialty: Mapped[str | None] = mapped_column(String(255), nullable=True)
     bio_short: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Comma-separated semantic language codes (ar,en,fr,es,de).
+    languages: Mapped[str | None] = mapped_column(String(64), nullable=True)
     clinic_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     governorate: Mapped[str | None] = mapped_column(String(64), nullable=True)
     city: Mapped[str | None] = mapped_column(String(64), nullable=True)

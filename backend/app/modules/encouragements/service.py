@@ -102,7 +102,13 @@ def create_encouragement(
     sender: User,
     roles: Iterable[str],
     patient_profile_id: uuid.UUID,
-    message: str,
+    message: Optional[str],
+    caption: Optional[str] = None,
+    media_type: Optional[str] = None,
+    media_url: Optional[str] = None,
+    media_mime_type: Optional[str] = None,
+    media_size_bytes: Optional[int] = None,
+    media_duration_seconds: Optional[int] = None,
     ip_address: Optional[str] = None,
     device_info: Optional[str] = None,
 ) -> FamilyEncouragement:
@@ -121,22 +127,40 @@ def create_encouragement(
     ):
         raise NotAllowedError()
 
+    clean_message = message.strip() if message is not None else None
+    clean_caption = caption.strip() if caption is not None else None
+    if not clean_message and not media_url:
+        raise ValueError("An encouragement must contain a message or media.")
+
     encouragement = FamilyEncouragement(
         patient_profile_id=patient_profile_id,
         sender_user_id=sender.id,
-        message=message,
+        message=clean_message or None,
+        caption=clean_caption or None,
+        media_type=media_type,
+        media_url=media_url,
+        media_mime_type=media_mime_type,
+        media_size_bytes=media_size_bytes,
+        media_duration_seconds=media_duration_seconds,
     )
     session.add(encouragement)
     session.flush()
     record_audit(
         session,
-        action="create_family_encouragement",
+        action=(
+            "create_family_encouragement_media"
+            if media_type
+            else "create_family_encouragement"
+        ),
         entity_type="FamilyEncouragement",
         actor_user_id=sender.id,
         entity_id=encouragement.id,
         ip_address=ip_address,
         device_info=device_info,
-        metadata={"patient_profile_id": str(patient_profile_id)},
+        metadata={
+            "patient_profile_id": str(patient_profile_id),
+            "media_type": media_type,
+        },
         commit=False,
     )
     session.commit()

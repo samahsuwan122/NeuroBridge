@@ -3,11 +3,11 @@
 Provider profile text and ratings are seeded demo values for the local demo.
 """
 
-from datetime import date
-from typing import List, Optional
+from datetime import date, time
+from typing import List, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class ProviderResponse(BaseModel):
@@ -18,6 +18,7 @@ class ProviderResponse(BaseModel):
     role: str  # doctor | therapist
     specialty: Optional[str] = None
     bio_short: Optional[str] = None
+    languages: List[str] = Field(default_factory=list)
     clinic_name: Optional[str] = None
     governorate: Optional[str] = None
     city: Optional[str] = None
@@ -38,6 +39,38 @@ class ProviderListResponse(BaseModel):
     providers: List[ProviderResponse]
 
 
+class ProviderSelfUpdate(BaseModel):
+    display_name: Optional[str] = Field(default=None, min_length=2, max_length=255)
+    specialty: Optional[str] = Field(default=None, max_length=255)
+    bio_short: Optional[str] = Field(default=None, max_length=500)
+    languages: Optional[List[str]] = Field(default=None, max_length=5)
+    clinic_name: Optional[str] = Field(default=None, max_length=255)
+    location: Optional[str] = Field(default=None, max_length=255)
+
+    @field_validator("display_name", "specialty", "bio_short", "clinic_name", "location")
+    @classmethod
+    def clean_text(cls, value: Optional[str]) -> Optional[str]:
+        return value.strip() if value and value.strip() else None
+
+    @field_validator("display_name")
+    @classmethod
+    def require_display_name(cls, value: Optional[str]) -> str:
+        if value is None:
+            raise ValueError("Display name cannot be empty.")
+        return value
+
+    @field_validator("languages")
+    @classmethod
+    def validate_languages(cls, value: Optional[List[str]]) -> Optional[List[str]]:
+        if value is None:
+            return None
+        allowed = {"ar", "en", "fr", "es", "de"}
+        normalized = list(dict.fromkeys(item.lower().strip() for item in value))
+        if any(item not in allowed for item in normalized):
+            raise ValueError("Unsupported provider language.")
+        return normalized
+
+
 class SlotResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -54,3 +87,36 @@ class SlotResponse(BaseModel):
 class SlotListResponse(BaseModel):
     success: bool = True
     slots: List[SlotResponse]
+
+
+class ProviderSlotCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    slot_date: date
+    start_time: time
+    end_time: time
+    appointment_mode: Literal["in_person", "online"]
+    location: Optional[str] = Field(default=None, max_length=255)
+    meeting_url: Optional[str] = Field(default=None, max_length=1024)
+
+    @field_validator("location", "meeting_url")
+    @classmethod
+    def clean_optional_text(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        return value.strip() or None
+
+    @model_validator(mode="after")
+    def validate_time_range(self):
+        if self.start_time >= self.end_time:
+            raise ValueError("start_time must be before end_time")
+        return self
+
+
+class ProviderManagedSlotResponse(SlotResponse):
+    is_available: bool
+
+
+class ProviderManagedSlotListResponse(BaseModel):
+    success: bool = True
+    slots: List[ProviderManagedSlotResponse]

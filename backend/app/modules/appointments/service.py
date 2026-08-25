@@ -10,9 +10,9 @@ Access model:
 - View (list): admin=all; otherwise appointments for a patient the viewer may
   see (family=linked, patient=own, doctor/therapist=assigned) OR appointments
   where the viewer is the chosen provider.
-- Create: a linked family member or an admin only. The provider, date/time, mode,
-  and location come from the booked slot; status is set by the backend
-  ("pending"); requesters cannot choose it.
+- Create: a linked family member only. The provider, date/time, mode, and
+  location come from the booked slot; status is set by the backend ("pending");
+  requesters cannot choose it.
 - Update status: admin, the appointment's provider, or a clinician assigned to
   the patient. Cancelling reopens the booked slot.
 """
@@ -20,7 +20,7 @@ Access model:
 import uuid
 from typing import Iterable, List, Optional, Tuple
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.orm import Session
 
 from app.core.permissions import CLINICAL_ROLES, ROLE_ADMIN, ROLE_FAMILY
@@ -64,8 +64,9 @@ class NotAllowedError(AppointmentError):
     """The user is not allowed to perform this action."""
 
 
-# Only a linked family member or an admin may create appointment requests.
-_CREATE_ROLES = frozenset({ROLE_FAMILY, ROLE_ADMIN})
+# This endpoint is the Family booking flow. Administrative status management
+# remains unchanged, but only a linked Family user may create a booking here.
+_CREATE_ROLES = frozenset({ROLE_FAMILY})
 
 
 # --- queries -----------------------------------------------------------------
@@ -139,7 +140,7 @@ def create_appointment(
     device_info: Optional[str] = None,
 ) -> Appointment:
     role_set = set(roles)
-    # Only a linked family member or an admin may request.
+    # Only an authenticated Family user may request through this booking flow.
     if not (role_set & _CREATE_ROLES):
         raise NotAllowedError()
 
@@ -147,10 +148,8 @@ def create_appointment(
     if profile is None or profile.deleted_at is not None:
         raise ProfileNotFoundError()
 
-    # Admins may request for any profile; a family member must be linked to it.
-    if ROLE_ADMIN not in role_set and not can_view_profile(
-        session, requester, role_set, profile
-    ):
+    # The Family user must be legitimately linked to the selected patient.
+    if not can_view_profile(session, requester, {ROLE_FAMILY}, profile):
         raise NotAllowedError()
 
     # The provider must be an active doctor/therapist.
@@ -173,6 +172,21 @@ def create_appointment(
     ):
         raise SlotNotAvailableError()
 
+    # Consume the slot conditionally in the database. This closes the race
+    # between two requests that both observed the slot as available.
+    consumed = session.execute(
+        update(ProviderAvailabilitySlot)
+        .where(
+            ProviderAvailabilitySlot.id == slot.id,
+            ProviderAvailabilitySlot.provider_user_id == provider_user_id,
+            ProviderAvailabilitySlot.deleted_at.is_(None),
+            ProviderAvailabilitySlot.is_available.is_(True),
+        )
+        .values(is_available=False)
+    )
+    if consumed.rowcount != 1:
+        raise SlotNotAvailableError()
+
     appointment = Appointment(
         patient_profile_id=patient_profile_id,
         requester_user_id=requester.id,
@@ -187,9 +201,6 @@ def create_appointment(
         status=STATUS_PENDING,
     )
     session.add(appointment)
-    # Booking consumes the slot so it is not double-booked.
-    slot.is_available = False
-    session.add(slot)
     session.flush()
     record_audit(
         session,
@@ -247,7 +258,11 @@ def update_status(
     session.add(appointment)
 
     # Cancelling frees the booked slot again.
-    if status == STATUS_CANCELLED and appointment.availability_slot_id:
+    if (
+        status == STATUS_CANCELLED
+        and previous != STATUS_CANCELLED
+        and appointment.availability_slot_id
+    ):
         slot = session.get(
             ProviderAvailabilitySlot, appointment.availability_slot_id
         )

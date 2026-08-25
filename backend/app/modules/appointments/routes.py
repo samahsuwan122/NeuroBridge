@@ -2,8 +2,8 @@
 
 - Listing: any authenticated active user, scoped by role (patient=own,
   family=linked, doctor/therapist=assigned or provider, admin=all).
-- Creating: a linked family member or an admin only, by booking a provider's
-  available slot.
+- Creating: a linked family member only, by booking a provider's available
+  slot.
 - Updating status: admin, the appointment's provider, or a clinician assigned to
   the patient.
 

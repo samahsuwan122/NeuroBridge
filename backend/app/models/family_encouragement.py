@@ -9,8 +9,9 @@ value. It is never analyzed to infer any condition.
 """
 
 import uuid
+from typing import Optional
 
-from sqlalchemy import ForeignKey, String, Uuid
+from sqlalchemy import ForeignKey, Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -31,7 +32,13 @@ class FamilyEncouragement(
         Uuid, ForeignKey("users.id"), nullable=False
     )
 
-    message: Mapped[str] = mapped_column(String(300), nullable=False)
+    message: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+    caption: Mapped[Optional[str]] = mapped_column(String(180), nullable=True)
+    media_type: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+    media_url: Mapped[Optional[str]] = mapped_column(String(1024), nullable=True)
+    media_mime_type: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    media_size_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    media_duration_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     def __repr__(self) -> str:  # pragma: no cover - debug helper
         return (

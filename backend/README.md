@@ -151,7 +151,8 @@ and `environment` (current `APP_ENV`).
 - **Safe errors:** invalid login (unknown user / wrong password / inactive) returns a single generic
   `401`. Missing/invalid bearer token returns `401`; wrong role returns `403`.
 
-> Change `JWT_SECRET_KEY` from the default before any non-local use.
+> `JWT_SECRET_KEY` is required in every runtime environment and must contain at
+> least 32 bytes. Keep the real value in environment configuration only.
 
 ## Admin user management (Phase 5)
 

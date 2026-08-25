@@ -134,7 +134,65 @@ def test_invalid_difficulty_rejected(client, admin_headers, user_factory):
     _, profile = _create_patient(client, admin_headers, user_factory, "p@example.test")
     _, doc_headers = _assign_doctor(client, admin_headers, user_factory, profile["id"])
     resp = _assign_activity(client, doc_headers, profile["id"], difficulty="impossible")
-    assert resp.status_code == 400
+    assert resp.status_code == 422
+
+
+def test_assignment_rejects_client_supplied_status(
+    client, admin_headers, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "status-input@example.test"
+    )
+    _, doc_headers = _assign_doctor(
+        client, admin_headers, user_factory, profile["id"]
+    )
+
+    response = _assign_activity(
+        client, doc_headers, profile["id"], status="completed"
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        {"patient_profile_id": "00000000-0000-0000-0000-000000000001"},
+        {"patient_profile_id": "00000000-0000-0000-0000-000000000001", "template_type": "   "},
+    ],
+)
+def test_assignment_rejects_missing_or_empty_required_input(
+    client, user_factory, payload
+):
+    doctor = user_factory(
+        email=f"required-{len(payload)}-{len(str(payload))}@example.test",
+        roles=("doctor",),
+    )
+    headers = _login(client, doctor.email)
+
+    response = client.post(
+        "/api/v1/activities/assign", headers=headers, json=payload
+    )
+
+    assert response.status_code == 422
+
+
+def test_family_cannot_assign_activity(client, admin_headers, user_factory):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "family-assign-patient@example.test"
+    )
+    _, family_headers = _link_family(
+        client,
+        admin_headers,
+        user_factory,
+        profile["id"],
+        email="family-assign@example.test",
+    )
+
+    response = _assign_activity(client, family_headers, profile["id"])
+
+    assert response.status_code == 403
 
 
 # --- view: role-scoped -------------------------------------------------------
@@ -231,6 +289,60 @@ def test_patient_can_skip_activity(client, admin_headers, user_factory):
     assert resp.status_code == 200
     assert resp.json()["status"] == "skipped"
     assert resp.json()["completed_at"] is None
+
+
+@pytest.mark.parametrize("status_value", ["assigned", "pending", "done", ""])
+def test_invalid_completion_status_is_rejected(
+    client, admin_headers, user_factory, status_value
+):
+    _, profile = _create_patient(
+        client,
+        admin_headers,
+        user_factory,
+        f"invalid-status-{status_value or 'empty'}@example.test",
+    )
+    _, doc_headers = _assign_doctor(
+        client,
+        admin_headers,
+        user_factory,
+        profile["id"],
+        email=f"invalid-status-doc-{status_value or 'empty'}@example.test",
+    )
+    activity = _assign_activity(client, doc_headers, profile["id"]).json()
+
+    response = client.patch(
+        f"/api/v1/activities/{activity['id']}/complete",
+        headers=doc_headers,
+        json={"status": status_value},
+    )
+
+    assert response.status_code == 422
+
+
+def test_unassigned_doctor_cannot_complete_activity(
+    client, admin_headers, user_factory
+):
+    _, profile = _create_patient(
+        client, admin_headers, user_factory, "protected-activity@example.test"
+    )
+    _, assigned_headers = _assign_doctor(
+        client, admin_headers, user_factory, profile["id"]
+    )
+    activity = _assign_activity(
+        client, assigned_headers, profile["id"]
+    ).json()
+    unassigned = user_factory(
+        email="unassigned-completer@example.test", roles=("doctor",)
+    )
+    unassigned_headers = _login(client, unassigned.email)
+
+    response = client.patch(
+        f"/api/v1/activities/{activity['id']}/complete",
+        headers=unassigned_headers,
+        json={"status": "completed"},
+    )
+
+    assert response.status_code == 403
 
 
 def test_family_cannot_complete_activity(client, admin_headers, user_factory):
