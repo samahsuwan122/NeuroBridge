@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Patients | NeuroBridge</title>
-  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/neurobridge-logo-mark-premium.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="backgrounds.css" />
 </head>
 
-<body>
+<body class="site-editorial">
+  <a class="skip-link" href="#main-content" data-i18n="Skip to content">Skip to content</a>
   <header class="nav" id="top">
     <div class="container nav__inner">
       <a class="brand" href="index.html">
-        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <img class="brand__logo" src="assets/neurobridge-logo-mark-premium.png" alt="" width="42" height="42" />
         <span class="brand__text">NeuroBridge</span>
       </a>
 
@@ -21,10 +24,9 @@
         <a href="index.html" data-i18n="Home">Home</a>
         <a href="about.html" data-i18n="About">About</a>
         <a href="platform.html" data-i18n="Platform">Platform</a>
-        <a href="patients.html" data-i18n="Patients">Patients</a>
+        <a href="patients.html" aria-current="page" data-i18n="Patients">Patients</a>
         <a href="families.html" data-i18n="Families">Families</a>
         <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
-        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
         <a href="resources.html" data-i18n="Resources">Resources</a>
         <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
       </nav>
@@ -80,20 +82,20 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
   <section class="section patients-hero" id="patients">
     <div class="container split patients-split">
       <div class="split__copy patients-copy reveal">
         <span class="eyebrow" data-i18n="patients.eyebrow">For patients</span>
 
         <h1 class="patients-title" data-i18n="patients.title">
-          A calm, elderly-friendly daily companion
+          <span>A calm, elderly&#8209;friendly</span><br />
+          <span>daily companion</span>
         </h1>
 
         <p class="section__sub patients-sub" data-i18n="patients.subtitle">
-          The patient app is designed for simple daily practice, large buttons,
-          supportive feedback, memory activities, appointments, and performance-only
-          progress for supportive follow-up and care-team review.
+          Simple daily practice, supportive feedback, memory activities, appointments,
+          and clear progress for thoughtful care-team follow-up.
         </p>
 
         <div class="feat-chips patients-chips">
@@ -112,20 +114,57 @@
 
       <div class="split__visual patients-visual reveal">
         <div class="stack-visual patients-stack">
-          <figure class="vcard vcard--cutout">
-            <img
-              class="photo photo--cutout"
-              src="assets/photos/patient-man-cutout.png"
-              alt="Supportive patient portrait"
-              width="520"
-              height="820"
-            />
-          </figure>
-
           <div class="phone phone--overlap patients-phone" role="img" aria-label="NeuroBridge patient app preview">
             <div class="phone__island" aria-hidden="true"></div>
 
             <div class="phone__screen">
+              <div class="patient-profile-ui" dir="rtl">
+                <header class="patient-profile-ui__header">
+                  <span aria-hidden="true">‹</span>
+                  <strong>الملف الشخصي</strong>
+                  <span aria-hidden="true"></span>
+                </header>
+
+                <div class="patient-profile-ui__identity">
+                  <span class="patient-profile-ui__avatar" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.5-4.2 2.6-6.3 6.5-6.3s6 2.1 6.5 6.3"/></svg>
+                    <i>⌑</i>
+                  </span>
+                  <b>سامي أحمد</b>
+                  <small>حساب مريض</small>
+                </div>
+
+                <section class="patient-profile-ui__section">
+                  <h4>معلوماتي</h4>
+                  <div class="patient-profile-ui__info">
+                    <span><i aria-hidden="true">♙</i><em>العمر</em><b>63 سنة</b></span>
+                    <span><i aria-hidden="true">◎</i><em>اللغة</em><b>العربية</b></span>
+                    <span><i aria-hidden="true">✉</i><em>البريد الإلكتروني</em><b dir="ltr">patient@neurobridge.com</b></span>
+                  </div>
+                </section>
+
+                <section class="patient-profile-ui__section patient-profile-ui__care">
+                  <h4>الحساب والرعاية</h4>
+                  <div class="patient-profile-ui__link">
+                    <i aria-hidden="true">♟</i>
+                    <span><b>أفراد العائلة</b><small>3 أفراد مرتبطين</small></span>
+                    <em aria-hidden="true">‹</em>
+                  </div>
+                  <div class="patient-profile-ui__link">
+                    <i aria-hidden="true">✚</i>
+                    <span><b>فريق الرعاية</b><small>2 مختصين</small></span>
+                    <em aria-hidden="true">‹</em>
+                  </div>
+                </section>
+
+                <nav class="patient-profile-ui__nav" aria-hidden="true">
+                  <span><i>⌂</i><small>الرئيسية</small></span>
+                  <span><i>♧</i><small>التمارين</small></span>
+                  <span><i>⌁</i><small>التقدم</small></span>
+                  <span class="is-active"><i>●</i><small>حسابي</small></span>
+                </nav>
+              </div>
+
               <div class="phone__status" aria-hidden="true">
                 <span class="phone__time">9:41</span>
                 <span class="phone__signal"><i></i><i></i><i></i><i></i></span>
@@ -133,7 +172,7 @@
 
               <header class="phone__top">
                 <span class="phone__brand">
-                  <img class="phone__mark" src="assets/neurobridge-logo-mark.png" alt="" width="22" height="22" />
+                  <img class="phone__mark" src="assets/neurobridge-logo-mark-premium.png" alt="" width="22" height="22" />
                   <b>NeuroBridge</b>
                 </span>
                 <span class="phone__bell" aria-hidden="true">🔔</span>
@@ -166,8 +205,8 @@
                 </span>
 
                 <span class="ptile">
-                  <span class="ptile__ic">🌳</span>
-                  <span data-i18n="patients.phone.memoryTree">Memory Tree</span>
+                  <span class="ptile__ic">🖼️</span>
+                  <span data-i18n="patients.phone.memoryAlbum">Memory Album</span>
                 </span>
 
                 <span class="ptile">

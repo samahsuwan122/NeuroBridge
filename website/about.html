@@ -2,29 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About NeuroBridge</title>
-  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/neurobridge-logo-mark-premium.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="backgrounds.css" />
 </head>
 
-<body>
+<body class="about-editorial about-page">
+  <a class="skip-link" href="#main-content" data-i18n="Skip to content">Skip to content</a>
   <header class="nav" id="top">
     <div class="container nav__inner">
       <a class="brand" href="index.html" aria-label="NeuroBridge home">
-        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <img class="brand__logo" src="assets/neurobridge-logo-mark-premium.png" alt="" width="42" height="42" />
         <span class="brand__text">NeuroBridge</span>
       </a>
 
       <nav class="nav__links" id="navLinks" aria-label="Primary">
         <a href="index.html" data-i18n="Home">Home</a>
-        <a href="about.html" data-i18n="About">About</a>
+        <a href="about.html" aria-current="page" data-i18n="About">About</a>
         <a href="platform.html" data-i18n="Platform">Platform</a>
         <a href="patients.html" data-i18n="Patients">Patients</a>
         <a href="families.html" data-i18n="Families">Families</a>
         <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
-        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
         <a href="resources.html" data-i18n="Resources">Resources</a>
         <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
       </nav>
@@ -90,103 +92,71 @@
     </div>
   </header>
 
-  <main>
-    <section class="section page-hero">
+  <main id="main-content">
+    <section class="section page-hero about-hero">
       <div class="container">
         <div class="section__head reveal">
           <span class="eyebrow" data-i18n="About NeuroBridge">About NeuroBridge</span>
-          <h1 data-i18n="Connecting patients, families, and care teams in one supportive space.">Connecting patients, families, and care teams in one supportive space.</h1>
-          <p class="section__sub" data-i18n="NeuroBridge is a connected cognitive rehabilitation and follow-up platform. It helps organize daily activities, family memories, appointments, provider communication, and performance-only progress.">
-            NeuroBridge is a connected cognitive rehabilitation and follow-up platform.
-            It helps organize daily activities, family memories, appointments, provider
-            communication, and performance-only progress.
+          <h1 data-i18n="A platform designed around human connection.">A platform designed <br /> around human connection.</h1>
+          <p class="section__sub" data-i18n="NeuroBridge brings patients, families, doctors, and therapists into one connected rehabilitation experience — making daily cognitive care easier to follow, understand, and share.">
+            NeuroBridge brings patients, families, doctors, and therapists into one
+            connected rehabilitation experience — making daily cognitive care easier
+            to follow, understand, and share.
           </p>
         </div>
       </div>
     </section>
 
-    <section class="section section--tint">
-      <div class="container split">
-        <div class="split__copy reveal">
-          <span class="eyebrow" data-i18n="Why NeuroBridge?">Why NeuroBridge?</span>
-          <h2 data-i18n="A calmer way to support daily cognitive practice">A calmer way to support daily cognitive practice</h2>
-          <p class="section__sub" data-i18n="Many patients need simple daily routines, clear follow-up, and family support. NeuroBridge brings these parts together in a friendly platform designed for patients, families, doctors, and therapists.">
-            Many patients need simple daily routines, clear follow-up, and family support.
-            NeuroBridge brings these parts together in a friendly platform designed for
-            patients, families, doctors, and therapists.
-          </p>
-
-          <ul class="ticks">
-            <li data-i18n="Daily cognitive activities and games.">Daily cognitive activities and games.</li>
-            <li data-i18n="Family encouragement and memory sharing.">Family encouragement and memory sharing.</li>
-            <li data-i18n="Appointments and provider communication.">Appointments and provider communication.</li>
-            <li data-i18n="Performance-only summaries for care-team review.">Performance-only summaries for care-team review.</li>
-          </ul>
-        </div>
-
-        <div class="split__visual reveal">
-          <figure class="vcard vcard--flat">
-            <img
-              class="photo"
-              src="assets/photos/hero-older-adult.jpg"
-              alt="Older adults using supportive digital care activities."
-              width="480"
-              height="360"
-            />
-            <figcaption class="vcard__cap">
-              <b data-i18n="Supportive by design">Supportive by design</b>
-              <span data-i18n="Simple, connected, and easy to follow.">Simple, connected, and easy to follow.</span>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
+    <section class="section about-story">
       <div class="container">
-        <div class="section__head reveal">
-          <span class="eyebrow" data-i18n="Safe boundaries">Safe boundaries</span>
-          <h2 data-i18n="Supportive review, not automated judgment">Supportive review, not automated judgment</h2>
-          <p class="section__sub" data-i18n="NeuroBridge provides coordination and activity support. It focuses on organizing activities, messages, appointments, and performance-only progress for supportive follow-up and care-team review.">
-            NeuroBridge provides coordination and activity support. It focuses on
-            organizing activities, messages, appointments, and performance-only
-            progress for supportive follow-up and care-team review.
-          </p>
+        <div class="about-story__layout">
+          <figure class="about-story__media reveal">
+            <img
+              src="assets/photos/clinic.jpg"
+              alt="A connected care team supporting cognitive rehabilitation."
+              width="720"
+              height="620"
+            />
+          </figure>
+
+          <div class="about-story__content reveal">
+            <span class="eyebrow" data-i18n="Why NeuroBridge?">Why NeuroBridge?</span>
+            <h2 data-i18n="Care works better when everyone stays connected.">Care works better when everyone stays connected.</h2>
+            <p data-i18n="Cognitive rehabilitation continues beyond appointments. Patients practice every day, while families provide encouragement, memories, and meaningful context.">
+              Cognitive rehabilitation continues beyond appointments. Patients
+              practice every day, while families provide encouragement, memories,
+              and meaningful context.
+            </p>
+            <p data-i18n="Doctors and therapists need clear progress information to guide thoughtful follow-up. NeuroBridge brings these experiences together in one calm, connected space.">
+              Doctors and therapists need clear progress information to guide thoughtful
+              follow-up. NeuroBridge brings these experiences together in one calm,
+              connected space.
+            </p>
+
+            <div class="about-roles" aria-label="One journey, four connected perspectives">
+              <article><span>01</span><div><h3>Patient</h3><p>Daily cognitive practice</p></div></article>
+              <article><span>02</span><div><h3>Family</h3><p>Support and encouragement</p></div></article>
+              <article><span>03</span><div><h3>Doctor</h3><p>Progress and clinical context</p></div></article>
+              <article><span>04</span><div><h3>Therapist</h3><p>Guided rehabilitation</p></div></article>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid--3">
-          <article class="card reveal">
-            <span class="ic" aria-hidden="true">🧩</span>
-            <h3 data-i18n="Daily support">Daily support</h3>
-            <p data-i18n="Activities and games help patients keep a gentle daily routine.">Activities and games help patients keep a gentle daily routine.</p>
-          </article>
-
-          <article class="card reveal">
-            <span class="ic" aria-hidden="true">💚</span>
-            <h3 data-i18n="Family connection">Family connection</h3>
-            <p data-i18n="Families can share encouragement, memories, and supportive messages.">Families can share encouragement, memories, and supportive messages.</p>
-          </article>
-
-          <article class="card reveal">
-            <span class="ic" aria-hidden="true">🩺</span>
-            <h3 data-i18n="Care-team review">Care-team review</h3>
-            <p data-i18n="Doctors and therapists review performance-only progress within clear boundaries.">Doctors and therapists review performance-only progress within clear boundaries.</p>
-          </article>
+        <div class="about-mission reveal">
+          <span class="about-mission__label">Our purpose</span>
+          <blockquote>
+            Our purpose is simple: make cognitive rehabilitation easier to continue
+            between moments of care.
+          </blockquote>
+          <p>NeuroBridge helps patients, families, and care teams stay connected through daily rehabilitation.</p>
         </div>
       </div>
     </section>
 
-    <section class="cta">
-      <div class="container cta__inner reveal">
-        <h2 data-i18n="Ready to explore NeuroBridge?">Ready to explore NeuroBridge?</h2>
-        <p data-i18n="View the platform modules or request a demo walkthrough.">View the platform modules or request a demo walkthrough.</p>
-        <div class="cta__actions">
-          <a class="btn btn--gold" href="platform.html" data-i18n="Explore platform">Explore platform</a>
-          <a class="btn btn--ghost btn--ghost-light" href="request-demo.html" data-i18n="Request demo">Request demo</a>
-        </div>
-      </div>
-    </section>
+  
   </main>
+
+
   <!-- Language modal -->
 <div
   class="lang-modal"

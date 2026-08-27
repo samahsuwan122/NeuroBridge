@@ -10,17 +10,21 @@
 
   function getSavedTheme() {
     try {
-      return localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
+      var saved = localStorage.getItem(themeStorageKey);
+      if (saved === "dark" || saved === "light") return saved;
     } catch (e) {
-      return "light";
+      // Continue to the system preference fallback.
     }
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   function updateThemeButton(theme) {
     var button = document.getElementById("Darkbutton");
     if (!button) return;
     var isDark = theme === "dark";
-    button.textContent = isDark ? "🌝" : "🌛";
+    button.innerHTML = isDark
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.6 8.6 0 1 0 20.2 15.2Z"/></svg>';
     button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
     button.setAttribute("aria-pressed", isDark ? "true" : "false");
   }
@@ -30,7 +34,7 @@
     if (selected === "dark") {
       document.documentElement.setAttribute("data-theme", "dark");
     } else {
-      document.documentElement.removeAttribute("data-theme");
+      document.documentElement.setAttribute("data-theme", "light");
     }
     if (persist) {
       try { localStorage.setItem(themeStorageKey, selected); } catch (e) {}
@@ -574,7 +578,6 @@
     { name: "Provider Chat", target: "#families", hint: "Two-way inquiries" },
     { name: "Supportive Review", target: "#ai", hint: "Pending care-team review" },
     { name: "Memory Album", target: "#memory", hint: "Memory Center" },
-    { name: "Memory Tree", target: "#memory", hint: "Growing memories" },
     { name: "Cognitive Games", target: "#games", hint: "Supportive exercises" },
     { name: "Reports", target: "#reports", hint: "Weekly & monthly" },
     { name: "Security", target: "#security", hint: "JWT · RBAC · audit logs" },
@@ -839,6 +842,120 @@
         aiChatInput.focus();
       }, reduceMotion ? 150 : 650);
     });
+  }
+
+  // -- Homepage resource carousel -------------------------------------------
+  var resourceRail = document.querySelector(".home-editorial .home-resources__grid");
+  if (resourceRail) {
+    var resourceCards = Array.prototype.slice.call(resourceRail.children);
+    var resourcePrevious = document.querySelector(".resource-carousel__button--previous");
+    var resourceNext = document.querySelector(".resource-carousel__button--next");
+    var resourceActiveIndex = 0;
+    var resourceAutoplayTimer = null;
+    var resourceHovering = false;
+    var resourcePointerId = null;
+    var resourceDragStartX = 0;
+    var resourceDragDelta = 0;
+    var resourceDragged = false;
+    var resourceSuppressClick = false;
+
+    function resourceRelativePosition(index) {
+      var difference = index - resourceActiveIndex;
+      var half = resourceCards.length / 2;
+      if (difference > half) difference -= resourceCards.length;
+      if (difference < -half) difference += resourceCards.length;
+      return difference;
+    }
+
+    function renderResourceCoverflow() {
+      resourceCards.forEach(function (card, index) {
+        var position = resourceRelativePosition(index);
+        card.classList.remove("is-active", "is-previous", "is-next", "is-far-previous", "is-far-next", "is-coverflow-hidden");
+        if (position === 0) card.classList.add("is-active");
+        else if (position === -1) card.classList.add("is-previous");
+        else if (position === 1) card.classList.add("is-next");
+        else if (position === -2) card.classList.add("is-far-previous");
+        else if (position === 2) card.classList.add("is-far-next");
+        else card.classList.add("is-coverflow-hidden");
+        card.setAttribute("aria-hidden", position === 0 ? "false" : "true");
+        card.setAttribute("tabindex", position === 0 ? "0" : "-1");
+      });
+    }
+
+    function scheduleResourceAutoplay(delay) {
+      window.clearTimeout(resourceAutoplayTimer);
+      if (reduceMotion || resourceHovering || document.hidden) return;
+      resourceAutoplayTimer = window.setTimeout(function () {
+        resourceActiveIndex = (resourceActiveIndex + 1) % resourceCards.length;
+        renderResourceCoverflow();
+        scheduleResourceAutoplay(4800);
+      }, delay || 4800);
+    }
+
+    function moveResourcesByCard(direction, userInitiated) {
+      resourceActiveIndex = (resourceActiveIndex + direction + resourceCards.length) % resourceCards.length;
+      renderResourceCoverflow();
+      if (userInitiated) scheduleResourceAutoplay(5200);
+    }
+
+    resourceRail.addEventListener("mouseenter", function () {
+      resourceHovering = true;
+      window.clearTimeout(resourceAutoplayTimer);
+    });
+    resourceRail.addEventListener("mouseleave", function () {
+      resourceHovering = false;
+      scheduleResourceAutoplay(1800);
+    });
+    resourceRail.addEventListener("dragstart", function (event) { event.preventDefault(); });
+    resourceRail.addEventListener("pointerdown", function (event) {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      resourcePointerId = event.pointerId;
+      resourceDragStartX = event.clientX;
+      resourceDragDelta = 0;
+      resourceDragged = false;
+      window.clearTimeout(resourceAutoplayTimer);
+    });
+    resourceRail.addEventListener("pointermove", function (event) {
+      if (event.pointerId !== resourcePointerId) return;
+      resourceDragDelta = event.clientX - resourceDragStartX;
+      if (!resourceDragged && Math.abs(resourceDragDelta) > 10) {
+        resourceDragged = true;
+        resourceRail.classList.add("is-dragging");
+        resourceRail.setPointerCapture(event.pointerId);
+      }
+      if (!resourceDragged) return;
+      resourceRail.style.setProperty("--coverflow-drag", resourceDragDelta + "px");
+    });
+
+    function finishResourceCoverflowDrag(event) {
+      if (resourcePointerId === null || (event && event.pointerId !== resourcePointerId)) return;
+      if (event && resourceRail.hasPointerCapture(event.pointerId)) resourceRail.releasePointerCapture(event.pointerId);
+      resourceRail.classList.remove("is-dragging");
+      resourceRail.style.setProperty("--coverflow-drag", "0px");
+      resourceSuppressClick = resourceDragged;
+      if (resourceDragDelta < -45) moveResourcesByCard(1, false);
+      else if (resourceDragDelta > 45) moveResourcesByCard(-1, false);
+      resourcePointerId = null;
+      resourceDragDelta = 0;
+      scheduleResourceAutoplay(2200);
+    }
+
+    resourceRail.addEventListener("pointerup", finishResourceCoverflowDrag);
+    resourceRail.addEventListener("pointercancel", finishResourceCoverflowDrag);
+    resourceRail.addEventListener("lostpointercapture", function () {
+      if (resourcePointerId !== null) finishResourceCoverflowDrag();
+    });
+    resourceRail.addEventListener("click", function (event) {
+      if (!resourceSuppressClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+      resourceSuppressClick = false;
+    }, true);
+    if (resourcePrevious) resourcePrevious.addEventListener("click", function () { moveResourcesByCard(-1, true); });
+    if (resourceNext) resourceNext.addEventListener("click", function () { moveResourcesByCard(1, true); });
+    document.addEventListener("visibilitychange", function () { scheduleResourceAutoplay(2200); });
+    renderResourceCoverflow();
+    scheduleResourceAutoplay(4800);
   }
 
   // -- Subtle parallax on ambient orbs (skipped for reduced motion) ----------

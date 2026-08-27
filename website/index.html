@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta
@@ -13,7 +14,7 @@
 
   <title>NeuroBridge — Connected Cognitive Rehabilitation Platform</title>
 
-  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/neurobridge-logo-mark-premium.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,9 +25,10 @@
   />
 
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="backgrounds.css" />
 </head>
 
-<body>
+<body class="home-editorial">
   <a class="skip-link" href="#hero" data-i18n="Skip to content">Skip to content</a>
 
   <div class="orbs" aria-hidden="true">
@@ -41,7 +43,7 @@
     <a class="brand" href="index.html" aria-label="NeuroBridge home">
       <img
         class="brand__logo"
-        src="assets/neurobridge-logo-mark.png"
+        src="assets/neurobridge-logo-mark-premium.png"
         alt=""
         width="42"
         height="42"
@@ -50,13 +52,12 @@
     </a>
 
     <nav class="nav__links" id="navLinks" aria-label="Primary">
-      <a href="index.html" data-i18n="Home">Home</a>
+      <a href="index.html" aria-current="page" data-i18n="Home">Home</a>
       <a href="about.html" data-i18n="About">About</a>
       <a href="platform.html" data-i18n="Platform">Platform</a>
       <a href="patients.html" data-i18n="Patients">Patients</a>
       <a href="families.html" data-i18n="Families">Families</a>
       <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
-      <a href="clinics.html" data-i18n="Clinics">Clinics</a>
       <a href="resources.html" data-i18n="Resources">Resources</a>
       <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
     </nav>
@@ -125,15 +126,17 @@
   <main>
 
    <section class="hero" id="hero">
+  <figure class="home-hero__media">
+    <img src="assets/photos/hero-older-adult.jpg" alt="Caregiver supporting two older adults using NeuroBridge." width="944" height="938" />
+    <figcaption data-i18n="Simple, connected, and easy to follow.">Simple, connected, and easy to follow.</figcaption>
+  </figure>
   <div class="container hero__inner">
     <div class="hero__copy reveal">
       <span class="eyebrow" data-i18n="hero.eyebrow">Cognitive rehabilitation platform</span>
 
-      <h1 data-i18n="hero.title">NeuroBridge</h1>
+      <h1 data-i18n="home.heroHeadline">A connected cognitive rehabilitation platform</h1>
 
-      <span class="hero__sub-headline" data-i18n="hero.subtitle">
-        A connected cognitive rehabilitation platform for patients, families, and care teams.
-      </span>
+      <p class="home-hero__audience" data-i18n="home.heroAudience">For patients, families, and care teams.</p>
 
       <p class="lead" data-i18n="hero.description">
         Daily cognitive activities, family memories, provider communication,
@@ -141,64 +144,108 @@
       </p>
 
       <div class="hero__actions">
-        <a href="request-demo.html" class="btn btn--gold" data-i18n="hero.cta1">Sign in</a>
-        <a href="platform.html" class="btn btn--ghost" data-i18n="hero.cta2">Explore the platform</a>
+        <a href="platform.html" class="btn btn--gold" data-i18n="hero.cta2">Explore the platform</a>
+        <a href="request-demo.html" class="btn btn--ghost" data-i18n="nav.signin">Sign in</a>
       </div>
 
-      <p class="hero__note" data-i18n="hero.note">
-        Clearer daily follow-up for patients, families, doctors, therapists, and clinics.
-      </p>
     </div>
   </div>
 </section>
 
+  <div class="home-feature-strip reveal" aria-label="NeuroBridge features">
+    <article><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><circle cx="12" cy="14" r="2.5"/><path d="M12 12.5V14l1 1"/></svg></span><div><strong data-i18n="Daily practice">Daily cognitive practice</strong><small data-i18n="Activities and games support a gentle daily routine.">Activities and games</small></div></article>
+    <article><span aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M2.8 19c.4-3.5 2.1-5.5 5.2-5.5 2 0 3.4.8 4.3 2.2"/><path d="M15.5 6.8a2.6 2.6 0 0 1 2.2 4.5"/><path d="M17.5 19.5s-4-2.2-4-5a2.4 2.4 0 0 1 4-1.8 2.4 2.4 0 0 1 4 1.8c0 2.8-4 5-4 5Z"/></svg></span><div><strong data-i18n="Family connection">Family support</strong><small data-i18n="Family encouragement and memory sharing.">Memories and encouragement</small></div></article>
+    <article><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.2 8.5-8 10-4.8-1.5-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></span><div><strong data-i18n="Care-team review">Care-team follow-up</strong><small data-i18n="Supportive follow-up with care-team review.">Recorded performance review</small></div></article>
+    <article><span aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="11" r="7"/><path d="M3 11h14M10 4a11 11 0 0 1 0 14M10 4a11 11 0 0 0 0 14"/><rect x="14" y="13" width="7" height="6" rx="1.5"/><path d="M16 13v-1a1.5 1.5 0 0 1 3 0v1"/></svg></span><div><strong data-i18n="Role-based access (RBAC)">Secure role-based access</strong><small data-i18n="Keep each user scoped to their role and assigned data.">Role-based data access</small></div></article>
+  </div>
+
 
     <!-- Why NeuroBridge -->
     <section class="section section--tint" id="why">
-      <div class="container split">
-        <div class="split__copy reveal">
-          <span class="eyebrow" data-i18n="Why NeuroBridge?">Why NeuroBridge?</span>
+      <svg class="section-ornament section-ornament--care" viewBox="0 0 420 420" aria-hidden="true">
+        <path d="M105 208C144 139 197 108 258 118c54 9 88 48 86 98-2 58-50 103-117 108-70 5-134-35-142-94" />
+        <path d="M122 258c42-18 66-56 69-113M191 145c37 27 76 41 128 34M191 145c20 55 57 93 111 115" />
+        <circle cx="191" cy="145" r="19" /><circle cx="122" cy="258" r="16" /><circle cx="319" cy="179" r="16" /><circle cx="302" cy="260" r="16" />
+        <path d="M184 146c0-6 4-10 9-10s9 4 9 10M115 259c0-5 3-8 7-8s7 3 7 8M312 180c0-5 3-8 7-8s7 3 7 8M295 261c0-5 3-8 7-8s7 3 7 8" />
+      </svg>
+      <div class="container">
+        <span class="eyebrow why-section-eyebrow reveal" data-i18n="Why NeuroBridge?">Why NeuroBridge?</span>
+        <h2 class="why-section-title reveal" data-i18n="A clearer daily follow-up experience">A clearer daily follow-up experience</h2>
+        <div class="split">
+          <div class="split__copy reveal">
+            <p class="section__sub" data-i18n="Instead of separating daily practice, family support, provider communication, and reports, NeuroBridge brings them together in one organized platform.">
+              Instead of separating daily practice, family support, provider
+              communication, and reports, NeuroBridge brings them together in one
+              organized platform.
+            </p>
 
-          <h2 data-i18n="A clearer daily follow-up experience">A clearer daily follow-up experience</h2>
+            <ul class="ticks">
+              <li data-i18n="Simple patient experience with large, friendly actions.">Simple patient experience with large, friendly actions.</li>
+              <li data-i18n="Family involvement through memories and encouragement.">Family involvement through memories and encouragement.</li>
+              <li data-i18n="Care-team review with performance-only progress.">Care-team review with performance-only progress.</li>
+            </ul>
 
-          <p class="section__sub" data-i18n="Instead of separating daily practice, family support, provider communication, and reports, NeuroBridge brings them together in one organized platform.">
-            Instead of separating daily practice, family support, provider
-            communication, and reports, NeuroBridge brings them together in one
-            organized platform.
-          </p>
+            <a class="btn btn--gold" href="about.html" data-i18n="Learn more">Learn more</a>
+          </div>
 
-          <ul class="ticks">
-            <li data-i18n="Simple patient experience with large, friendly actions.">Simple patient experience with large, friendly actions.</li>
-            <li data-i18n="Family involvement through memories and encouragement.">Family involvement through memories and encouragement.</li>
-            <li data-i18n="Care-team review with performance-only progress.">Care-team review with performance-only progress.</li>
-            <li data-i18n="Role-based access for patients, families, providers, and clinics.">Role-based access for patients, families, providers, and clinics.</li>
-          </ul>
+          <div class="split__visual reveal">
+            <figure class="vcard vcard--flat">
+              <img
+                class="photo"
+                src="assets/photos/clinic-team.jpg"
+                alt="Clinic care team preview."
+                width="480"
+                height="360"
+              />
 
-          <a class="btn btn--gold" href="about.html" data-i18n="Learn more">Learn more</a>
+            </figure>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <div class="split__visual reveal">
-          <figure class="vcard vcard--flat">
-            <img
-              class="photo"
-              src="assets/photos/clinic-team.svg"
-              data-upgrade="assets/photos/clinic-team.jpg"
-              alt="Clinic care team preview."
-              width="480"
-              height="360"
-            />
-
-          </figure>
+    <!-- Core experiences -->
+    <section class="section home-experiences" id="overview">
+      <svg class="section-ornament section-ornament--roles" viewBox="0 0 440 360" aria-hidden="true">
+        <path d="M75 181C119 112 176 78 225 92c33 9 50 37 43 68-8 37-44 57-79 44-31-12-42-47-23-74" />
+        <path d="M225 92c40-12 91 9 117 50 29 46 17 99-28 120-44 21-100 3-126-42" />
+        <path d="M96 248c45 26 91 31 137 15 45-15 78-47 96-94" />
+        <circle cx="75" cy="181" r="5" /><circle cx="225" cy="92" r="5" /><circle cx="342" cy="142" r="5" /><circle cx="314" cy="262" r="5" /><circle cx="96" cy="248" r="5" />
+      </svg>
+      <div class="container">
+        <div class="section__head reveal">
+          <span class="eyebrow" data-i18n="Core experiences">Core experiences</span>
+          <h2 data-i18n="Everything NeuroBridge brings together">Everything NeuroBridge brings together</h2>
+        </div>
+        <div class="home-experience-grid">
+          <article class="home-experience-card reveal">
+            <img src="assets/photos/hero-older-adult.jpg" alt="Patient using the platform." width="620" height="420" />
+            <div><h3 data-i18n="Patients">Patients</h3><p data-i18n="Activities and games help patients keep a gentle daily routine.">Activities and games help patients keep a gentle daily routine.</p><a href="patients.html" data-i18n="Learn more">Learn more</a></div>
+          </article>
+          <article class="home-experience-card reveal">
+            <img src="assets/photos/family-support.jpg" alt="Family members providing support." width="620" height="420" />
+            <div><h3 data-i18n="Families">Families</h3><p data-i18n="Families can share encouragement, memories, and supportive messages.">Families can share encouragement, memories, and supportive messages.</p><a href="families.html" data-i18n="Learn more">Learn more</a></div>
+          </article>
+          <article class="home-experience-card reveal">
+            <img src="assets/photos/doctor-review.jpg" alt="Care professional reviewing recorded activity." width="620" height="420" />
+            <div><h3 data-i18n="Care Teams">Care Teams</h3><p data-i18n="Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.">Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.</p><a href="care-teams.html" data-i18n="Learn more">Learn more</a></div>
+          </article>
         </div>
       </div>
     </section>
 
     <!-- Safety preview -->
     <section class="section" id="safety">
+      <svg class="section-ornament section-ornament--shield" viewBox="0 0 380 430" aria-hidden="true">
+        <path d="M190 44c45 35 94 46 137 49v111c0 84-53 145-137 184-84-39-137-100-137-184V93c43-3 92-14 137-49Z" />
+        <path d="m126 215 40 40 88-94" />
+        <circle cx="190" cy="44" r="5" /><circle cx="53" cy="204" r="5" /><circle cx="327" cy="204" r="5" /><circle cx="190" cy="388" r="5" />
+        <path d="M190 44v45M53 204h44M327 204h-44M190 388v-42" />
+      </svg>
       <div class="container">
         <div class="section__head reveal">
           <span class="eyebrow" data-i18n="Safe boundaries">Safe boundaries</span>
-          <h2 data-i18n="Supportive review, not automated judgment">Supportive review, not automated judgment</h2>
+          <h2 data-i18n="Supportive follow-up with care-team review">Supportive follow-up with care-team review</h2>
           <p class="section__sub" data-i18n="NeuroBridge provides coordination and activity support. It keeps progress performance-only for supportive follow-up and care-team review.">
             NeuroBridge provides coordination and activity support. It keeps
             progress performance-only for supportive follow-up and care-team review.
@@ -207,19 +254,19 @@
 
         <div class="grid grid--3">
           <article class="card reveal">
-            <span class="ic" aria-hidden="true">🧩</span>
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="m9 14 2 2 4-4"/></svg></span>
             <h3 data-i18n="Daily practice">Daily practice</h3>
             <p data-i18n="Activities and games support a gentle daily routine.">Activities and games support a gentle daily routine.</p>
           </article>
 
           <article class="card reveal">
-            <span class="ic" aria-hidden="true">💚</span>
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.2-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.8-7 10-7 10Z"/><path d="M8.5 12.2h2l1-2.2 1.6 4 1-1.8h1.5"/></svg></span>
             <h3 data-i18n="Family connection">Family connection</h3>
             <p data-i18n="Families can share encouragement and warm memories.">Families can share encouragement and warm memories.</p>
           </article>
 
           <article class="card reveal">
-            <span class="ic" aria-hidden="true">🩺</span>
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3v5a5 5 0 0 0 10 0V3M4 3h4M14 3h4"/><path d="M11 13v2a4 4 0 0 0 8 0v-1"/><circle cx="19" cy="11.5" r="2"/></svg></span>
             <h3 data-i18n="Care-team review">Care-team review</h3>
             <p data-i18n="Doctors and therapists review performance-only progress.">Doctors and therapists review performance-only progress.</p>
           </article>
@@ -233,137 +280,139 @@
 
     <!-- Public AI Companion demo -->
     <section class="section ai-chat-section" id="ai-companion">
+      <svg class="section-ornament section-ornament--chat" viewBox="0 0 440 390" aria-hidden="true">
+        <path d="M64 76h268c34 0 61 27 61 61v106c0 34-27 61-61 61H194l-78 54 18-54H64c-34 0-61-27-61-61V137c0-34 27-61 61-61Z" />
+        <path d="M147 221c-28-5-44-28-36-52 6-18 23-27 39-26 4-23 25-39 48-34 10-18 38-20 53-4 23-8 48 8 48 32 24 4 36 28 26 49-7 15-22 23-38 22-13 22-41 30-64 17-20 15-50 14-76-4Z" />
+        <path d="M149 166c22 0 34 11 39 32M198 130c-5 26 2 44 23 58M254 130c-21 14-29 34-25 59M286 160c-20 2-34 12-42 30" />
+        <circle cx="149" cy="166" r="4" /><circle cx="188" cy="198" r="4" /><circle cx="221" cy="188" r="4" /><circle cx="244" cy="190" r="4" /><circle cx="286" cy="160" r="4" />
+      </svg>
+      <div class="container section__head ai-chat-section__heading reveal">
+        <span class="eyebrow" data-i18n="NeuroBridge AI Companion">NeuroBridge AI Companion</span>
+        <h2 data-i18n="AI Chat Bot">AI Chat Bot</h2>
+      </div>
       <div class="container ai-chat-section__inner">
         <div class="ai-chat-intro reveal">
-          <span class="eyebrow" data-i18n="NeuroBridge AI Companion">NeuroBridge AI Companion</span>
-          <h2 data-i18n="AI Chat Bot">AI Chat Bot</h2>
           <p class="ai-chat-intro__lead" data-i18n="Ask the NeuroBridge assistant about activities, family support, appointments, messages, and platform guidance.">
             Ask the NeuroBridge assistant about activities, family support,
             appointments, messages, and platform guidance.
           </p>
-          <p class="ai-chat-note">
-            <span aria-hidden="true">ⓘ</span>
-            <span data-i18n="Supportive guidance only. Not medical advice.">Supportive guidance only. Not medical advice.</span>
-          </p>
+          <ul class="home-ai__points">
+            <li data-i18n="Use the platform menu to open activities, appointments, messages, memories, and performance summaries.">Platform navigation and guidance</li>
+            <li data-i18n="You can check upcoming appointments inside the platform.">Appointment guidance</li>
+            <li data-i18n="Supportive guidance only. Not medical advice.">Supportive guidance only. Not medical advice.</li>
+          </ul>
         </div>
 
-        <div class="ai-chat-card reveal">
-          <div class="ai-chat-card__top">
-            <div class="ai-chat-avatar" aria-hidden="true">
-              <span class="ai-chat-avatar__antenna"></span>
-              <span class="ai-chat-avatar__face"><i></i><i></i></span>
-            </div>
-            <div>
-              <span class="ai-chat-badge" data-i18n="Hi!">Hi!</span>
-              <strong data-i18n="NeuroBridge AI Companion">NeuroBridge AI Companion</strong>
-            </div>
-            <span class="ai-chat-status" aria-hidden="true"></span>
-          </div>
+        <figure class="ai-companion-visual reveal">
 
-          <div class="ai-chat-window" id="aiChatWindow" aria-live="polite" aria-label="Chat messages" data-i18n-aria-label="Chat messages">
-            <div class="ai-chat-message ai-chat-message--bot">
-              <span data-i18n="Hello! How can I help you explore NeuroBridge today?">Hello! How can I help you explore NeuroBridge today?</span>
-            </div>
-          </div>
-
-          <form class="ai-chat-form" id="aiChatForm">
-            <label class="sr-only" for="aiChatInput" data-i18n="Ask about NeuroBridge">Ask about NeuroBridge</label>
-            <input
-              class="ai-chat-input"
-              id="aiChatInput"
-              type="text"
-              maxlength="500"
-              autocomplete="off"
-              placeholder="Ask about NeuroBridge…"
-              data-i18n-placeholder="Ask about NeuroBridge…"
-            />
-            <button class="ai-chat-send" type="submit" data-i18n="Send">Send</button>
-          </form>
-        </div>
+          <img
+            src="assets/photos/neurobridge-ai-assistant.png"
+            alt="NeuroBridge assistant supporting families, communication, and care teams."
+            width="1145"
+            height="1374"
+          />
+        </figure>
       </div>
     </section>
 
+
     <!-- Final CTA -->
-    <section class="cta" id="contact">
-      <div class="container cta__inner reveal">
+    <div class="connected-care-band">
+    <section class="cta connected-care-section" id="contact">
+      <div class="connected-care-inner">
+      <div class="home-brand-visual" aria-hidden="true">
+        <span class="home-brand-visual__network"></span>
+        <span class="home-brand-visual__person home-brand-visual__person--one"><svg viewBox="0 0 96 96" role="img" aria-label="Female patient illustration"><circle cx="48" cy="48" r="48" fill="#ead1ad"/><path d="M18 96c2-22 13-34 30-34s29 12 30 34" fill="#b96e61"/><ellipse cx="48" cy="43" rx="21" ry="25" fill="#d89f78"/><path d="M25 44c0-24 12-34 27-31 15 3 22 16 18 36-3-12-9-18-18-23-6 9-15 15-27 18Z" fill="#6b4434"/><path d="M29 40c-4 11-2 24 5 31-12-5-15-18-9-31Z" fill="#6b4434"/><circle cx="40" cy="45" r="1.7" fill="#493126"/><circle cx="57" cy="45" r="1.7" fill="#493126"/><path d="M42 55c4 3 8 3 12 0" fill="none" stroke="#8d5145" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="home-brand-visual__person home-brand-visual__person--two"><svg viewBox="0 0 96 96" role="img" aria-label="Male family member illustration"><circle cx="48" cy="48" r="48" fill="#dfbd8e"/><path d="M16 96c3-23 15-34 32-34s29 11 32 34" fill="#9b6c45"/><ellipse cx="48" cy="42" rx="20" ry="25" fill="#c98861"/><path d="M27 38c1-19 10-28 25-27 12 1 19 9 19 23-10-2-19-7-25-14-4 8-10 14-19 18Z" fill="#3e2b24"/><path d="M31 56c4 7 10 11 17 11s14-4 18-12c-6 4-12 6-18 6s-12-2-17-5Z" fill="#4b3027"/><circle cx="40" cy="43" r="1.7" fill="#38271f"/><circle cx="56" cy="43" r="1.7" fill="#38271f"/></svg></span>
+        <span class="home-brand-visual__person home-brand-visual__person--three"><svg viewBox="0 0 96 96" role="img" aria-label="Male doctor illustration"><circle cx="48" cy="48" r="48" fill="#e6d8c4"/><path d="M13 96c4-25 17-35 35-35s31 10 35 35" fill="#f8f3ea"/><path d="M42 63h12l7 33H35Z" fill="#6f9b91"/><ellipse cx="48" cy="39" rx="20" ry="24" fill="#b97550"/><path d="M28 36c0-18 9-27 23-27 13 0 21 8 22 23-11-1-21-5-28-12-3 8-9 13-17 16Z" fill="#332821"/><circle cx="40" cy="41" r="1.7" fill="#332821"/><circle cx="56" cy="41" r="1.7" fill="#332821"/><path d="M41 51c5 3 10 3 14 0" fill="none" stroke="#824536" stroke-width="2" stroke-linecap="round"/><path d="M31 67c-5 11-5 20-2 29M65 67c5 11 5 20 2 29" fill="none" stroke="#cbbda9" stroke-width="2"/><path d="M62 72c8 6 7 15 0 18" fill="none" stroke="#8a7c6f" stroke-width="2"/></svg></span>
+        <span class="home-brand-visual__person home-brand-visual__person--four"><svg viewBox="0 0 96 96" role="img" aria-label="Female therapist illustration"><circle cx="48" cy="48" r="48" fill="#ebcfaa"/><path d="M14 96c3-23 16-35 34-35s31 12 34 35" fill="#9e7868"/><ellipse cx="48" cy="41" rx="20" ry="25" fill="#e0aa7e"/><path d="M25 43c-1-22 9-33 25-33 16 0 25 12 23 34-8-6-14-15-17-25-8 11-18 19-31 24Z" fill="#8a583c"/><path d="M27 39c-3 16 0 28 9 35-15-5-20-21-11-37m45 1c5 15 1 29-9 36 14-6 18-21 9-36Z" fill="#8a583c"/><circle cx="40" cy="44" r="1.7" fill="#493126"/><circle cx="57" cy="44" r="1.7" fill="#493126"/><path d="M42 54c4 3 8 3 12 0" fill="none" stroke="#98594a" stroke-width="2" stroke-linecap="round"/></svg></span>
+      </div>
+      <div class="connected-care__portraits" aria-hidden="true">
+        <figure class="connected-care__portrait connected-care__portrait--family">
+          <img src="assets/connected-care/family-woman.png" alt="" />
+          <span class="connected-care__badge connected-care__badge--family">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M3 19c.5-3.6 2.2-5.5 5-5.5s4.5 1.9 5 5.5M16.5 7a2.5 2.5 0 0 1 0 5M15 14c3.2 0 5.2 1.7 5.7 5"/></svg>
+          </span>
+        </figure>
+        <figure class="connected-care__portrait connected-care__portrait--female-doctor">
+          <img src="assets/connected-care/female-doctor.png" alt="" />
+          <span class="connected-care__badge connected-care__badge--message">
+            <svg viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-5 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M8 11h8"/></svg>
+          </span>
+        </figure>
+        <figure class="connected-care__portrait connected-care__portrait--senior-doctor">
+          <img src="assets/connected-care/senior-doctor.png" alt="" />
+          <span class="connected-care__badge connected-care__badge--medical">
+            <svg viewBox="0 0 24 24"><path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5Z"/></svg>
+          </span>
+        </figure>
+        <figure class="connected-care__portrait connected-care__portrait--caregiver">
+          <img src="assets/connected-care/male-caregiver.png" alt="" />
+          <span class="connected-care__badge connected-care__badge--brain">
+            <svg viewBox="0 0 24 24"><path d="M9.5 5.5A3.5 3.5 0 0 0 6 9c0 .4.1.8.2 1.1A3.5 3.5 0 0 0 7.5 17H10V5.8c-.2-.2-.3-.3-.5-.3ZM14.5 5.5A3.5 3.5 0 0 1 18 9c0 .4-.1.8-.2 1.1A3.5 3.5 0 0 1 16.5 17H14V5.8c.2-.2.3-.3.5-.3ZM10 9H8m6 3h2m-6 3H8"/></svg>
+          </span>
+        </figure>
+      </div>
+      <div class="cta__inner reveal">
         <h2 data-i18n="cta.title">
-             NeuroBridge connects daily cognitive practice with family support and care-team review.
+          <span class="connected-care__heading-line">NeuroBridge connects daily cognitive practice</span>
+          <span class="connected-care__heading-line">with family support and care-team review.</span>
         </h2>
 
+        <div class="connected-care__divider" aria-hidden="true">
+          <span></span>
+          <svg viewBox="0 0 24 24"><path d="M9.5 5.5A3.5 3.5 0 0 0 6 9c0 .4.1.8.2 1.1A3.5 3.5 0 0 0 7.5 17H10V5.8c-.2-.2-.3-.3-.5-.3ZM14.5 5.5A3.5 3.5 0 0 1 18 9c0 .4-.1.8-.2 1.1A3.5 3.5 0 0 1 16.5 17H14V5.8c.2-.2.3-.3.5-.3Z"/></svg>
+          <span></span>
+        </div>
+
          <p data-i18n="cta.subtitle">
-             Request a walkthrough of the patient app, family portal, care-team dashboard, and clinic management experience.
+             Support a better quality of life for patients through consistent practice, family involvement, and professional care.
         </p>
 
         <div class="cta__actions">
-          <a class="btn btn--gold" href="request-demo.html" data-i18n="Request demo">Request demo</a>
-          <a class="btn btn--ghost btn--ghost-light" href="platform.html" data-i18n="Explore platform">Explore platform</a>
+          <a class="btn btn--gold" href="platform.html" data-i18n="Explore platform">Explore platform</a>
         </div>
 
         <span data-i18n="cta.note">
   Connected care platform · Patients, families, and care teams · Clearer daily follow-up
 </span>
       </div>
+      </div>
     </section>
+    </div>
 
-    <!-- Developers -->
-    <section class="section devs" id="developers">
+    <!-- Resource preview -->
+    <section class="section home-resources" aria-labelledby="home-resources-title">
+      <svg class="section-ornament section-ornament--resources" viewBox="0 0 450 360" aria-hidden="true">
+        <path d="M44 85c61-14 116 1 181 42v178c-65-41-120-56-181-42V85Zm362 0c-61-14-116 1-181 42v178c65-41 120-56 181-42V85Z" />
+        <path d="M225 127v178M82 125c43-3 77 8 113 29M82 165c43-3 77 8 113 29M368 125c-43-3-77 8-113 29M368 165c-43-3-77 8-113 29" />
+        <circle cx="82" cy="125" r="4" /><circle cx="195" cy="154" r="4" /><circle cx="368" cy="125" r="4" /><circle cx="255" cy="154" r="4" />
+      </svg>
       <div class="container">
-        <div class="section__head reveal">
-          <span class="eyebrow" data-i18n="The team">The team</span>
-          <h2 data-i18n="Meet the Developers">Meet the Developers</h2>
-          <p class="section__sub" data-i18n="Designed and developed by Computer Engineering students at An-Najah National University.">
-            Designed and developed by Computer Engineering students at
-            An-Najah National University.
-          </p>
+        <div class="home-resources__head reveal">
+          <div><span class="eyebrow" data-i18n="Resources">Resources</span><h2 id="home-resources-title" data-i18n="Helpful resources for patients, families, and care teams.">Helpful resources for patients, families, and care teams.</h2></div>
+          <a class="btn btn--gold" href="resources.html" data-i18n="View all resources">View all resources</a>
         </div>
-
-        <div class="dev-grid">
-          <article class="dev-card dev-card--a reveal">
-            <span class="dev-card__tab" aria-hidden="true"><span></span></span>
-            <span class="dev-card__avatar" aria-hidden="true">
-              <svg viewBox="0 0 64 64" width="52" height="52">
-                <circle cx="32" cy="22" r="11" fill="currentColor" />
-                <path d="M14 53 C14 41 22 35 32 35 C42 35 50 41 50 53 Z" fill="currentColor" />
-              </svg>
-              <i class="dev-card__sparkle dev-card__sparkle--one"></i>
-              <i class="dev-card__sparkle dev-card__sparkle--two"></i>
-            </span>
-
-            <span class="dev-card__badge" data-i18n="Developer">Developer</span>
-            <h3 class="dev-card__name" data-i18n="Tala Asaad Mweikat">Tala Asaad Mweikat</h3>
-            <span class="dev-card__accent" aria-hidden="true"></span>
-            <p class="dev-card__role">
-              <svg class="dev-card__cap" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M2.5 9 12 4l9.5 5L12 14 2.5 9Zm3 2.1V16c2.8 2.5 10.2 2.5 13 0v-4.9M21.5 9v6" />
-              </svg>
-              <span data-i18n="Computer Engineering - An-Najah National University">Computer Engineering - An-Najah National University</span>
-            </p>
-          </article>
-
-          <article class="dev-card dev-card--b reveal">
-            <span class="dev-card__tab" aria-hidden="true"><span></span></span>
-            <span class="dev-card__avatar" aria-hidden="true">
-              <svg viewBox="0 0 64 64" width="52" height="52">
-                <circle cx="32" cy="22" r="11" fill="currentColor" />
-                <path d="M14 53 C14 41 22 35 32 35 C42 35 50 41 50 53 Z" fill="currentColor" />
-              </svg>
-              <i class="dev-card__sparkle dev-card__sparkle--one"></i>
-              <i class="dev-card__sparkle dev-card__sparkle--two"></i>
-            </span>
-
-            <span class="dev-card__badge" data-i18n="Developer">Developer</span>
-            <h3 class="dev-card__name" data-i18n="Samah Hani Sawan">Samah Hani Sawan</h3>
-            <span class="dev-card__accent" aria-hidden="true"></span>
-            <p class="dev-card__role">
-              <svg class="dev-card__cap" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M2.5 9 12 4l9.5 5L12 14 2.5 9Zm3 2.1V16c2.8 2.5 10.2 2.5 13 0v-4.9M21.5 9v6" />
-              </svg>
-              <span data-i18n="Computer Engineering - An-Najah National University">Computer Engineering - An-Najah National University</span>
-            </p>
-          </article>
+        <div class="resource-carousel__shell">
+        <div class="home-resources__grid" role="region" aria-label="Resource articles carousel" tabindex="0">
+          <a class="home-resource home-resource--feature reveal" href="patients.html"><img src="assets/photos/Patient support.png" alt="Supportive cognitive rehabilitation session." width="760" height="480" /><span><small data-i18n="For patients">For patients</small><strong data-i18n="Understanding Cognitive Rehabilitation">Understanding Cognitive Rehabilitation</strong><p>Simple guidance for building confidence through supportive cognitive practice.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="families.html"><img src="assets/photos/family.jpg" alt="Family members sharing support." width="520" height="340" /><span><small data-i18n="For families">For families</small><strong data-i18n="Supporting a Loved One">Supporting a Loved One</strong><p>Practical ways to share encouragement, memories, and meaningful moments.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="care-teams.html"><img src="assets/photos/doctor-review.jpg" alt="Care professional reviewing recorded activity." width="520" height="340" /><span><small data-i18n="For care teams">For care teams</small><strong data-i18n="Care-Team Collaboration">Care-Team Collaboration</strong><p>Support clearer follow-up with organized, performance-only information.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="patients.html"><img src="assets/photos/guide.png" alt="Family and patient completing a supportive activity." width="520" height="340" /><span><small data-i18n="Guides">Guides</small><strong data-i18n="Activities &amp; Games Guide">Activities &amp; Games Guide</strong><p>Explore gentle activities for memory, attention, reaction, and recall.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="resources.html#supportive-boundaries"><img src="assets/photos/privacy.png" alt="Abstract protected cognitive network illustration." width="520" height="340" /><span><small data-i18n="Privacy">Privacy</small><strong data-i18n="Privacy &amp; Data Security">Privacy &amp; Data Security</strong><p>Understand role-based access, clear boundaries, and protected information.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="resources.html#faq"><img src="assets/photos/clinic-team.jpg" alt="Care team answering common platform questions." width="520" height="340" /><span><small data-i18n="Help">Help</small><strong data-i18n="FAQ">FAQ</strong><p>Find clear answers about platform access, activities, and follow-up.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="patients.html"><img src="assets/photos/therapy-session.jpg" alt="Patient taking part in guided cognitive practice." width="520" height="340" /><span><small>Daily practice</small><strong>Building a Gentle Daily Routine</strong><p>Create a calm and consistent rhythm for everyday cognitive activities.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="families.html"><img src="assets/photos/family-support.jpg" alt="Family sharing a supportive memory activity." width="520" height="340" /><span><small>Family support</small><strong>Memory Activities to Share Together</strong><p>Turn familiar stories and photos into warm moments of connection.</p><em data-i18n="Learn more">Learn more</em></span></a>
+          <a class="home-resource reveal" href="care-teams.html"><img src="assets/photos/medical.jpg" alt="Care team reviewing patient activity progress." width="520" height="340" /><span><small>Care-team guide</small><strong>Making Follow-up More Supportive</strong><p>Keep reviews focused, human-centered, and easy to understand.</p><em data-i18n="Learn more">Learn more</em></span></a>
+        </div>
+        <div class="resource-carousel__controls" aria-label="Resource carousel controls">
+          <button class="resource-carousel__button resource-carousel__button--previous" type="button" aria-label="Previous resources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"/></svg></button>
+          <button class="resource-carousel__button resource-carousel__button--next" type="button" aria-label="Next resources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"/></svg></button>
+        </div>
         </div>
       </div>
     </section>
+
   </main>
 
   <!-- Footer -->
@@ -373,7 +422,7 @@
         <span class="footer__brandrow">
           <img
             class="footer__logo"
-            src="assets/neurobridge-logo-mark.png"
+            src="assets/neurobridge-logo-mark-premium.png"
             alt="NeuroBridge"
             width="56"
             height="56"
@@ -403,7 +452,6 @@
         <div class="footer__col">
           <h4 data-i18n="More">More</h4>
           <a href="about.html" data-i18n="About">About</a>
-          <a href="clinics.html" data-i18n="Clinics">Clinics</a>
           <a href="resources.html" data-i18n="Resources">Resources</a>
           <a href="request-demo.html" data-i18n="Request demo">Request demo</a>
         </div>
@@ -411,7 +459,6 @@
         <div class="footer__col">
           <h4 data-i18n="Contact">Contact</h4>
           <a href="request-demo.html" data-i18n="Request access">Request access</a>
-          <a href="mailto:neurobridge.demo@example.com" data-i18n="Email the team">Email the team</a>
           <a href="#top" data-i18n="Back to top">Back to top</a>
         </div>
       </nav>
@@ -419,9 +466,7 @@
 
     <div class="container footer__legal">
       <p data-i18n="NeuroBridge is a connected care platform for patients, families, and care teams. It supports organization, activities, appointments, messages, and performance-only progress summaries.">
-        NeuroBridge is a connected care platform for patients, families, and
-        care teams. It supports organization, activities, appointments,
-        messages, and performance-only progress summaries.
+        Neurobridge is an integrated platform that facilitates the scheduling of activities, appointments, messages, and communication on a single platform and unites patients, their families, physicians, and therapists in one location.
       </p>
 
       <p class="footer__credit">
