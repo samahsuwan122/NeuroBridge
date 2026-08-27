@@ -1,6 +1,6 @@
 /* NeuroBridge public artwork: image geometry is shared; themes change only the veil. */
 :root{--art-canvas:#f5e8d6;--art-veil:rgba(250,242,230,.28);--art-edge:rgba(245,232,214,.82)}
-html[data-theme="dark"]{--art-canvas:#281b14;--art-veil:rgba(35,24,18,.79);--art-edge:rgba(33,23,17,.92)}
+html[data-theme="dark"]{--art-canvas:#281b14;--art-veil:rgba(35,24,18,.64);--art-edge:rgba(33,23,17,.82)}
 
 .home-editorial :is(#why,#overview.home-experiences,#safety,.ai-chat-section,.home-resources),
 :is(.site-editorial,.about-editorial) main>.section:not(.section--dark),
@@ -52,3 +52,303 @@ html[data-theme="dark"]{--art-canvas:#281b14;--art-veil:rgba(35,24,18,.79);--art
 .home-editorial :is(#why,#overview,#safety,.ai-chat-section,.home-resources)>.section-ornament,
 .site-editorial #faq::before,.site-editorial #faq::after,
 .home-editorial #contact.connected-care-section::before,.home-editorial #contact.connected-care-section::after{display:none!important}
+
+/* Home night polish: restore artwork after older high-specificity background shorthands. */
+html[data-theme="dark"] .home-editorial :is(#why,#overview.home-experiences,#safety,.ai-chat-section,.home-resources){
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),var(--section-art)!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important
+}
+html[data-theme="dark"] .home-editorial :is(#overview.home-experiences,.ai-chat-section)::before{
+  display:none!important
+}
+
+/* Home night artwork crossfades: carry the prior canvas briefly into each next section. */
+html[data-theme="dark"] .home-editorial #why{--previous-section-art:url("assets/photos/hero-older-adult.jpg")}
+html[data-theme="dark"] .home-editorial #overview.home-experiences{--previous-section-art:url("assets/backgrounds/section1.png")}
+html[data-theme="dark"] .home-editorial #safety{--previous-section-art:url("assets/backgrounds/section2.png")}
+html[data-theme="dark"] .home-editorial .ai-chat-section{--previous-section-art:url("assets/backgrounds/section3.png")}
+html[data-theme="dark"] .home-editorial #contact.connected-care-section{--previous-section-art:url("assets/backgrounds/section3.png")}
+html[data-theme="dark"] .home-editorial .home-resources{--previous-section-art:url("assets/connected-care/connected-care-background.png")}
+html[data-theme="dark"] .home-editorial :is(#why,#overview.home-experiences,#safety,.ai-chat-section,#contact.connected-care-section,.home-resources){
+  position:relative;
+  isolation:isolate;
+  overflow:hidden
+}
+html[data-theme="dark"] .home-editorial :is(#why,#overview.home-experiences,#safety,.ai-chat-section,#contact.connected-care-section,.home-resources)::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:0 0 auto;
+  display:block!important;
+  width:100%;
+  height:72px;
+  border:0;
+  border-radius:0;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),var(--previous-section-art)!important;
+  background-size:100% 100%,cover!important;
+  background-position:center,bottom!important;
+  background-repeat:no-repeat!important;
+  box-shadow:none;
+  opacity:1;
+  filter:none;
+  transform:none;
+  mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.72) 34%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.72) 34%,transparent 100%);
+  pointer-events:none
+}
+html[data-theme="dark"] .home-editorial #contact.connected-care-section .connected-care-inner{
+  position:relative;
+  z-index:2
+}
+
+/* About night recovery: reuse the Light artwork with a restrained uniform veil. */
+html[data-theme="dark"] body.about-page.about-editorial main#main-content>section.section.about-hero{
+  background:linear-gradient(rgba(27,20,16,.55),rgba(27,20,16,.55)),url("assets/backgrounds/section1.png")!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important
+}
+html[data-theme="dark"] body.about-page.about-editorial main#main-content>section.section.about-story{
+  background:linear-gradient(rgba(27,20,16,.55),rgba(27,20,16,.55)),url("assets/backgrounds/section2.png")!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important
+}
+html[data-theme="dark"] .about-editorial .about-mission{
+  background-color:transparent!important;
+  background-image:none!important
+}
+html[data-theme="dark"] body.about-page.about-editorial .about-story__content{
+  border-color:transparent!important;
+  background:transparent!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.about-page.about-editorial .about-roles article{
+  background:transparent!important;
+  box-shadow:none!important
+}
+
+/* Remaining public pages: keep each Light artwork visible on one continuous night canvas. */
+html[data-theme="dark"] body.site-editorial:not(.about-page) main#main-content>.section{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),var(--section-art)!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important;
+  border-block:0!important
+}
+html[data-theme="dark"] body.site-editorial:not(.about-page) main#main-content>.section:not(:first-child){
+  margin-top:-1px
+}
+
+/* Page-specific artwork mappings for sections whose Light CSS uses a custom shorthand. */
+html[data-theme="dark"] body.site-editorial main#main-content>#patients.patients-hero{--section-art:url("assets/backgrounds/section2.png")}
+html[data-theme="dark"] body.families-page main#main-content>.families-premium-hero,
+html[data-theme="dark"] body.care-teams-page main#main-content>.care-teams-hero{--section-art:url("assets/backgrounds/section1.png")}
+html[data-theme="dark"] body.families-page main#main-content>.families-support-summary,
+html[data-theme="dark"] body.care-teams-page main#main-content>.care-showcase{--section-art:url("assets/backgrounds/section2.png")}
+html[data-theme="dark"] body.resources-page main#main-content>.resources-journey{--section-art:url("assets/backgrounds/section1.png")}
+html[data-theme="dark"] body.resources-page main#main-content>.resources-guidance{--section-art:url("assets/backgrounds/section2.png")}
+
+/* Closing CTAs reuse the preceding section artwork and stop cleanly before the footer. */
+html[data-theme="dark"] body.site-editorial main#main-content>.platform-explore-cta{
+  position:relative;
+  overflow:hidden;
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),url("assets/backgrounds/section3.png")!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important;
+  border-block:0!important;
+  margin-top:-1px
+}
+html[data-theme="dark"] body.care-teams-page main#main-content>.care-teams-cta{
+  position:relative;
+  overflow:hidden;
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),url("assets/backgrounds/section2.png")!important;
+  background-size:100% 100%,100% 100%!important;
+  background-position:center,center!important;
+  background-repeat:no-repeat!important;
+  border-block:0!important;
+  margin-top:-1px
+}
+html[data-theme="dark"] body.site-editorial main#main-content>:is(.platform-explore-cta,.care-teams-cta) h2{
+  color:var(--text-primary)!important
+}
+html[data-theme="dark"] body.site-editorial main#main-content>:is(.platform-explore-cta,.care-teams-cta) p{
+  color:var(--text-secondary)!important
+}
+html[data-theme="dark"] body.site-editorial main#main-content>:is(.platform-explore-cta,.care-teams-cta) :is(.platform-explore-cta__eyebrow,.care-teams-cta__eyebrow),
+html[data-theme="dark"] body.about-page .about-mission__label{
+  color:var(--accent-gold-soft)!important
+}
+html[data-theme="dark"] body.care-teams-page .care-showcase__summary article{
+  border-color:rgba(224,179,95,.2)!important;
+  background:transparent!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.resources-page .resources-guidance__inner{
+  border-color:rgba(224,179,95,.22)!important;
+  background:rgba(35,24,18,.12)!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.resources-page .resources-boundaries__items article{
+  border-color:rgba(105,72,43,.46)!important;
+  background:transparent!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.resources-page .resources-faq{
+  border-color:rgba(79,51,32,.62)!important
+}
+html[data-theme="dark"] body.resources-page .resources-faq details,
+html[data-theme="dark"] body.resources-page .resources-faq details:hover,
+html[data-theme="dark"] body.resources-page .resources-faq details[open]{
+  border-color:rgba(79,51,32,.58)!important;
+  background:transparent!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.resources-page .resources-faq summary{
+  color:var(--text-primary)!important
+}
+html[data-theme="dark"] body.resources-page .resources-faq details>p{
+  color:var(--text-secondary)!important
+}
+html[data-theme="dark"] body.resources-page .resources-faq summary::before{
+  border-color:rgba(105,72,43,.58)!important;
+  background:rgba(246,232,207,.42)!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.resources-page .resources-faq summary::after{
+  border-color:#6e482b!important
+}
+html[data-theme="dark"] body.resources-page :is(.resources-journey__number,.resources-boundaries__label,.resources-boundaries__items article>span){
+  color:#633b22!important
+}
+html[data-theme="dark"] body.resources-page .resources-journey__role{
+  color:var(--text-secondary)!important
+}
+html[data-theme="dark"] body.resources-page :is(.resources-journey__step h2,.resources-boundaries__items h3){
+  color:var(--text-primary)!important
+}
+html[data-theme="dark"] body.resources-page :is(.resources-journey__step p,.resources-boundaries__items p){
+  color:var(--text-secondary)!important
+}
+html[data-theme="dark"] body.resources-page .resources-journey__path path{
+  stroke:#75451f!important
+}
+html[data-theme="dark"] body.resources-page .resources-journey__path circle{
+  fill:#9a6737!important;
+  stroke:#f5e4c7!important
+}
+html[data-theme="dark"] body.resources-page .resources-journey__step:not(:last-child)::after{
+  background:linear-gradient(180deg,transparent,rgba(79,51,32,.64),transparent)!important
+}
+html[data-theme="dark"] body.care-teams-page .care-showcase__summary article{
+  border-color:rgba(79,51,32,.62)!important
+}
+html[data-theme="dark"] body.care-teams-page .care-showcase__summary h3{
+  color:var(--text-primary)!important
+}
+html[data-theme="dark"] body.care-teams-page .care-showcase__summary article>span{
+  color:#633b22!important
+}
+html[data-theme="dark"] body.care-teams-page .care-showcase__summary p{
+  color:var(--text-secondary)!important
+}
+html[data-theme="dark"] body.resources-page .resources-page__head>p{
+  color:var(--text-secondary)!important
+}
+html[data-theme="dark"] body.about-page .about-roles{
+  border-color:rgba(105,72,43,.48)!important
+}
+html[data-theme="dark"] body.about-page .about-roles article{
+  border-color:rgba(105,72,43,.42)!important
+}
+html[data-theme="dark"] body.about-page .about-roles article>span{
+  color:#80532e!important
+}
+html[data-theme="dark"] body.about-page .about-roles h3{
+  color:var(--text-primary)!important
+}
+html[data-theme="dark"] body.about-page .about-roles p{
+  color:var(--text-secondary)!important
+}
+
+/* Keep the embedded patient mobile preview calm and internally consistent. */
+html[data-theme="dark"] body.site-editorial #patients .patients-phone .phone__screen{
+  background:radial-gradient(circle at 85% 18%,rgba(222,190,137,.18),transparent 34%),linear-gradient(180deg,#faf6ed 0%,#f2eadc 100%)!important
+}
+html[data-theme="dark"] body.site-editorial #patients .patient-profile-ui,
+html[data-theme="dark"] body.site-editorial #patients .patient-profile-ui__section{
+  color:#4b4038!important;
+  border-color:transparent!important;
+  background:transparent!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] body.site-editorial #patients :is(.patient-profile-ui__info>span,.patient-profile-ui__link){
+  color:#56463b!important;
+  border-color:rgba(170,135,92,.15)!important;
+  background:rgba(255,253,248,.82)!important;
+  box-shadow:0 5px 12px rgba(76,55,38,.04)!important
+}
+html[data-theme="dark"] body.site-editorial #patients :is(.patient-profile-ui__header,.patient-profile-ui__identity b,.patient-profile-ui__section h4,.patient-profile-ui__info b,.patient-profile-ui__link b){
+  color:#4a3a30!important
+}
+html[data-theme="dark"] body.site-editorial #patients :is(.patient-profile-ui__identity small,.patient-profile-ui__info i,.patient-profile-ui__info em,.patient-profile-ui__link small,.patient-profile-ui__link>em){
+  color:#88786b!important
+}
+html[data-theme="dark"] body.site-editorial #patients .patient-profile-ui__nav{
+  color:#76695f!important;
+  border-color:rgba(164,125,78,.15)!important;
+  background:rgba(250,247,240,.94)!important;
+  box-shadow:0 -8px 18px rgba(78,57,38,.04)!important
+}
+html[data-theme="dark"] body.site-editorial #patients :is(.patients-title,.patients-title span){
+  color:#35271f!important;
+  text-shadow:none!important
+}
+html[data-theme="dark"] body.site-editorial #patients :is(.patients-sub,.patients-copy p){
+  color:#58483d!important
+}
+html[data-theme="dark"] body.care-teams-page .care-showcase__panel .tag,
+html[data-theme="dark"] body.care-teams-page .care-showcase__panel .tag--teal{
+  color:#33251d!important;
+  font-weight:800!important;
+  opacity:1!important;
+  text-shadow:none!important
+}
+
+/* The Home hero copy is not a card; readability comes from the image overlay below it. */
+html[data-theme="dark"] .home-editorial .hero__copy{
+  color:var(--text-secondary)!important;
+  border-color:transparent!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important
+}
+html[data-theme="dark"] .home-editorial .home-hero__media::after{
+  background:linear-gradient(90deg,rgba(20,17,15,.77) 0%,rgba(20,17,15,.59) 34%,rgba(20,17,15,.23) 58%,rgba(20,17,15,0) 100%)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  mask-image:none!important;
+  -webkit-mask-image:none!important;
+  pointer-events:none
+}
+html[data-theme="dark"] .home-editorial .hero__actions .btn--ghost{
+  color:var(--text-primary)!important;
+  border-color:rgba(224,179,95,.38)!important;
+  background:rgba(24,20,18,.48)!important;
+  box-shadow:none!important
+}
+html[data-theme="dark"] .home-editorial .hero__actions .btn--ghost:hover{
+  border-color:rgba(224,179,95,.58)!important;
+  background:rgba(24,20,18,.64)!important
+}

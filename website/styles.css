@@ -8582,7 +8582,7 @@ html[data-theme="dark"] .home-roles__center {
   max-width: 455px;
   margin: 0.68rem 0 0;
   color: #756558;
-  font-size: 0.86rem;
+  font-size: clamp(1.02rem, 1.25vw, 1.1rem) !important;
   line-height: 1.62;
 }
 .home-editorial #why .ticks {
@@ -8593,8 +8593,8 @@ html[data-theme="dark"] .home-roles__center {
   min-height: 26px;
   padding-inline-start: 2.05rem;
   color: #58483d;
-  font-size: 0.8rem;
-  line-height: 1.45;
+  font-size: clamp(0.96rem, 1.1vw, 1.02rem) !important;
+  line-height: 1.5;
 }
 .home-editorial #why .ticks li::before {
   top: 0.02rem;
@@ -9072,8 +9072,8 @@ html[data-theme="dark"] .home-editorial .home-experience-card {
   max-width: 40ch;
   margin: 0;
   color: #8a6f5a;
-  font-size: 0.84rem;
-  line-height: 1.75;
+  font-size: clamp(1.04rem, 1.3vw, 1.12rem) !important;
+  line-height: 1.7;
   text-align: start;
 }
 .home-editorial .home-ai__points {
@@ -9087,6 +9087,8 @@ html[data-theme="dark"] .home-editorial .home-experience-card {
 }
 .home-editorial .home-ai__points li {
   color: #6f5a49;
+  font-size: clamp(0.98rem, 1.15vw, 1.04rem) !important;
+  line-height: 1.55;
 }
 .home-editorial .ai-companion-visual {
   display: grid;
@@ -12669,7 +12671,7 @@ html[data-theme="dark"] .home-editorial .section-ornament circle {
 }
 
 .about-page .about-roles article:nth-child(odd) {
-  border-right: 1px solid rgba(190, 139, 74, 0.22);
+  border-inline-end: 1px solid rgba(190, 139, 74, 0.22);
 }
 
 .about-page .about-roles article:nth-child(-n + 2) {
@@ -12880,7 +12882,7 @@ html[data-theme="dark"] .home-editorial .section-ornament circle {
   }
 
   .about-page .about-roles article:nth-child(odd) {
-    border-right: 0;
+    border-inline-end: 0;
   }
 
   .about-page .about-roles article:not(:last-child) {
@@ -13764,7 +13766,7 @@ html[data-theme="dark"] .home-editorial .section-ornament circle {
 }
 
 .care-teams-page .care-showcase__summary article:not(:last-child) {
-  border-right: 1px solid rgba(183, 132, 69, 0.22);
+  border-inline-end: 1px solid rgba(183, 132, 69, 0.22);
 }
 
 .care-teams-page .care-showcase__summary span {
@@ -13930,7 +13932,7 @@ html[data-theme="dark"] .home-editorial .section-ornament circle {
   }
 
   .care-teams-page .care-showcase__summary article:not(:last-child) {
-    border-right: 0;
+    border-inline-end: 0;
     border-bottom: 1px solid rgba(183, 132, 69, 0.2);
   }
 
@@ -14033,7 +14035,7 @@ html[data-theme="dark"] .home-editorial .section-ornament circle {
 }
 
 .families-page .families-premium-hero__features > span:nth-child(odd) {
-  border-right: 1px solid rgba(183, 131, 88, 0.18);
+  border-inline-end: 1px solid rgba(183, 131, 88, 0.18);
 }
 
 .families-page .families-premium-hero__features i {
@@ -15599,6 +15601,10 @@ html[data-theme="dark"] :is(.public-auth__patient-mobile,.public-auth__pending){
 html[data-theme="dark"] .public-auth__mobile-icon{color:#281b14!important;border-color:#e0b35f!important;background:linear-gradient(145deg,#e6c071,#d9a84e)!important}
 html[data-theme="dark"] .public-auth__patient-mobile a+ a{color:var(--text-primary)!important;background:var(--surface-elevated)!important}
 html[data-theme="dark"] .public-auth__otp input{color:var(--text-primary)!important;background:var(--input-bg)!important}
+html[data-theme="dark"] :is(.public-auth__notice,.public-auth__pending-icon){color:var(--text-secondary)!important;border-color:var(--border-soft)!important;background:var(--surface-elevated)!important}
+html[data-theme="dark"] :is(.public-auth__form-meta a,.public-auth__handoff,.public-auth__resend,.public-auth__pending dt){color:var(--text-muted)!important}
+html[data-theme="dark"] .public-auth__pending dd{color:var(--text-primary)!important}
+html[data-theme="dark"] .public-auth__pending :is(button,a){color:var(--text-primary)!important;border-color:var(--border-soft)!important;background:var(--surface-elevated)!important}
 
 /* Keep the patient mobile handoff fully legible instead of retaining its light artwork. */
 html[data-theme="dark"] .public-auth__patient-mobile{
@@ -15621,7 +15627,7 @@ html[data-theme="dark"] .public-auth__patient-mobile a+ a{
 }
 
 /* Page-specific premium surfaces that otherwise retain light inline artwork. */
-html[data-theme="dark"] :is(.about-hero,.platform-hero,.resources-hero,.families-premium-hero,.care-teams-hero,#patients.patients-hero){background-color:var(--section-bg)!important}
+html[data-theme="dark"] :is(.platform-hero,.resources-hero,.families-premium-hero,.care-teams-hero,#patients.patients-hero){background-color:var(--section-bg)!important}
 html[data-theme="dark"] :is(.patient-profile-ui,.patient-profile-ui__section,.patient-profile-ui__link,.dash,.dashboard,.care-team-dashboard){color:var(--text-secondary)!important;border-color:var(--border-soft)!important;background-color:var(--surface)!important}
 html[data-theme="dark"] :is(.patient-profile-ui__info>span,.patient-profile-ui__link,.dash__row,.dash__item){border-color:var(--border-soft)!important;background:var(--surface-soft)!important}
 html[data-theme="dark"] :is(.chart__bar,.bar--sage){background:linear-gradient(#a8c3b4,#779b88)!important}
@@ -15658,6 +15664,135 @@ html[data-theme="dark"] .care-teams-page .care-showcase__panel .cm{
 html[data-theme="dark"] .care-teams-page .care-showcase__panel .cm--me{color:var(--text-primary)!important;background:#354137!important}
 html[data-theme="dark"] .about-page .about-mission blockquote{color:var(--text-primary)!important}
 html[data-theme="dark"] .about-page .about-mission>p{color:var(--text-secondary)!important}
+
+/* Access localization: logical alignment keeps RTL forms balanced without moving artwork. */
+html[dir="rtl"] .public-auth__panel-head,
+html[dir="rtl"] .public-auth__fields label,
+html[dir="rtl"] .public-auth__pending,
+html[dir="rtl"] .public-auth__patient-mobile{text-align:right}
+html[dir="rtl"] .public-auth__form-meta{text-align:left}
+html[dir="rtl"] .public-auth__roles button{direction:rtl}
+html[dir="rtl"] .public-auth__pending>div{flex-direction:row-reverse}
+html[dir="rtl"] .public-auth__patient-mobile>div{direction:rtl}
+
+/* Long German labels wrap naturally without changing control geometry. */
+html[lang="de"] .nav__links a{text-align:center}
+html[lang="de"] :is(.btn,.public-auth__roles strong,.public-auth__roles small,.public-auth__patient-mobile a){overflow-wrap:anywhere}
+html[lang="de"] .public-auth__roles :is(strong,small){white-space:normal}
+
+/* Language typography guardrails: retain the editorial display face while
+   allowing translated copy to wrap naturally inside existing geometry. */
+html:where([lang="en"],[lang="fr"],[lang="es"],[lang="de"]) body,
+html:where([lang="en"],[lang="fr"],[lang="es"],[lang="de"]) :is(button,input,select,textarea) {
+  font-family: var(--font-latin-body);
+}
+
+html:where([lang="en"],[lang="fr"],[lang="es"],[lang="de"]) :is(h1,h2,h3,h4,h5,h6,blockquote,.brand__text,.display-title) {
+  font-family: var(--font-latin-display);
+}
+
+html[lang="ar"][dir="rtl"] :is(h1,h2,h3,h4,h5,h6,blockquote,.brand__text,.display-title) {
+  font-family: var(--font-ar-display) !important;
+}
+
+html:where([lang="fr"],[lang="es"],[lang="de"]) :is(
+  h1,h2,h3,h4,p,blockquote,.eyebrow,
+  summary,.chip,.patients-chips span,.public-auth__roles strong,
+  .public-auth__roles small
+) {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+html:where([lang="fr"],[lang="es"],[lang="de"]) :is(h1,h2,blockquote) {
+  text-wrap: balance;
+}
+
+html[lang="ar"][dir="rtl"] :is(p,blockquote,summary,.chip) {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* Navigation and action labels must remain intact in every language. */
+html body .nav .nav__links a,
+html body .nav .nav__cta,
+html body .btn {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+/* Spanish copy needs a little more horizontal room than the English source. */
+html[lang="es"] .care-teams-page .care-teams-cta h2 {
+  width: min(100%, 760px);
+  max-width: 48ch;
+  font-size: clamp(2.35rem, 3.6vw, 3.25rem);
+  line-height: 1.04;
+}
+
+html[lang="fr"] .care-teams-page .care-teams-cta h2 {
+  width: min(100%, 760px);
+  max-width: 48ch;
+  font-size: clamp(2.35rem, 3.6vw, 3.25rem);
+  line-height: 1.04;
+}
+
+html[lang="es"] .care-teams-page .care-teams-cta p {
+  max-width: 66ch;
+  hyphens: none;
+  overflow-wrap: normal;
+}
+
+/* Keep the long German safety heading centered inside its content column. */
+html[lang="de"] .home-editorial #safety .section__head:first-child h2 {
+  width: 100%;
+  max-width: 820px;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Center the longer French platform heading within the full content column. */
+html[lang="fr"] .site-editorial .section__head:has(.platform-role-title) {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+html[lang="fr"] .site-editorial .platform-role-title {
+  width: 100%;
+  max-width: 1180px !important;
+  margin-inline: auto;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (min-width: 981px) {
+  html[lang="es"] body .nav .nav__links {
+    gap: 0.72rem;
+  }
+
+  html[lang="es"] body .nav .nav__links a:not(.btn) {
+    padding-inline: 0.08rem;
+    font-size: 0.84rem !important;
+  }
+
+  html[lang="es"] body .nav .nav__links a[href="resources.html"] {
+    margin-inline-start: 0.6rem;
+  }
+
+  html[lang="es"] body .nav .nav__cta {
+    min-width: 0 !important;
+    margin-inline-start: 0.35rem;
+    padding-inline: 0.82rem !important;
+    font-size: 0.8rem !important;
+  }
+}
 
 @media(max-width:620px){
   .nav .nav__inner{width:100%;padding-inline:.75rem;gap:.35rem}

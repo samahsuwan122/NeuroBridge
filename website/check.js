@@ -6,6 +6,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const vm = require("vm");
 
 const root = __dirname;
 const pages = fs.readdirSync(root).filter((name) => name.endsWith(".html")).sort();
@@ -27,6 +28,12 @@ function localPath(reference) {
 
 if (!pages.length) fail("no HTML pages found");
 
+const translationContext = { window: {} };
+vm.createContext(translationContext);
+vm.runInContext(fs.readFileSync(path.join(root, "translations.js"), "utf8"), translationContext);
+const dictionaries = translationContext.window.NB_I18N || {};
+const translationKeys = new Set();
+
 for (const page of pages) {
   const html = fs.readFileSync(path.join(root, page), "utf8");
   console.log(`\n${page}`);
@@ -45,6 +52,10 @@ for (const page of pages) {
 
   const references = [...html.matchAll(/(?:src|href)=["']([^"']+)["']/gi)]
     .map((match) => match[1]);
+
+  for (const match of html.matchAll(/data-i18n(?:-(?:placeholder|aria-label|title))?=["']([^"']+)["']/gi)) {
+    translationKeys.add(match[1]);
+  }
 
   for (const reference of references) {
     if (/^(?:https?:|mailto:|tel:|data:|javascript:)/i.test(reference)) continue;
@@ -72,6 +83,12 @@ for (const page of pages) {
       }
     }
   }
+}
+
+for (const language of ["ar", "de"]) {
+  const missing = [...translationKeys].filter((key) => !dictionaries[language] || dictionaries[language][key] == null);
+  if (missing.length) fail(`${language} translations missing: ${missing.join(", ")}`);
+  else ok(`${language} covers all ${translationKeys.size} explicit translation keys`);
 }
 
 console.log("");
