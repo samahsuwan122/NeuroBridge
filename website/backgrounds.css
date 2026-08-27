@@ -1,0 +1,54 @@
+/* NeuroBridge public artwork: image geometry is shared; themes change only the veil. */
+:root{--art-canvas:#f5e8d6;--art-veil:rgba(250,242,230,.28);--art-edge:rgba(245,232,214,.82)}
+html[data-theme="dark"]{--art-canvas:#281b14;--art-veil:rgba(35,24,18,.79);--art-edge:rgba(33,23,17,.92)}
+
+.home-editorial :is(#why,#overview.home-experiences,#safety,.ai-chat-section,.home-resources),
+:is(.site-editorial,.about-editorial) main>.section:not(.section--dark),
+.site-editorial .access-main>.access-hero{
+  position:relative;background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(180deg,var(--art-edge),transparent 9%,transparent 91%,var(--art-edge)),linear-gradient(var(--art-veil),var(--art-veil)),var(--section-art)!important;
+  background-size:100% 100%,100% 100%,100% 100%!important;background-position:center,center,center!important;background-repeat:no-repeat!important;
+  border-block:0!important;overflow-x:clip
+}
+:is(.site-editorial,.about-editorial) main{background-color:var(--art-canvas)}
+
+.home-editorial #why,:is(.site-editorial,.about-editorial) main>.section:nth-of-type(1),.site-editorial .access-main>.access-hero{--section-art:url("assets/backgrounds/section1.png")}
+.home-editorial #overview.home-experiences,:is(.site-editorial,.about-editorial) main>.section:nth-of-type(2){--section-art:url("assets/backgrounds/section2.png")}
+.home-editorial #safety,.home-editorial .ai-chat-section,:is(.site-editorial,.about-editorial) main>.section:nth-of-type(3){--section-art:url("assets/backgrounds/section3.png")}
+:is(.site-editorial,.about-editorial) main>.section:nth-of-type(4){--section-art:url("assets/backgrounds/section4.png")}
+.home-editorial .home-resources,:is(.site-editorial,.about-editorial) main>.section:nth-of-type(5){--section-art:url("assets/backgrounds/section5.png")}
+
+/* Connected Care retains its dedicated source image in both themes. */
+.home-editorial #contact.connected-care-section{
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),url("assets/connected-care/connected-care-background.png")!important;
+  background-size:100% 100%,cover!important;background-position:center,center!important;background-repeat:no-repeat!important;border-radius:0!important
+}
+
+/* Known platform closing section: identical art and placement by day and night. */
+.site-editorial .platform-explore-cta{
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),url("assets/backgrounds/section4.png")!important;
+  background-size:100% 100%,100% 100%!important;background-position:center,center!important;background-repeat:no-repeat!important
+}
+
+.site-editorial #patients.patients-hero,#patients .patients-split{
+  background-color:var(--art-canvas)!important;
+  background-image:linear-gradient(var(--art-veil),var(--art-veil)),url("assets/backgrounds/section3.png")!important;
+  background-size:100% 100%,cover!important;background-position:center,center!important;background-repeat:no-repeat!important
+}
+
+.families-page .families-premium-hero,.care-teams-page .care-teams-hero{--section-art:url("assets/backgrounds/section1.png")}
+.families-page .families-support-summary,.care-teams-page .care-showcase{--section-art:url("assets/backgrounds/section2.png")}
+.families-page :is(.families-premium-hero,.families-support-summary),.care-teams-page :is(.care-teams-hero,.care-showcase){
+  background-color:var(--art-canvas)!important;background-image:linear-gradient(var(--art-veil),var(--art-veil)),var(--section-art)!important;
+  background-size:100% 100%,100% 100%!important;background-position:center,center!important;background-repeat:no-repeat!important
+}
+
+.home-editorial :is(#overview.home-experiences,#safety,.ai-chat-section,.connected-care-band,.home-resources),:is(.site-editorial,.about-editorial) main>.section:not(:first-child){margin-top:-1px}
+.home-editorial .connected-care-band{background-color:var(--art-canvas)}
+
+/* PNG artwork already contains the replaced ornaments. */
+.home-editorial :is(#why,#overview,#safety,.ai-chat-section,.home-resources)>.section-ornament,
+.site-editorial #faq::before,.site-editorial #faq::after,
+.home-editorial #contact.connected-care-section::before,.home-editorial #contact.connected-care-section::after{display:none!important}

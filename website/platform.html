@@ -2,29 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NeuroBridge Platform</title>
-  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/neurobridge-logo-mark-premium.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="backgrounds.css" />
 </head>
 
-<body>
+<body class="site-editorial">
+  <a class="skip-link" href="#main-content" data-i18n="Skip to content">Skip to content</a>
   <header class="nav" id="top">
     <div class="container nav__inner">
       <a class="brand" href="index.html" aria-label="NeuroBridge home">
-        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <img class="brand__logo" src="assets/neurobridge-logo-mark-premium.png" alt="" width="42" height="42" />
         <span class="brand__text">NeuroBridge</span>
       </a>
 
       <nav class="nav__links" id="navLinks" aria-label="Primary">
         <a href="index.html" data-i18n="Home">Home</a>
         <a href="about.html" data-i18n="About">About</a>
-        <a href="platform.html" data-i18n="Platform">Platform</a>
+        <a href="platform.html" aria-current="page" data-i18n="Platform">Platform</a>
         <a href="patients.html" data-i18n="Patients">Patients</a>
         <a href="families.html" data-i18n="Families">Families</a>
         <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
-        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
         <a href="resources.html" data-i18n="Resources">Resources</a>
         <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
       </nav>
@@ -80,7 +82,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="section page-hero">
       <div class="container">
         <div class="section__head reveal">
@@ -98,8 +100,8 @@
       <div class="container">
         <div class="section__head reveal">
           <span class="eyebrow" data-i18n="Core experiences">Core experiences</span>
-          <h2 data-i18n="Built around patients, families, and care teams">Built around patients, families, and care teams</h2>
-          <p class="section__sub" data-i18n="Each user role has a focused experience, while the platform keeps information organized and safely scoped.">
+          <h2 class="platform-role-title" data-i18n="Built around patients, families, and care teams">Built around patients, families, and care teams</h2>
+          <p class="section__sub platform-role-summary" data-i18n="Each user role has a focused experience, while the platform keeps information organized and safely scoped.">
             Each user role has a focused experience, while the platform keeps information
             organized and safely scoped.
           </p>
@@ -108,14 +110,14 @@
         <div class="plat-grid">
           <article class="plat-card reveal">
             <div class="plat-card__media">
-              <img class="photo" src="assets/photos/patient-app-preview.jpg" alt="Patient app preview" width="480" height="360" />
+              <img class="photo" src="assets/photos/app.jpg" alt="Older adults using the patient app" width="480" height="360" />
             </div>
             <div class="plat-card__body">
               <h3 data-i18n="Patient App">Patient App</h3>
               <ul class="ticks ticks--sm">
                 <li data-i18n="Daily cognitive activities">Daily cognitive activities</li>
                 <li data-i18n="Cognitive games and progress">Cognitive games and progress</li>
-                <li data-i18n="Memory Tree and appointments">Memory Tree and appointments</li>
+                <li data-i18n="Memory album and appointments">Memory album and appointments</li>
               </ul>
               <a class="chip chip--solid" href="patients.html" data-i18n="View patient page →">View patient page →</a>
             </div>
@@ -123,7 +125,7 @@
 
           <article class="plat-card reveal">
             <div class="plat-card__media">
-              <img class="photo" src="assets/photos/family-support.jpg" alt="Family support preview" width="480" height="360" />
+              <img class="photo" src="assets/photos/fam.jpg" alt="Family support preview" width="480" height="360" />
             </div>
             <div class="plat-card__body">
               <h3 data-i18n="Family Portal">Family Portal</h3>
@@ -138,7 +140,7 @@
 
           <article class="plat-card reveal">
             <div class="plat-card__media">
-              <img class="photo" src="assets/photos/doctor-review.jpg" alt="Care team dashboard preview" width="480" height="360" />
+              <img class="photo" src="assets/photos/care.jpg" alt="Care team dashboard preview" width="480" height="360" />
             </div>
             <div class="plat-card__body">
               <h3 data-i18n="Care-Team Portal">Care-Team Portal</h3>
@@ -164,10 +166,11 @@
           </p>
         </div>
 
-        <div class="mod-grid">
+        <div class="mod-grid platform-module-grid">
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">📱</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M9.5 6h5M10 18h4"/></svg>
               <h3 data-i18n="Patient App">Patient App</h3>
               <p data-i18n="Daily activities, games, progress, memory album, and appointments.">Daily activities, games, progress, memory album, and appointments.</p>
             </div>
@@ -177,6 +180,7 @@
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">💚</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 20s-7-4.2-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.8-7 10-7 10Z"/><path d="M8.5 12h2l1-2 1.5 4 1-2h1.5"/></svg>
               <h3 data-i18n="Family Portal">Family Portal</h3>
               <p data-i18n="Family encouragement, memories, messages, and shared follow-up.">Family encouragement, memories, messages, and shared follow-up.</p>
             </div>
@@ -186,6 +190,7 @@
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">🩺</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3v5a5 5 0 0 0 10 0V3M5 3h4M15 3h4"/><path d="M12 13v2a4 4 0 0 0 8 0v-1"/><circle cx="20" cy="11.5" r="2"/></svg>
               <h3 data-i18n="Doctor Portal">Doctor Portal</h3>
               <p data-i18n="Assigned patient review, goals, reports, and provider messages.">Assigned patient review, goals, reports, and provider messages.</p>
             </div>
@@ -195,6 +200,7 @@
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">🧑‍⚕️</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="6" r="3"/><path d="M6.5 21v-4.5a5.5 5.5 0 0 1 11 0V21M9 13l3 3 3-3"/></svg>
               <h3 data-i18n="Therapist Portal">Therapist Portal</h3>
               <p data-i18n="Therapy follow-up, assigned activities, and performance review.">Therapy follow-up, assigned activities, and performance review.</p>
             </div>
@@ -204,6 +210,7 @@
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">🏥</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14M8 21v-5h8v5M9 9h6M12 6v6M9 12h6"/></svg>
               <h3 data-i18n="Clinic Management">Clinic Management</h3>
               <p data-i18n="Centers, users, roles, access requests, and coordination.">Centers, users, roles, access requests, and coordination.</p>
             </div>
@@ -213,6 +220,7 @@
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">🎮</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 8h10a5 5 0 0 1 4.8 6.4l-1 3.2a2.4 2.4 0 0 1-4.1 1l-1.5-1.8H8.8l-1.5 1.8a2.4 2.4 0 0 1-4.1-1l-1-3.2A5 5 0 0 1 7 8Z"/><path d="M7 12v4M5 14h4M16.5 12.5h.01M19 15h.01"/></svg>
               <h3 data-i18n="Cognitive Games">Cognitive Games</h3>
               <p data-i18n="Memory, attention, reaction, recall, and sequence exercises.">Memory, attention, reaction, recall, and sequence exercises.</p>
             </div>
@@ -220,17 +228,9 @@
           </article>
 
           <article class="mod reveal">
-            <span class="mod__ic" aria-hidden="true">🌳</span>
-            <div>
-              <h3 data-i18n="Memory Tree">Memory Tree</h3>
-              <p data-i18n="A warm visual concept that grows with memories and sessions.">A warm visual concept that grows with memories and sessions.</p>
-            </div>
-            <span class="mtag" data-i18n="Concept">Concept</span>
-          </article>
-
-          <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">📊</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/><path d="m4 7 6-4 6 5 5-4"/></svg>
               <h3 data-i18n="Reports">Reports</h3>
               <p data-i18n="Weekly and monthly performance-only summaries for review.">Weekly and monthly performance-only summaries for review.</p>
             </div>
@@ -240,6 +240,7 @@
           <article class="mod reveal">
             <span class="mod__ic" aria-hidden="true">🔐</span>
             <div>
+              <svg class="mod__symbol" aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>
               <h3 data-i18n="Security &amp; RBAC">Security & RBAC</h3>
               <p data-i18n="JWT authentication, role-based permissions, and audit logging.">JWT authentication, role-based permissions, and audit logging.</p>
             </div>
@@ -248,45 +249,15 @@
         </div>
       </div>
     </section>
-
-    <section class="section section--tint">
-      <div class="container split">
-        <div class="split__copy reveal">
-          <span class="eyebrow" data-i18n="Safety by design">Safety by design</span>
-          <h2 data-i18n="Supportive, performance-only, and reviewed">Supportive, performance-only, and reviewed</h2>
-          <p class="section__sub" data-i18n="NeuroBridge provides coordination and activity support. It organizes information and performance-only progress for care-team review.">
-            NeuroBridge provides coordination and activity support. It organizes
-            information and performance-only progress for care-team review.
-          </p>
-
-          <ul class="ticks">
-            <li data-i18n="Coordination and activity support.">Coordination and activity support.</li>
-            <li data-i18n="Supportive follow-up with care-team review.">Supportive follow-up with care-team review.</li>
-            <li data-i18n="Care-team review remains the final step.">Care-team review remains the final step.</li>
-            <li data-i18n="Patients and families see only their scoped information.">Patients and families see only their scoped information.</li>
-          </ul>
-        </div>
-
-        <div class="split__visual reveal">
-          <figure class="vcard vcard--flat">
-            <img class="photo" src="assets/photos/clinic-team.jpg" alt="Clinic care team" width="480" height="360" />
-            <figcaption class="vcard__cap">
-              <b data-i18n="Designed for safer coordination">Designed for safer coordination</b>
-              <span data-i18n="Clear roles, clear review, clear boundaries.">Clear roles, clear review, clear boundaries.</span>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta">
+    <section class="cta platform-explore-cta" id="explore-platform">
       <div class="container cta__inner reveal">
+        <span class="platform-explore-cta__eyebrow" data-i18n="Explore NeuroBridge">Explore NeuroBridge</span>
         <h2 data-i18n="Explore each part of the platform">Explore each part of the platform</h2>
-        <p data-i18n="View the patient, family, care-team, and clinic pages.">View the patient, family, care-team, and clinic pages.</p>
+        <p data-i18n="Explore the experiences designed for patients, families, and care teams.">Explore the experiences designed for patients, families, and care teams.</p>
         <div class="cta__actions">
-          <a class="btn btn--gold" href="patients.html" data-i18n="Patients">Patients</a>
-          <a class="btn btn--ghost btn--ghost-light" href="families.html" data-i18n="Families">Families</a>
-          <a class="btn btn--ghost btn--ghost-light" href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
+          <a class="btn btn--gold" href="patients.html"><span data-i18n="Patients">Patients</span></a>
+          <a class="btn btn--ghost btn--ghost-light" href="families.html"><span data-i18n="Families">Families</span></a>
+          <a class="btn btn--ghost btn--ghost-light" href="care-teams.html"><span data-i18n="Care Teams">Care Teams</span></a>
         </div>
       </div>
     </section>

@@ -339,6 +339,10 @@ window.NB_I18N = {
     /* Developers */
     "Designed and developed by Computer Engineering students at An-Najah National University.": "صُمِّم وطُوِّر من قِبل طالبتَي هندسة الحاسوب في جامعة النجاح الوطنية.",
     "Computer Engineering · An-Najah National University": "هندسة الحاسوب · جامعة النجاح الوطنية",
+    "Computer Engineering - An-Najah National University": "هندسة الحاسوب - جامعة النجاح الوطنية",
+    "Developer": "مطوّرة",
+    "Tala Asaad Mweikat": "تالا اسعد مويكات",
+    "Samah Hani Sawan": "سماح هاني صوان",
     /* Footer */
     "A connected cognitive rehabilitation platform for patients, families, and care teams.": "منصّة مترابطة لإعادة التأهيل المعرفي للمرضى والعائلات وفِرق الرعاية.",
     "One connected space for patients, families, and care teams.": "مساحة واحدة متصلة للمريض والعائلة وفريق الرعاية.",
@@ -693,6 +697,10 @@ window.NB_I18N = {
     /* Developers */
     "Designed and developed by Computer Engineering students at An-Najah National University.": "Conçu et développé par des étudiantes en génie informatique à l'Université nationale An-Najah.",
     "Computer Engineering · An-Najah National University": "Génie informatique · Université nationale An-Najah",
+    "Computer Engineering - An-Najah National University": "Génie informatique - Université nationale An-Najah",
+    "Developer": "Développeuse",
+    "Tala Asaad Mweikat": "Tala Asaad Mweikat",
+    "Samah Hani Sawan": "Samah Hani Sawan",
     /* Footer */
     "A connected cognitive rehabilitation platform for patients, families, and care teams.": "Une plateforme de réadaptation cognitive connectée pour les patients, les familles et les équipes soignantes.",
     "One connected space for patients, families, and care teams.": "Un espace connecté unique pour les patients, les familles et les équipes soignantes.",
@@ -1022,6 +1030,10 @@ window.NB_I18N = {
     "Connected care platform · Patients, families, and care teams · Clearer daily follow-up": "Plataforma de atención conectada · Pacientes, familias y equipos de atención · Seguimiento diario más claro",
     "Designed and developed by Computer Engineering students at An-Najah National University.": "Diseñado y desarrollado por estudiantes de Ingeniería Informática de la Universidad Nacional An-Najah.",
     "Computer Engineering · An-Najah National University": "Ingeniería Informática · Universidad Nacional An-Najah",
+    "Computer Engineering - An-Najah National University": "Ingeniería Informática - Universidad Nacional An-Najah",
+    "Developer": "Desarrolladora",
+    "Tala Asaad Mweikat": "Tala Asaad Mweikat",
+    "Samah Hani Sawan": "Samah Hani Sawan",
     "A connected cognitive rehabilitation platform for patients, families, and care teams.": "Una plataforma conectada de rehabilitación cognitiva para pacientes, familias y equipos de atención.",
     "One connected space for patients, families, and care teams.": "Un espacio conectado para pacientes, familias y equipos de atención.",
     "For Users": "Para usuarios",
@@ -1350,6 +1362,10 @@ window.NB_I18N = {
     "Connected care platform · Patients, families, and care teams · Clearer daily follow-up": "Vernetzte Versorgungsplattform · Patienten, Familien und Behandlungsteams · Klarere tägliche Nachverfolgung",
     "Designed and developed by Computer Engineering students at An-Najah National University.": "Von Studentinnen der Computertechnik an der An-Najah National University entworfen und entwickelt.",
     "Computer Engineering · An-Najah National University": "Computertechnik · An-Najah National University",
+    "Computer Engineering - An-Najah National University": "Computertechnik - An-Najah National University",
+    "Developer": "Entwicklerin",
+    "Tala Asaad Mweikat": "Tala Asaad Mweikat",
+    "Samah Hani Sawan": "Samah Hani Sawan",
     "A connected cognitive rehabilitation platform for patients, families, and care teams.": "Eine vernetzte Plattform für kognitive Rehabilitation für Patienten, Familien und Behandlungsteams.",
     "One connected space for patients, families, and care teams.": "Ein vernetzter Raum für Patienten, Familien und Behandlungsteams.",
     "For Users": "Für Nutzer",
@@ -1391,7 +1407,7 @@ Object.assign(window.NB_I18N.ar, {
   "patients.phone.memoryFocus": "الذاكرة والتركيز",
   "patients.phone.start": "ابدأ الجلسة ←",
   "patients.phone.games": "الألعاب",
-  "patients.phone.memoryTree": "شجرة الذاكرة",
+  "patients.phone.memoryAlbum": "ألبوم الذكريات",
   "patients.phone.progress": "تقدم قائم على الأداء فقط",
   "patients.phone.family": "العائلة",
   "patients.phone.encouragement": "تشجيع العائلة",
@@ -1443,7 +1459,7 @@ Object.assign(window.NB_I18N.fr, {
   "patients.phone.memoryFocus": "Mémoire et concentration",
   "patients.phone.start": "Commencer la séance →",
   "patients.phone.games": "Jeux",
-  "patients.phone.memoryTree": "Arbre des souvenirs",
+  "patients.phone.memoryAlbum": "Album de souvenirs",
   "patients.phone.progress": "Progrès fondés sur les performances",
   "patients.phone.family": "Famille",
   "patients.phone.encouragement": "Encouragement familial",
@@ -1495,7 +1511,7 @@ Object.assign(window.NB_I18N.es, {
   "patients.phone.memoryFocus": "Memoria y concentración",
   "patients.phone.start": "Iniciar sesión →",
   "patients.phone.games": "Juegos",
-  "patients.phone.memoryTree": "Árbol de recuerdos",
+  "patients.phone.memoryAlbum": "Álbum de recuerdos",
   "patients.phone.progress": "Progreso basado en el desempeño",
   "patients.phone.family": "Familia",
   "patients.phone.encouragement": "Ánimo familiar",
@@ -1548,7 +1564,7 @@ Object.assign(window.NB_I18N.de, {
   "patients.phone.memoryFocus": "Gedächtnis und Konzentration",
   "patients.phone.start": "Sitzung starten →",
   "patients.phone.games": "Spiele",
-  "patients.phone.memoryTree": "Erinnerungsbaum",
+  "patients.phone.memoryAlbum": "Erinnerungsalbum",
   "patients.phone.progress": "Rein leistungsbezogener Fortschritt",
   "patients.phone.family": "Familie",
   "patients.phone.encouragement": "Ermutigung der Familie",
@@ -1924,6 +1940,27 @@ Object.assign(window.NB_I18N.de, {
 });
 /* Reviewed overrides for values that should not remain in English. */
 Object.assign(window.NB_I18N.ar, { "Clinic": "العيادة" });
+Object.assign(window.NB_I18N.ar, {
+  "NeuroBridge AI Companion": "المساعد الذكي من NeuroBridge",
+  "AI Chat Bot": "المساعد الذكي",
+  "Ask the NeuroBridge assistant about activities, family support, appointments, messages, and platform guidance.": "اسأل مساعد NeuroBridge عن الأنشطة، دعم العائلة، المواعيد، الرسائل، وطريقة استخدام المنصة.",
+  "Supportive guidance only. Not medical advice.": "إرشاد داعم فقط، وليس نصيحة طبية.",
+  "Hi!": "مرحبًا!",
+  "Hello! How can I help you explore NeuroBridge today?": "مرحبًا! كيف يمكنني مساعدتك في استكشاف NeuroBridge اليوم؟",
+  "Ask about NeuroBridge": "اسأل عن NeuroBridge",
+  "Ask about NeuroBridge…": "اسأل عن NeuroBridge…",
+  "Send": "إرسال",
+  "Chat messages": "رسائل المحادثة",
+  "Preparing a response…": "جارٍ إعداد الرد…",
+  "You can review your assigned daily cognitive activities from the patient dashboard.": "يمكنك متابعة الأنشطة المعرفية اليومية المعيّنة من لوحة المريض.",
+  "Families can share encouragement, memories, and supportive messages.": "يمكن للعائلة مشاركة التشجيع والذكريات والرسائل الداعمة.",
+  "You can check upcoming appointments inside the platform.": "يمكنك متابعة المواعيد القادمة داخل المنصة.",
+  "Use the Messages area to send non-urgent questions and follow up with the care team.": "استخدم قسم الرسائل لإرسال الأسئلة غير العاجلة والمتابعة مع فريق الرعاية.",
+  "Use the platform menu to open activities, appointments, messages, memories, and performance summaries.": "استخدم قائمة المنصة لفتح الأنشطة والمواعيد والرسائل والذكريات وملخصات الأداء.",
+  "NeuroBridge shows performance-only progress summaries for supportive follow-up and care-team review.": "يعرض NeuroBridge ملخصات تقدم قائمة على الأداء فقط للمتابعة الداعمة ومراجعة فريق الرعاية.",
+  "I can provide supportive guidance only, not diagnosis, treatment decisions, medication advice, medical instructions, or risk prediction. Please contact your care team to review care-related concerns.": "يمكنني تقديم إرشاد داعم فقط، دون تشخيص أو قرارات علاجية أو نصائح دوائية أو تعليمات طبية أو توقع للمخاطر. يرجى التواصل مع فريق الرعاية لمراجعة المخاوف المتعلقة بالرعاية.",
+  "I can help explain NeuroBridge features, daily activities, family support, appointments, and platform navigation. I provide supportive guidance only, not medical advice.": "أستطيع مساعدتك في فهم ميزات NeuroBridge، والأنشطة اليومية، ودعم العائلة، والمواعيد، وطريقة استخدام المنصة. أقدّم إرشادًا داعمًا فقط وليس نصيحة طبية."
+});
 Object.assign(window.NB_I18N.fr, {
   "Patients": "Patients",
   "Contact": "Contact",
@@ -1931,6 +1968,36 @@ Object.assign(window.NB_I18N.fr, {
   "Concept": "Concept",
   "Patient": "Patient",
   "Message": "Message"
+});
+Object.assign(window.NB_I18N.fr, {
+  "NeuroBridge AI Companion": "Compagnon IA NeuroBridge", "AI Chat Bot": "Assistant IA",
+  "Ask the NeuroBridge assistant about activities, family support, appointments, messages, and platform guidance.": "Interrogez l’assistant NeuroBridge sur les activités, le soutien familial, les rendez-vous, les messages et l’utilisation de la plateforme.",
+  "Supportive guidance only. Not medical advice.": "Conseils de soutien uniquement. Aucun avis médical.", "Hi!": "Bonjour !",
+  "Hello! How can I help you explore NeuroBridge today?": "Bonjour ! Comment puis-je vous aider à découvrir NeuroBridge aujourd’hui ?",
+  "Ask about NeuroBridge": "Question sur NeuroBridge", "Ask about NeuroBridge…": "Posez une question sur NeuroBridge…", "Send": "Envoyer", "Chat messages": "Messages du chat", "Preparing a response…": "Préparation de la réponse…",
+  "You can review your assigned daily cognitive activities from the patient dashboard.": "Vous pouvez consulter vos activités cognitives quotidiennes assignées depuis le tableau de bord patient.",
+  "Families can share encouragement, memories, and supportive messages.": "Les familles peuvent partager des encouragements, des souvenirs et des messages de soutien.",
+  "You can check upcoming appointments inside the platform.": "Vous pouvez consulter les prochains rendez-vous dans la plateforme.",
+  "Use the Messages area to send non-urgent questions and follow up with the care team.": "Utilisez la messagerie pour envoyer des questions non urgentes et échanger avec l’équipe soignante.",
+  "Use the platform menu to open activities, appointments, messages, memories, and performance summaries.": "Utilisez le menu pour ouvrir les activités, rendez-vous, messages, souvenirs et résumés de performance.",
+  "NeuroBridge shows performance-only progress summaries for supportive follow-up and care-team review.": "NeuroBridge affiche des résumés de progression basés uniquement sur la performance pour le suivi et la revue de l’équipe soignante.",
+  "I can provide supportive guidance only, not diagnosis, treatment decisions, medication advice, medical instructions, or risk prediction. Please contact your care team to review care-related concerns.": "Je peux uniquement fournir un soutien général, sans diagnostic, décision thérapeutique, conseil médicamenteux, instruction médicale ni prédiction de risque. Contactez votre équipe soignante pour toute préoccupation liée aux soins.",
+  "I can help explain NeuroBridge features, daily activities, family support, appointments, and platform navigation. I provide supportive guidance only, not medical advice.": "Je peux expliquer les fonctionnalités NeuroBridge, les activités quotidiennes, le soutien familial, les rendez-vous et la navigation. Je fournis uniquement des conseils de soutien, pas un avis médical."
+});
+Object.assign(window.NB_I18N.es, {
+  "NeuroBridge AI Companion": "Asistente de IA de NeuroBridge", "AI Chat Bot": "Asistente de IA",
+  "Ask the NeuroBridge assistant about activities, family support, appointments, messages, and platform guidance.": "Pregunta al asistente de NeuroBridge sobre actividades, apoyo familiar, citas, mensajes y el uso de la plataforma.",
+  "Supportive guidance only. Not medical advice.": "Solo orientación de apoyo. No es asesoramiento médico.", "Hi!": "¡Hola!",
+  "Hello! How can I help you explore NeuroBridge today?": "¡Hola! ¿Cómo puedo ayudarte a explorar NeuroBridge hoy?",
+  "Ask about NeuroBridge": "Pregunta sobre NeuroBridge", "Ask about NeuroBridge…": "Pregunta sobre NeuroBridge…", "Send": "Enviar", "Chat messages": "Mensajes del chat", "Preparing a response…": "Preparando una respuesta…",
+  "You can review your assigned daily cognitive activities from the patient dashboard.": "Puedes revisar tus actividades cognitivas diarias asignadas desde el panel del paciente.",
+  "Families can share encouragement, memories, and supportive messages.": "Las familias pueden compartir ánimo, recuerdos y mensajes de apoyo.",
+  "You can check upcoming appointments inside the platform.": "Puedes consultar las próximas citas dentro de la plataforma.",
+  "Use the Messages area to send non-urgent questions and follow up with the care team.": "Usa Mensajes para enviar preguntas no urgentes y comunicarte con el equipo de atención.",
+  "Use the platform menu to open activities, appointments, messages, memories, and performance summaries.": "Usa el menú para abrir actividades, citas, mensajes, recuerdos y resúmenes de rendimiento.",
+  "NeuroBridge shows performance-only progress summaries for supportive follow-up and care-team review.": "NeuroBridge muestra resúmenes de progreso basados solo en el rendimiento para el seguimiento y revisión del equipo de atención.",
+  "I can provide supportive guidance only, not diagnosis, treatment decisions, medication advice, medical instructions, or risk prediction. Please contact your care team to review care-related concerns.": "Solo puedo ofrecer orientación de apoyo, no diagnósticos, decisiones de tratamiento, consejos sobre medicamentos, instrucciones médicas ni predicción de riesgos. Contacta con tu equipo de atención para revisar cualquier preocupación.",
+  "I can help explain NeuroBridge features, daily activities, family support, appointments, and platform navigation. I provide supportive guidance only, not medical advice.": "Puedo explicar las funciones de NeuroBridge, las actividades diarias, el apoyo familiar, las citas y la navegación. Solo ofrezco orientación de apoyo, no asesoramiento médico."
 });
 Object.assign(window.NB_I18N.de, {
   "Trend": "Verlauf",
@@ -1950,4 +2017,285 @@ Object.assign(window.NB_I18N.de, {
   "Encourage and share memories.": "Ermutigen Sie und teilen Sie Erinnerungen.",
   "Patient": "Patient",
   "(optional)": "(optional)"
+});
+Object.assign(window.NB_I18N.de, {
+  "NeuroBridge AI Companion": "NeuroBridge KI-Begleiter", "AI Chat Bot": "KI-Assistent",
+  "Ask the NeuroBridge assistant about activities, family support, appointments, messages, and platform guidance.": "Fragen Sie den NeuroBridge-Assistenten nach Aktivitäten, Familienunterstützung, Terminen, Nachrichten und der Plattformnutzung.",
+  "Supportive guidance only. Not medical advice.": "Nur unterstützende Orientierung. Keine medizinische Beratung.", "Hi!": "Hallo!",
+  "Hello! How can I help you explore NeuroBridge today?": "Hallo! Wie kann ich Ihnen heute dabei helfen, NeuroBridge zu entdecken?",
+  "Ask about NeuroBridge": "Frage zu NeuroBridge", "Ask about NeuroBridge…": "Frage zu NeuroBridge…", "Send": "Senden", "Chat messages": "Chatnachrichten", "Preparing a response…": "Antwort wird vorbereitet…",
+  "You can review your assigned daily cognitive activities from the patient dashboard.": "Sie können Ihre zugewiesenen täglichen kognitiven Aktivitäten im Patienten-Dashboard ansehen.",
+  "Families can share encouragement, memories, and supportive messages.": "Familien können Ermutigungen, Erinnerungen und unterstützende Nachrichten teilen.",
+  "You can check upcoming appointments inside the platform.": "Sie können bevorstehende Termine innerhalb der Plattform prüfen.",
+  "Use the Messages area to send non-urgent questions and follow up with the care team.": "Nutzen Sie Nachrichten für nicht dringende Fragen und den Austausch mit dem Betreuungsteam.",
+  "Use the platform menu to open activities, appointments, messages, memories, and performance summaries.": "Öffnen Sie über das Menü Aktivitäten, Termine, Nachrichten, Erinnerungen und Leistungsübersichten.",
+  "NeuroBridge shows performance-only progress summaries for supportive follow-up and care-team review.": "NeuroBridge zeigt ausschließlich leistungsbezogene Fortschrittsübersichten zur unterstützenden Nachverfolgung und Prüfung durch das Betreuungsteam.",
+  "I can provide supportive guidance only, not diagnosis, treatment decisions, medication advice, medical instructions, or risk prediction. Please contact your care team to review care-related concerns.": "Ich kann nur unterstützende Orientierung geben, keine Diagnose, Behandlungsentscheidung, Medikamentenberatung, medizinische Anweisung oder Risikoprognose. Wenden Sie sich bei versorgungsbezogenen Anliegen an Ihr Betreuungsteam.",
+  "I can help explain NeuroBridge features, daily activities, family support, appointments, and platform navigation. I provide supportive guidance only, not medical advice.": "Ich kann NeuroBridge-Funktionen, tägliche Aktivitäten, Familienunterstützung, Termine und Navigation erklären. Ich gebe nur unterstützende Orientierung, keine medizinische Beratung."
+});
+
+/* Final reviewed copy fixes for fragmented or untranslated visible strings. */
+Object.assign(window.NB_I18N.ar, {
+  "hero.description": "أنشطة معرفية يومية، وذكريات عائلية، وتواصل مع مقدّمي الرعاية، ومواعيد، وتقدّم قائم على الأداء فقط ضمن منصة داعمة واحدة.",
+  "Family involvement through memories and encouragement.": "مشاركة العائلة من خلال الذكريات والتشجيع.",
+  "Care-team review with performance-only progress.": "مراجعة فريق الرعاية للتقدّم القائم على الأداء فقط.",
+  "Designed for coordination": "مصمّم للتنسيق",
+  "Patients · Families · Care teams · Clinics": "المرضى · العائلات · فرق الرعاية · العيادات",
+  "Supportive review, not automated judgment": "مراجعة داعمة، لا حكم آلي",
+  "NeuroBridge provides coordination and activity support. It keeps progress performance-only for supportive follow-up and care-team review.": "يوفّر NeuroBridge دعمًا للتنسيق والأنشطة، ويحافظ على التقدّم قائمًا على الأداء فقط للمتابعة الداعمة ومراجعة فريق الرعاية.",
+  "Daily practice": "الممارسة اليومية",
+  "Activities and games support a gentle daily routine.": "تدعم الأنشطة والألعاب روتينًا يوميًا لطيفًا.",
+  "Family encouragement and memory sharing.": "تشجيع العائلة ومشاركة الذكريات.",
+  "Appointments and provider communication.": "المواعيد والتواصل مع مقدّمي الرعاية.",
+  "Simple, connected, and easy to follow.": "بسيط، مترابط، وسهل المتابعة.",
+  "Daily support": "الدعم اليومي",
+  "Activities and games help patients keep a gentle daily routine.": "تساعد الأنشطة والألعاب المرضى على الحفاظ على روتين يومي لطيف.",
+  "Everything NeuroBridge brings together": "كل ما يجمعه NeuroBridge",
+  "NeuroBridge combines patient activities, family support, provider review, appointments, reports, and secure role-based access in one connected platform.": "يجمع NeuroBridge أنشطة المرضى، ودعم العائلة، ومراجعة مقدّمي الرعاية، والمواعيد، والتقارير، والوصول الآمن حسب الدور في منصة مترابطة واحدة.",
+  "Core experiences": "التجارب الأساسية",
+  "Supportive follow-up with care-team review.": "متابعة داعمة مع مراجعة فريق الرعاية.",
+  "Care-team review remains the final step.": "تبقى مراجعة فريق الرعاية الخطوة النهائية.",
+  "Doctors and therapists can assign supportive activities for follow-up.": "يمكن للأطباء والمعالجين تعيين أنشطة داعمة للمتابعة.",
+  "Goals track care-plan follow-up without automated medical decisions.": "تدعم الأهداف متابعة خطة الرعاية دون قرارات طبية آلية.",
+  "Weekly and monthly summaries support clearer review.": "تدعم الملخصات الأسبوعية والشهرية مراجعة أوضح.",
+  "Supportive oversight, never automated judgment.": "إشراف داعم، دون أحكام آلية.",
+  "Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.": "يمكن لفرق الرعاية مراجعة المرضى المسندين، والأهداف، والأنشطة، والرسائل، والمواعيد، وملخصات التقدّم القائمة على الأداء فقط."
+});
+
+Object.assign(window.NB_I18N.fr, {
+  "hero.description": "Activités cognitives quotidiennes, souvenirs familiaux, communication avec les professionnels, rendez-vous et progression fondée uniquement sur les performances, dans une plateforme bienveillante.",
+  "Family involvement through memories and encouragement.": "Participation de la famille grâce aux souvenirs et aux encouragements.",
+  "Care-team review with performance-only progress.": "Revue par l’équipe soignante d’une progression fondée uniquement sur les performances.",
+  "Family connection": "Lien familial",
+  "Activities and games help patients keep a gentle daily routine.": "Les activités et les jeux aident les patients à conserver une routine quotidienne douce.",
+  "Supportive follow-up with care-team review.": "Suivi bienveillant avec revue par l’équipe soignante.",
+  "Care-team review remains the final step.": "La revue par l’équipe soignante reste l’étape finale.",
+  "Doctors and therapists can assign supportive activities for follow-up.": "Les médecins et les thérapeutes peuvent attribuer des activités de soutien pour le suivi.",
+  "Supportive oversight, never automated judgment.": "Une supervision bienveillante, jamais un jugement automatisé.",
+  "Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.": "Les équipes soignantes peuvent consulter les patients assignés, les objectifs, les activités, les messages, les rendez-vous et les synthèses fondées uniquement sur les performances."
+});
+
+Object.assign(window.NB_I18N.es, {
+  "hero.chip1": "Aplicación para pacientes",
+  "hero.chip4": "Módulos de la plataforma",
+  "Supportive follow-up with care-team review.": "Seguimiento de apoyo con revisión del equipo de atención.",
+  "Care-team review remains the final step.": "La revisión del equipo de atención sigue siendo el paso final.",
+  "Doctors and therapists can assign supportive activities for follow-up.": "Los médicos y terapeutas pueden asignar actividades de apoyo para el seguimiento.",
+  "Supportive oversight, never automated judgment.": "Supervisión de apoyo, nunca juicio automatizado.",
+  "Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.": "Los equipos de atención pueden revisar pacientes asignados, objetivos, actividades, mensajes, citas y resúmenes de progreso basados únicamente en el desempeño."
+});
+
+Object.assign(window.NB_I18N.de, {
+  "Everything NeuroBridge brings together": "Alles, was NeuroBridge verbindet",
+  "Care-team review": "Überprüfung durch das Betreuungsteam",
+  "Supportive follow-up with care-team review.": "Unterstützende Nachverfolgung mit Überprüfung durch das Betreuungsteam.",
+  "Care-team review remains the final step.": "Die Überprüfung durch das Betreuungsteam bleibt der letzte Schritt.",
+  "Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.": "Betreuungsteams können zugewiesene Patienten, Ziele, Aktivitäten, Nachrichten, Termine und rein leistungsbezogene Fortschrittsübersichten prüfen.",
+  "Goals track care-plan follow-up without automated medical decisions.": "Ziele unterstützen die Nachverfolgung des Versorgungsplans ohne automatisierte medizinische Entscheidungen.",
+  "(optional)": "(optional)"
+});
+
+/* Centered editorial homepage hero. */
+Object.assign(window.NB_I18N.ar, {
+  "home.heroHeadline": "منصة متصلة لإعادة التأهيل المعرفي",
+  "home.heroAudience": "للمرضى والعائلات وفرق الرعاية."
+});
+Object.assign(window.NB_I18N.fr, {
+  "home.heroHeadline": "Une plateforme connectée de rééducation cognitive",
+  "home.heroAudience": "Pour les patients, les familles et les équipes soignantes."
+});
+Object.assign(window.NB_I18N.es, {
+  "home.heroHeadline": "Una plataforma conectada de rehabilitación cognitiva",
+  "home.heroAudience": "Para pacientes, familias y equipos de atención."
+});
+Object.assign(window.NB_I18N.de, {
+  "home.heroHeadline": "Eine vernetzte Plattform für kognitive Rehabilitation",
+  "home.heroAudience": "Für Patienten, Familien und Betreuungsteams."
+});
+
+/* Premium homepage supporting sections. */
+Object.assign(window.NB_I18N.ar, {
+  "Connected roles": "أدوار مترابطة",
+  "One platform. Four connected roles.": "منصة واحدة. أربعة أدوار مترابطة.",
+  "Daily activities, games, progress and support.": "أنشطة يومية وألعاب وتقدّم ودعم.",
+  "Memories, messages, and encouragement.": "ذكريات ورسائل وتشجيع.",
+  "Review progress and coordinate care.": "مراجعة التقدّم وتنسيق الرعاية.",
+  "Manage patients and follow-up efficiently.": "إدارة المرضى والمتابعة بكفاءة.",
+  "Secure & Private": "آمن وخاص",
+  "Role-based access and protected data.": "وصول حسب الدور وبيانات محمية.",
+  "Evidence-Informed": "مبني على أسس مدروسة",
+  "Built around structured cognitive activities.": "مصمم حول أنشطة معرفية منظّمة.",
+  "Human-Centered": "محوره الإنسان",
+  "Designed for real patient and family needs.": "مصمم لاحتياجات المرضى والعائلات الحقيقية.",
+  "Continuous Support": "دعم متواصل",
+  "Connects daily practice with ongoing support.": "يربط الممارسة اليومية بالدعم المستمر.",
+  "Helpful resources for patients, families, and care teams.": "موارد مفيدة للمرضى والعائلات وفرق الرعاية.",
+  "View all resources": "عرض جميع الموارد",
+  "For patients": "للمرضى",
+  "For families": "للعائلات",
+  "For care teams": "لفرق الرعاية",
+  "Understanding Cognitive Rehabilitation": "فهم إعادة التأهيل المعرفي",
+  "Supporting a Loved One": "دعم شخص عزيز",
+  "Care-Team Collaboration": "تعاون فريق الرعاية"
+});
+Object.assign(window.NB_I18N.fr, {
+  "Connected roles": "Rôles connectés",
+  "One platform. Four connected roles.": "Une plateforme. Quatre rôles connectés.",
+  "Daily activities, games, progress and support.": "Activités quotidiennes, jeux, progression et soutien.",
+  "Memories, messages, and encouragement.": "Souvenirs, messages et encouragements.",
+  "Review progress and coordinate care.": "Suivre la progression et coordonner l’accompagnement.",
+  "Manage patients and follow-up efficiently.": "Gérer efficacement les patients et leur suivi.",
+  "Secure & Private": "Sécurisé et privé",
+  "Role-based access and protected data.": "Accès par rôle et données protégées.",
+  "Evidence-Informed": "Fondé sur des pratiques structurées",
+  "Built around structured cognitive activities.": "Conçu autour d’activités cognitives structurées.",
+  "Human-Centered": "Centré sur l’humain",
+  "Designed for real patient and family needs.": "Pensé pour les besoins réels des patients et des familles.",
+  "Continuous Support": "Soutien continu",
+  "Connects daily practice with ongoing support.": "Relie la pratique quotidienne à un soutien continu.",
+  "Helpful resources for patients, families, and care teams.": "Des ressources utiles pour les patients, les familles et les équipes soignantes.",
+  "View all resources": "Voir toutes les ressources",
+  "For patients": "Pour les patients",
+  "For families": "Pour les familles",
+  "For care teams": "Pour les équipes soignantes",
+  "Understanding Cognitive Rehabilitation": "Comprendre la rééducation cognitive",
+  "Supporting a Loved One": "Soutenir un proche",
+  "Care-Team Collaboration": "Collaboration de l’équipe soignante"
+});
+Object.assign(window.NB_I18N.es, {
+  "Connected roles": "Roles conectados",
+  "One platform. Four connected roles.": "Una plataforma. Cuatro roles conectados.",
+  "Daily activities, games, progress and support.": "Actividades diarias, juegos, progreso y apoyo.",
+  "Memories, messages, and encouragement.": "Recuerdos, mensajes y ánimo.",
+  "Review progress and coordinate care.": "Revisar el progreso y coordinar la atención.",
+  "Manage patients and follow-up efficiently.": "Gestionar pacientes y seguimiento de forma eficiente.",
+  "Secure & Private": "Seguro y privado",
+  "Role-based access and protected data.": "Acceso por roles y datos protegidos.",
+  "Evidence-Informed": "Basado en prácticas estructuradas",
+  "Built around structured cognitive activities.": "Creado en torno a actividades cognitivas estructuradas.",
+  "Human-Centered": "Centrado en las personas",
+  "Designed for real patient and family needs.": "Diseñado para necesidades reales de pacientes y familias.",
+  "Continuous Support": "Apoyo continuo",
+  "Connects daily practice with ongoing support.": "Conecta la práctica diaria con el apoyo continuo.",
+  "Helpful resources for patients, families, and care teams.": "Recursos útiles para pacientes, familias y equipos de atención.",
+  "View all resources": "Ver todos los recursos",
+  "For patients": "Para pacientes",
+  "For families": "Para familias",
+  "For care teams": "Para equipos de atención",
+  "Understanding Cognitive Rehabilitation": "Comprender la rehabilitación cognitiva",
+  "Supporting a Loved One": "Apoyar a un ser querido",
+  "Care-Team Collaboration": "Colaboración del equipo de atención"
+});
+Object.assign(window.NB_I18N.de, {
+  "Connected roles": "Vernetzte Rollen",
+  "One platform. Four connected roles.": "Eine Plattform. Vier vernetzte Rollen.",
+  "Daily activities, games, progress and support.": "Tägliche Aktivitäten, Spiele, Fortschritt und Unterstützung.",
+  "Memories, messages, and encouragement.": "Erinnerungen, Nachrichten und Ermutigung.",
+  "Review progress and coordinate care.": "Fortschritt prüfen und Betreuung koordinieren.",
+  "Manage patients and follow-up efficiently.": "Patienten und Nachverfolgung effizient verwalten.",
+  "Secure & Private": "Sicher und privat",
+  "Role-based access and protected data.": "Rollenbasierter Zugriff und geschützte Daten.",
+  "Evidence-Informed": "Strukturiert und fundiert",
+  "Built around structured cognitive activities.": "Auf strukturierten kognitiven Aktivitäten aufgebaut.",
+  "Human-Centered": "Menschenzentriert",
+  "Designed for real patient and family needs.": "Für die realen Bedürfnisse von Patienten und Familien entwickelt.",
+  "Continuous Support": "Kontinuierliche Unterstützung",
+  "Connects daily practice with ongoing support.": "Verbindet tägliches Üben mit fortlaufender Unterstützung.",
+  "Helpful resources for patients, families, and care teams.": "Hilfreiche Ressourcen für Patienten, Familien und Betreuungsteams.",
+  "View all resources": "Alle Ressourcen ansehen",
+  "For patients": "Für Patienten",
+  "For families": "Für Familien",
+  "For care teams": "Für Betreuungsteams",
+  "Understanding Cognitive Rehabilitation": "Kognitive Rehabilitation verstehen",
+  "Supporting a Loved One": "Einen nahestehenden Menschen unterstützen",
+  "Care-Team Collaboration": "Zusammenarbeit im Betreuungsteam"
+});
+
+Object.assign(window.NB_I18N.ar, {
+  "About us": "من نحن",
+  "Building a better way to support cognitive health": "نبني طريقة أفضل لدعم الصحة المعرفية",
+  "NeuroBridge is built by students and professionals who believe technology can bring families, patients, and care teams together in a supportive and human-centered way.": "طوّر طلاب ومتخصصون NeuroBridge إيمانًا بأن التقنية تستطيع جمع المرضى والعائلات وفرق الرعاية ضمن تجربة داعمة ومحورها الإنسان.",
+  "Activities & Games": "الأنشطة والألعاب",
+  "Cognitive exercises that are engaging.": "تمارين معرفية تفاعلية.",
+  "Progress review": "مراجعة التقدّم",
+  "Performance-only progress tracking.": "متابعة التقدّم القائم على الأداء فقط.",
+  "Communication": "التواصل",
+  "Secure messages and updates.": "رسائل وتحديثات آمنة.",
+  "Stay connected with appointments.": "ابقَ على اتصال عبر المواعيد.",
+  "Guides": "أدلة",
+  "Activities & Games Guide": "دليل الأنشطة والألعاب",
+  "Privacy": "الخصوصية",
+  "Privacy & Data Security": "الخصوصية وأمن البيانات",
+  "Help": "المساعدة"
+});
+
+Object.assign(window.NB_I18N.fr, {
+  "About us": "À propos",
+  "Building a better way to support cognitive health": "Construire une meilleure façon de soutenir la santé cognitive",
+  "NeuroBridge is built by students and professionals who believe technology can bring families, patients, and care teams together in a supportive and human-centered way.": "NeuroBridge est conçu par des étudiants et des professionnels convaincus que la technologie peut réunir patients, familles et équipes soignantes dans une approche humaine et bienveillante.",
+  "Activities & Games": "Activités et jeux",
+  "Cognitive exercises that are engaging.": "Des exercices cognitifs stimulants.",
+  "Progress review": "Suivi de la progression",
+  "Performance-only progress tracking.": "Suivi fondé uniquement sur les performances.",
+  "Communication": "Communication",
+  "Secure messages and updates.": "Messages et mises à jour sécurisés.",
+  "Stay connected with appointments.": "Restez coordonné grâce aux rendez-vous.",
+  "Guides": "Guides",
+  "Activities & Games Guide": "Guide des activités et des jeux",
+  "Privacy": "Confidentialité",
+  "Privacy & Data Security": "Confidentialité et sécurité des données",
+  "Help": "Aide"
+});
+
+Object.assign(window.NB_I18N.es, {
+  "About us": "Sobre nosotros",
+  "Building a better way to support cognitive health": "Construimos una mejor forma de apoyar la salud cognitiva",
+  "NeuroBridge is built by students and professionals who believe technology can bring families, patients, and care teams together in a supportive and human-centered way.": "NeuroBridge fue creado por estudiantes y profesionales que creen que la tecnología puede unir a pacientes, familias y equipos de atención de una forma humana y solidaria.",
+  "Activities & Games": "Actividades y juegos",
+  "Cognitive exercises that are engaging.": "Ejercicios cognitivos atractivos.",
+  "Progress review": "Revisión del progreso",
+  "Performance-only progress tracking.": "Seguimiento basado únicamente en el rendimiento.",
+  "Communication": "Comunicación",
+  "Secure messages and updates.": "Mensajes y actualizaciones seguros.",
+  "Stay connected with appointments.": "Mantén la coordinación mediante las citas.",
+  "Guides": "Guías",
+  "Activities & Games Guide": "Guía de actividades y juegos",
+  "Privacy": "Privacidad",
+  "Privacy & Data Security": "Privacidad y seguridad de los datos",
+  "Help": "Ayuda"
+});
+
+Object.assign(window.NB_I18N.de, {
+  "About us": "Über uns",
+  "Building a better way to support cognitive health": "Ein besserer Weg zur Unterstützung der kognitiven Gesundheit",
+  "NeuroBridge is built by students and professionals who believe technology can bring families, patients, and care teams together in a supportive and human-centered way.": "NeuroBridge wurde von Studierenden und Fachleuten entwickelt, die daran glauben, dass Technologie Patienten, Familien und Betreuungsteams menschlich und unterstützend verbinden kann.",
+  "Activities & Games": "Aktivitäten und Spiele",
+  "Cognitive exercises that are engaging.": "Ansprechende kognitive Übungen.",
+  "Progress review": "Fortschrittsübersicht",
+  "Performance-only progress tracking.": "Fortschrittsverfolgung ausschließlich anhand der Leistung.",
+  "Communication": "Kommunikation",
+  "Secure messages and updates.": "Sichere Nachrichten und Aktualisierungen.",
+  "Stay connected with appointments.": "Mit Terminen abgestimmt bleiben.",
+  "Guides": "Leitfäden",
+  "Activities & Games Guide": "Leitfaden für Aktivitäten und Spiele",
+  "Privacy": "Datenschutz",
+  "Privacy & Data Security": "Datenschutz und Datensicherheit",
+  "Help": "Hilfe"
+});
+
+/* Safe Boundaries heading. */
+Object.assign(window.NB_I18N.en, {
+  "Supportive follow-up with care-team review": "Supportive follow-up with care-team review"
+});
+Object.assign(window.NB_I18N.ar, {
+  "Supportive follow-up with care-team review": "متابعة داعمة مع مراجعة فريق الرعاية"
+});
+Object.assign(window.NB_I18N.fr, {
+  "Supportive follow-up with care-team review": "Suivi bienveillant avec revue par l’équipe soignante"
+});
+Object.assign(window.NB_I18N.es, {
+  "Supportive follow-up with care-team review": "Seguimiento de apoyo con revisión del equipo de atención"
+});
+Object.assign(window.NB_I18N.de, {
+  "Supportive follow-up with care-team review": "Unterstützende Nachverfolgung mit Überprüfung durch das Betreuungsteam"
 });
