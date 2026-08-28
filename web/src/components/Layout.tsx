@@ -5,7 +5,9 @@ import { initials } from "../lib";
 import { useI18n } from "../i18n/useI18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import type { TranslationKey } from "../i18n/translations";
-import { useFamilyPreferences } from "../familyPreferences";
+import { useClinicianPreferences } from "../clinicianPreferences";
+import doctorCareIllustration from "../assets/doctor-care.png";
+import { ClinicianNotificationCenter } from "./ClinicianNotificationCenter";
 
 type NavItem = { to: string; key: TranslationKey; icon: string; end: boolean };
 
@@ -16,6 +18,8 @@ const CLINICIAN_NAV: NavItem[] = [
   { to: "/reports", key: "nav.reports", icon: "📄", end: false },
   { to: "/review-queue", key: "nav.reviewQueue", icon: "✦", end: false },
   { to: "/ai-companion", key: "nav.aiCompanion", icon: "✦", end: false },
+  { to: "/messages", key: "nav.messages", icon: "✉", end: false },
+  { to: "/settings", key: "nav.settings", icon: "⚙", end: false },
 ];
 
 const ADMIN_NAV: NavItem[] = [
@@ -23,12 +27,13 @@ const ADMIN_NAV: NavItem[] = [
 ];
 
 export function Layout() {
-  useFamilyPreferences();
+  useClinicianPreferences();
   const { user, roles, isClinician, isAdmin, logout } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
+  const isDoctor = roles.includes("doctor");
 
   const handleLogout = () => {
     logout();
@@ -96,6 +101,19 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
+
+        {isDoctor && (
+          <div className="doctor-sidebar-care-block">
+            <img
+              className="doctor-sidebar-care-illustration"
+              src={doctorCareIllustration}
+              alt=""
+              aria-hidden="true"
+            />
+            <div className="doctor-sidebar-care-divider" aria-hidden="true" />
+            <p className="doctor-sidebar-care-message">{t("doctor.sidebarCareMessage")}</p>
+          </div>
+        )}
       </aside>
 
       <div className="main">
@@ -109,6 +127,9 @@ export function Layout() {
           </button>
           <div className="topbar__spacer" />
           <LanguageSwitcher />
+          {isClinician && user?.id && (
+            <ClinicianNotificationCenter providerUserId={user.id} />
+          )}
           <div className="topbar__user provider-identity">
             <span className="avatar provider-identity__avatar" aria-hidden="true">
               {initials(user?.full_name)}

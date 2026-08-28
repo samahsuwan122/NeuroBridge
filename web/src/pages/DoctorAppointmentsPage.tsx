@@ -12,6 +12,7 @@ import {
 } from "../components/ui";
 import { formatDate, formatDateTime, patientName } from "../lib";
 import { useI18n } from "../i18n/useI18n";
+import appointmentsCarePoster from "../assets/appointments-care-poster.png";
 import type {
   Appointment,
   AppointmentListResponse,
@@ -152,14 +153,16 @@ export function DoctorAppointmentsPage() {
   };
 
   return (
-    <div className="page">
-      <div className="page__head">
-        <div>
-          <span className="eyebrow">{t("appt.eyebrow")}</span>
-          <h1>{t("appt.title")}</h1>
-          <p className="page__sub">{t("appt.sub")}</p>
+    <div className="page doctor-appointments">
+      <section className="doctor-appointments-hero" aria-labelledby="doctor-appointments-hero-title">
+        <img className="doctor-appointments-hero__background" src={appointmentsCarePoster} alt="" />
+        <div className="doctor-appointments-hero__overlay" aria-hidden="true" />
+        <div className="doctor-appointments-hero__content">
+          <span className="doctor-appointments-hero__eyebrow">{t("appt.heroEyebrow")}</span>
+          <h1 className="doctor-appointments-hero__title" id="doctor-appointments-hero-title">{t("appt.heroTitle")}</h1>
+          <p className="doctor-appointments-hero__copy">{t("appt.heroCopy")}</p>
         </div>
-      </div>
+      </section>
 
       {loading ? (
         <Spinner label={t("appt.loading")} />

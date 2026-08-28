@@ -23,6 +23,8 @@ import { ProviderDetailPage } from "./pages/ProviderDetailPage";
 import { AdminAccessRequestsPage } from "./pages/AdminAccessRequestsPage";
 import { RoleAccessPage } from "./pages/RoleAccessPage";
 import { AICompanionPage } from "./pages/AICompanionPage";
+import { ClinicianMessagesPage } from "./pages/ClinicianMessagesPage";
+import { ClinicianSettingsPage } from "./pages/ClinicianSettingsPage";
 import { useI18n } from "./i18n/useI18n";
 import { FamilyMemberProvider } from "./familyMembers";
 import { CurrentFamilyPatientProvider } from "./currentFamilyPatient";
@@ -66,6 +68,8 @@ function AppRoutes() {
             <Route path="/review-queue" element={<ReviewQueuePage />} />
           )}
           {isClinician && <Route path="/ai-companion" element={<AICompanionPage />} />}
+          {isClinician && <Route path="/messages" element={<ClinicianMessagesPage />} />}
+          {isClinician && <Route path="/settings" element={<ClinicianSettingsPage />} />}
           {isAdmin && (
             <Route
               path="/admin/access-requests"
