@@ -5,12 +5,15 @@ import { ErrorState, Spinner } from "../components/ui";
 import { loadCareData, reviewStatus, type CareData } from "../lib/careData";
 import { formatDateTime, scorePercent } from "../lib";
 import { useI18n } from "../i18n/useI18n";
+import { therapistExperience } from "../providerExperience";
 
 const KPI_ICONS = ["◉", "◷", "✓", "✦"];
 
 export function DashboardPage() {
-  const { user } = useAuth();
-  const { t } = useI18n();
+  const { user, roles } = useAuth();
+  const { t, lang } = useI18n();
+  const isTherapist = roles.includes("therapist") && !roles.includes("doctor");
+  const therapist = therapistExperience(lang);
   const [data, setData] = useState<CareData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,8 +36,8 @@ export function DashboardPage() {
   const focusStatus = focusPatient ? reviewStatus(focusPatient) : null;
 
   return <div className="page provider-overview doctor-dashboard">
-    <div className="page__head doctor-dashboard-intro"><div><span className="eyebrow">{t("dash.eyebrow")}</span><h1>{t("dash.welcomeBack", {name:user?.full_name ?? t("role.doctor")})}</h1><p className="page__sub">{t("dash.sub")}</p></div></div>
-    <section className="doctor-dashboard-hero" aria-label={t("dash.carePerspective")}><div className="doctor-dashboard-hero__content"><h2>{t("dash.careTitle")}</h2><p>{t("dash.careBody")}</p><Link className="btn btn--primary doctor-dashboard-hero__cta" to="/patients">{t("dash.viewPatients")}</Link></div></section>
+    <div className="page__head doctor-dashboard-intro"><div><span className="eyebrow">{t("dash.eyebrow")}</span><h1>{isTherapist ? therapist.greeting.replace("{name}", user?.full_name ?? t("role.therapist")) : t("dash.welcomeBack", {name:user?.full_name ?? t("role.doctor")})}</h1><p className="page__sub">{isTherapist ? therapist.dashboardSub : t("dash.sub")}</p></div></div>
+    <section className="doctor-dashboard-hero" aria-label={t("dash.carePerspective")}><div className="doctor-dashboard-hero__content"><h2>{isTherapist ? therapist.heroTitle : t("dash.careTitle")}</h2><p>{isTherapist ? therapist.heroBody : t("dash.careBody")}</p><Link className="btn btn--primary doctor-dashboard-hero__cta" to="/patients">{t("dash.viewPatients")}</Link></div></section>
     {focusPatient ? <section className="doctor-dashboard-patient" aria-labelledby="doctor-focus-title"><div className="doctor-dashboard-patient__label"><span className="eyebrow">{t("dash.yourPatients")}</span><h2 id="doctor-focus-title">{t("dash.patientFocus")}</h2></div><div className="doctor-dashboard-patient__identity"><span className="doctor-dashboard-patient__avatar" aria-hidden="true">{focusPatient.name.slice(0,1)}</span><div><strong>{focusPatient.name}</strong><small>{t("dash.assignedCare")}</small></div></div>{focusStatus && <span className={`provider-status provider-status--${focusStatus.tone}`}>{t(focusStatus.labelKey)}</span>}<Link className="doctor-dashboard-patient__link" to={`/patients/${focusPatient.profile.id}`}>{t("dash.viewPatientDetails")}</Link></section> : null}
     <section className="doctor-dashboard-kpis">{metrics.map(([label,value,hint], index) => <article className="doctor-dashboard-kpi" key={String(label)}><span className="doctor-dashboard-kpi__icon" aria-hidden="true">{KPI_ICONS[index]}</span><div><strong>{value}</strong><span>{label}</span><small>{hint}</small></div></article>)}</section>
     <div className="doctor-dashboard-sections">

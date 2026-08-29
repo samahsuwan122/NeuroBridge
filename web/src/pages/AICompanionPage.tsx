@@ -12,6 +12,7 @@ import { familyBookingCopy } from "../lib/familyBookingCopy";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { PatientListResponse,PatientProfile,Provider,ProviderListResponse } from "../types";
+import { therapistExperience } from "../providerExperience";
 import { useFamilyMembers } from "../familyMembers";
 import { parseFamilyAiAction,type FamilyAiAction } from "../lib/familyAiActions";
 import { addAiEncouragement,addAiMemory,setAiProviderDraft } from "../lib/familyAiLocalActions";
@@ -269,6 +270,7 @@ interface ClinicianAttachment{kind:"image"|"file"|"voice";url:string;name:string
 interface ClinicianMessage{id:string;role:"user"|"assistant";text?:string;template?:ClinicianTemplate;route?:string;attachment?:ClinicianAttachment;createdAt:string}
 interface ClinicianChat{id:string;title:string;messages:ClinicianMessage[];createdAt:string;updatedAt:string;defaultTitle?:boolean;archived?:boolean}
 const CLINICIAN_AI_KEY="nb_clinician_ai_conversations";
+const clinicianAIKey=(userId:string)=>`${CLINICIAN_AI_KEY}:${userId}`;
 const clinicianContextNote:LocalText=local(
  "Patient records are not shared automatically. Include only the information needed for your question.",
  "لا تتم مشاركة سجلات المرضى تلقائيًا. أضف فقط المعلومات اللازمة لسؤالك.",
@@ -276,21 +278,21 @@ const clinicianContextNote:LocalText=local(
  "Los expedientes de pacientes no se comparten automáticamente. Incluye solo la información necesaria para tu consulta.",
  "Patientenakten werden nicht automatisch geteilt. Fügen Sie nur die für Ihre Frage nötigen Informationen hinzu.",
 );
-const clinicianHelp:LocalText=local(
+const doctorClinicianHelp:LocalText=local(
  "I can help organize information you share, prepare questions, and draft clear follow-up communication.",
  "يمكنني تنظيم المعلومات التي تشاركها، وتحضير الأسئلة، وصياغة تواصل واضح للمتابعة.",
  "Je peux organiser les informations que vous partagez, préparer des questions et rédiger un suivi clair.",
  "Puedo organizar la información que compartas, preparar preguntas y redactar un seguimiento claro.",
  "Ich kann geteilte Informationen strukturieren, Fragen vorbereiten und klare Mitteilungen entwerfen.",
 );
-const clinicianPlaceholder:LocalText=local(
+const doctorClinicianPlaceholder:LocalText=local(
  "Ask a question or paste information you want help organizing...",
  "اكتب سؤالًا أو أضف معلومات تريد المساعدة في تنظيمها...",
  "Posez une question ou collez les informations à organiser...",
  "Haz una pregunta o pega la información que quieras organizar...",
  "Stellen Sie eine Frage oder fügen Sie Informationen zum Strukturieren ein...",
 );
-const clinicianSuggestions:{id:string;title:LocalText;helper:LocalText}[]=[
+const doctorClinicianSuggestions:{id:string;title:LocalText;helper:LocalText}[]=[
  {id:"summarize",title:local("Summarize information I provide","لخّص المعلومات التي أقدّمها","Résumer les informations que je fournis","Resume la información que proporcione","Von mir bereitgestellte Informationen zusammenfassen"),helper:local("Turn pasted notes into a concise overview","حوّل الملاحظات المضافة إلى ملخص موجز","Transformer mes notes en aperçu concis","Convierte mis notas en un resumen conciso","Eingefügte Notizen knapp zusammenfassen")},
  {id:"prepare",title:local("Help me prepare for an appointment","ساعدني في التحضير لموعد","M’aider à préparer un rendez-vous","Ayúdame a preparar una cita","Bei der Vorbereitung auf einen Termin helfen"),helper:local("Organize questions and discussion points","نظّم الأسئلة ونقاط النقاش","Organiser les questions et points à aborder","Organiza preguntas y temas de conversación","Fragen und Gesprächspunkte strukturieren")},
  {id:"followup",title:local("Help identify follow-up questions","ساعدني في تحديد أسئلة المتابعة","Identifier des questions de suivi","Ayúdame a identificar preguntas de seguimiento","Fragen für die Nachverfolgung formulieren"),helper:local("Review only the details I share here","راجع فقط التفاصيل التي أشاركها هنا","Examiner uniquement les éléments que je partage ici","Revisa solo los detalles que comparta aquí","Nur die hier geteilten Angaben berücksichtigen")},
@@ -303,7 +305,7 @@ const clinicianCopy:Record<Lang,Record<string,string>>={
  es:{title:"Asistente de IA NeuroBridge",eyebrow:"Espacio del asistente clínico",description:"Un asistente de apoyo para revisar información de NeuroBridge y navegar por las herramientas de seguimiento.",doctor:"Asistente del médico",therapist:"Asistente del terapeuta",history:"Historial de conversaciones",new:"Nueva conversación",empty:"Aún no hay conversaciones",welcome:"¿Cómo puedo ayudarte hoy?",doctorHelp:"Puedo ayudarte a revisar pacientes, informes, citas y la cola de revisión.",therapistHelp:"Puedo ayudarte a revisar pacientes, actividades, objetivos, informes y la cola de revisión.",safety:"NeuroBridge AI ayuda a organizar y revisar la información registrada. Las decisiones clínicas corresponden al profesional asistencial cualificado.",placeholder:"Pregunta a NeuroBridge sobre un paciente, informe, cita o herramienta de seguimiento...",queue:"Cola de revisión",queueHelp:"Revisar pacientes cuya actividad necesita seguimiento",appointments:"Citas",appointmentsHelp:"Revisar citas próximas y pendientes",reports:"Informes",reportsHelp:"Revisar informes de actividad y rendimiento registrados",patients:"Pacientes",patientsHelp:"Abrir la lista de pacientes asignados",add:"Añadir adjunto",photo:"Añadir foto",file:"Añadir archivo",close:"Cerrar",remove:"Eliminar",send:"Enviar",thinking:"Pensando",retry:"Algo salió mal. Inténtalo de nuevo.",attachment:"El adjunto se incluye como contexto, pero su análisis aún no está disponible en este espacio.",boundary:"Puedo resumir información y preparar preguntas, pero no diagnosticar, recetar ni cambiar tratamientos. Verifica las decisiones clínicas mediante el flujo adecuado.",patientMissing:"No encontré un paciente accesible con ese nombre exacto. Abre Pacientes asignados para elegir el expediente correcto.",patientAmbiguous:"Hay más de un paciente accesible con ese nombre. Abre Pacientes asignados y elige el expediente correcto.",navigation:"Encontré el espacio correspondiente. Usa la acción para abrirlo.",draft:"Esto es solo un borrador. Revísalo antes de enviarlo por el canal adecuado.",open:"Abrir",delete:"Eliminar",rename:"Renombrar",general:"Contexto general del equipo"},
  de:{title:"NeuroBridge KI-Begleiter",eyebrow:"Arbeitsbereich des klinischen Assistenten",description:"Ein unterstützender Assistent zum Prüfen von NeuroBridge-Informationen und Öffnen der Nachsorge-Werkzeuge.",doctor:"Arztassistent",therapist:"Therapeutenassistent",history:"Unterhaltungsverlauf",new:"Neue Unterhaltung",empty:"Noch keine Unterhaltungen",welcome:"Wie kann ich Sie heute unterstützen?",doctorHelp:"Ich unterstütze Sie beim Prüfen von Patienten, Berichten, Terminen und der Prüfliste.",therapistHelp:"Ich unterstütze Sie beim Prüfen von Patienten, Aktivitäten, Zielen, Berichten und der Prüfliste.",safety:"NeuroBridge AI unterstützt die Organisation und Prüfung erfasster Informationen. Klinische Entscheidungen bleiben beim qualifizierten Behandlungspersonal.",placeholder:"Fragen Sie NeuroBridge zu einem Patienten, Bericht, Termin oder Nachsorge-Werkzeug...",queue:"Prüfliste",queueHelp:"Patienten mit nachzuverfolgender Aktivität prüfen",appointments:"Termine",appointmentsHelp:"Anstehende und ausstehende Termine prüfen",reports:"Berichte",reportsHelp:"Erfasste Aktivitäts- und Leistungsberichte prüfen",patients:"Patienten",patientsHelp:"Liste der zugewiesenen Patienten öffnen",add:"Anhang hinzufügen",photo:"Foto hinzufügen",file:"Datei hinzufügen",close:"Schließen",remove:"Entfernen",send:"Senden",thinking:"Denke nach",retry:"Etwas ist schiefgelaufen. Versuchen Sie es erneut.",attachment:"Der Anhang dient als Kontext; seine Analyse ist hier noch nicht verfügbar.",boundary:"Ich kann Informationen zusammenfassen und Fragen vorbereiten, aber nicht diagnostizieren, verschreiben oder Behandlungen ändern. Prüfen Sie klinische Entscheidungen im vorgesehenen Ablauf.",patientMissing:"Kein zugänglicher Patient stimmt exakt mit diesem Namen überein. Öffnen Sie Zugewiesene Patienten und wählen Sie den richtigen Datensatz.",patientAmbiguous:"Mehrere zugängliche Patienten stimmen mit diesem Namen überein. Öffnen Sie Zugewiesene Patienten und wählen Sie den richtigen Datensatz.",navigation:"Der passende Arbeitsbereich wurde gefunden. Öffnen Sie ihn über die Aktion unten.",draft:"Dies ist nur ein Entwurf. Prüfen Sie ihn vor dem Versand über den vorgesehenen Kanal.",open:"Öffnen",delete:"Löschen",rename:"Umbenennen",general:"Allgemeiner Betreuungskontext"}
 };
-function readClinicianChats():ClinicianChat[]{try{const value=JSON.parse(localStorage.getItem(CLINICIAN_AI_KEY)||"[]");return Array.isArray(value)?value:[]}catch{return[]}}
+function readClinicianChats(storageKey:string,migrateLegacy:boolean):ClinicianChat[]{try{let raw=localStorage.getItem(storageKey);const marker=`${storageKey}:migrated`;if(!raw&&migrateLegacy&&!localStorage.getItem(marker)){raw=localStorage.getItem(CLINICIAN_AI_KEY);if(raw)localStorage.setItem(storageKey,raw);localStorage.setItem(marker,"1")}const value=JSON.parse(raw||"[]");return Array.isArray(value)?value:[]}catch{return[]}}
 const clinicianDefaultTitles=new Set(["New chat","New conversation","Nouvelle discussion","Nouvelle conversation","Nuevo chat","Nueva conversación","Neuer Chat","Neue Unterhaltung","محادثة جديدة"]);
 const clinicianManageCopy:Record<Lang,Record<string,string>>={
  en:{active:"Active",archived:"Archived",archive:"Archive",restore:"Restore",delete:"Delete",menu:"Conversation menu",emptyActive:"No active conversations yet.",emptyArchived:"No archived conversations.",deleteTitle:"Delete conversation?",deleteDescription:"This removes the conversation and its messages from this device."},
@@ -313,12 +315,17 @@ const clinicianManageCopy:Record<Lang,Record<string,string>>={
  de:{active:"Aktiv",archived:"Archiviert",archive:"Archivieren",restore:"Wiederherstellen",delete:"Löschen",menu:"Unterhaltungsmenü",emptyActive:"Keine aktiven Unterhaltungen.",emptyArchived:"Keine archivierten Unterhaltungen.",deleteTitle:"Unterhaltung löschen?",deleteDescription:"Die Unterhaltung und ihre Nachrichten werden von diesem Gerät entfernt."}
 };
 function ClinicianAICompanion(){
- const {roles}=useAuth(),{lang,dir}=useI18n(),navigate=useNavigate(),c=clinicianCopy[lang],mc=clinicianManageCopy[lang],ac=ATTACH_COPY[lang];
- const [chats,setChats]=useState<ClinicianChat[]>(readClinicianChats),[activeId,setActiveId]=useState(""),[text,setText]=useState(""),[sending,setSending]=useState(false),[error,setError]=useState(""),[patients,setPatients]=useState<PatientProfile[]>([]),[menuOpen,setMenuOpen]=useState(false),[chatMenuId,setChatMenuId]=useState<string|null>(null),[historyView,setHistoryView]=useState<"active"|"archived">("active"),[draft,setDraft]=useState<ClinicianAttachment|null>(null),[recording,setRecording]=useState(false),[recordSeconds,setRecordSeconds]=useState(0),[historyOpen,setHistoryOpen]=useState(false);
- const endRef=useRef<HTMLDivElement>(null),historyRef=useRef<HTMLElement>(null),historyToggleRef=useRef<HTMLButtonElement>(null),photoRef=useRef<HTMLInputElement>(null),fileRef=useRef<HTMLInputElement>(null),recorderRef=useRef<MediaRecorder|null>(null),recordingStreamRef=useRef<MediaStream|null>(null),recordingTimerRef=useRef<number|null>(null),recordingChunksRef=useRef<Blob[]>([]),recordingSecondsRef=useRef(0),objectUrlsRef=useRef(new Set<string>()),isTherapist=roles.includes("therapist")&&!roles.includes("doctor");
+ const {user,roles}=useAuth(),{lang,dir}=useI18n(),navigate=useNavigate(),mc=clinicianManageCopy[lang],ac=ATTACH_COPY[lang];
+ const isTherapist=roles.includes("therapist")&&!roles.includes("doctor"),storageKey=clinicianAIKey(user?.id||"anonymous"),therapist=therapistExperience(lang);
+ const c=isTherapist?{...clinicianCopy[lang],description:therapist.aiDescription,therapist:therapist.aiLabel,therapistHelp:therapist.aiHelp,placeholder:therapist.aiPlaceholder}:clinicianCopy[lang];
+ const clinicianHelp:LocalText=isTherapist?{...doctorClinicianHelp,[lang]:therapist.aiHelp}:doctorClinicianHelp;
+ const clinicianPlaceholder:LocalText=isTherapist?{...doctorClinicianPlaceholder,[lang]:therapist.aiPlaceholder}:doctorClinicianPlaceholder;
+ const clinicianSuggestions=isTherapist?therapist.aiSuggestions.map(suggestion=>({id:suggestion.id,title:{...doctorClinicianPlaceholder,[lang]:suggestion.title},helper:{...doctorClinicianPlaceholder,[lang]:suggestion.helper}})):doctorClinicianSuggestions;
+ const [chats,setChats]=useState<ClinicianChat[]>(()=>readClinicianChats(storageKey,!isTherapist)),[activeId,setActiveId]=useState(""),[text,setText]=useState(""),[sending,setSending]=useState(false),[error,setError]=useState(""),[patients,setPatients]=useState<PatientProfile[]>([]),[menuOpen,setMenuOpen]=useState(false),[chatMenuId,setChatMenuId]=useState<string|null>(null),[historyView,setHistoryView]=useState<"active"|"archived">("active"),[draft,setDraft]=useState<ClinicianAttachment|null>(null),[recording,setRecording]=useState(false),[recordSeconds,setRecordSeconds]=useState(0),[historyOpen,setHistoryOpen]=useState(false);
+ const endRef=useRef<HTMLDivElement>(null),historyRef=useRef<HTMLElement>(null),historyToggleRef=useRef<HTMLButtonElement>(null),photoRef=useRef<HTMLInputElement>(null),fileRef=useRef<HTMLInputElement>(null),recorderRef=useRef<MediaRecorder|null>(null),recordingStreamRef=useRef<MediaStream|null>(null),recordingTimerRef=useRef<number|null>(null),recordingChunksRef=useRef<Blob[]>([]),recordingSecondsRef=useRef(0),objectUrlsRef=useRef(new Set<string>());
  const active=chats.find(chat=>chat.id===activeId)||null;
  const visibleChats=chats.filter(chat=>Boolean(chat.archived)===(historyView==="archived"));
- const save=(next:ClinicianChat[])=>{setChats(next);try{localStorage.setItem(CLINICIAN_AI_KEY,JSON.stringify(next))}catch{/* storage is optional */}};
+ const save=(next:ClinicianChat[])=>{setChats(next);try{localStorage.setItem(storageKey,JSON.stringify(next))}catch{/* storage is optional */}};
  const closeHistory=useCallback(()=>setHistoryOpen(false),[]);
  const newChat=()=>{const stamp=now(),chat:ClinicianChat={id:id(),title:c.new,messages:[],createdAt:stamp,updatedAt:stamp,defaultTitle:true,archived:false};save([chat,...chats]);setActiveId(chat.id);setHistoryView("active");closeHistory();setChatMenuId(null)};
  useEffect(() => {
@@ -351,7 +358,7 @@ function ClinicianAICompanion(){
     if (cancelled) return;
     setChats([chat]);
     setActiveId(chat.id);
-    try { localStorage.setItem(CLINICIAN_AI_KEY, JSON.stringify([chat])); } catch { /* storage is optional */ }
+    try { localStorage.setItem(storageKey, JSON.stringify([chat])); } catch { /* storage is optional */ }
    } catch {
     /* Existing empty-state UI remains available when history cannot load. */
    }
@@ -359,7 +366,7 @@ function ClinicianAICompanion(){
 
   void loadData();
   return () => { cancelled = true; };
- }, []);
+ }, [storageKey]);
  useEffect(() => {
   if (!activeId) setActiveId(chats.find((chat) => !chat.archived)?.id || "");
  }, [chats, activeId]);

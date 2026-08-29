@@ -63,7 +63,7 @@ function ProviderProfileAvatar({src,name,variant}:{src?:string;name:string;varia
 }
 
 export function LegacyClinicianSettingsPage(){
- const {user,roles}=useAuth(),{lang}=useI18n(),c=copy[lang],{preferences,update}=useClinicianPreferences();
+ const {user,roles}=useAuth(),{lang}=useI18n(),c=copy[lang],{preferences,update}=useClinicianPreferences(user?.id,roles.includes("doctor"));
  const [provider,setProvider]=useState<Provider|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(""),[preview,setPreview]=useState(false);
  useEffect(()=>{let live=true;api<ProviderListResponse>("/providers").then(result=>{if(live)setProvider(result.providers.find(item=>item.provider_user_id===user?.id)||null)}).catch(()=>live&&setError(c.loadError)).finally(()=>live&&setLoading(false));return()=>{live=false}},[user?.id]);
  const role=roles.includes("therapist")?c.therapist:c.doctor;
@@ -206,7 +206,7 @@ export function LegacyClinicianSettingsPage(){
 }
 
 export function ClinicianSettingsPage(){
- const {user,roles}=useAuth(),{lang}=useI18n(),c=copy[lang],e=editCopy[lang],l=layoutCopy[lang],p=profilePolishCopy[lang],{preferences,update:savePreference}=useClinicianPreferences();
+ const {user,roles}=useAuth(),{lang}=useI18n(),c=copy[lang],e=editCopy[lang],l=layoutCopy[lang],p=profilePolishCopy[lang],{preferences,update:savePreference}=useClinicianPreferences(user?.id,roles.includes("doctor"));
  const {preferences:notificationPreferences,update:saveNotificationPreference}=useClinicianNotificationPreferences(user?.id||"");
  const {provider,loading,error,update,uploadPhoto,editingAvailable}=useProviderSelf();
  const [editing,setEditing]=useState(false),[preview,setPreview]=useState(false),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");

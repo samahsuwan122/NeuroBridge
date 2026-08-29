@@ -13,6 +13,8 @@ import {
 import { formatDate, formatDateTime, patientName } from "../lib";
 import { useI18n } from "../i18n/useI18n";
 import appointmentsCarePoster from "../assets/appointments-care-poster.png";
+import therapistAppointmentsHero from "../assets/online.png";
+import { therapistExperience } from "../providerExperience";
 import type {
   Appointment,
   AppointmentListResponse,
@@ -45,8 +47,10 @@ function statusTone(status: string): "neutral" | "live" | "plan" | "gold" {
  * addressed to them. Coordination only — non-diagnostic, not emergency care.
  */
 export function DoctorAppointmentsPage() {
-  const { user } = useAuth();
-  const { t } = useI18n();
+  const { user, roles } = useAuth();
+  const { t, lang } = useI18n();
+  const isTherapist = roles.includes("therapist") && !roles.includes("doctor");
+  const therapist = therapistExperience(lang);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<Appointment[]>([]);
@@ -154,13 +158,13 @@ export function DoctorAppointmentsPage() {
 
   return (
     <div className="page doctor-appointments">
-      <section className="doctor-appointments-hero" aria-labelledby="doctor-appointments-hero-title">
-        <img className="doctor-appointments-hero__background" src={appointmentsCarePoster} alt="" />
+      <section className={`doctor-appointments-hero${isTherapist ? " doctor-appointments-hero--therapist" : ""}`} aria-labelledby="doctor-appointments-hero-title">
+        <img className="doctor-appointments-hero__background" src={isTherapist ? therapistAppointmentsHero : appointmentsCarePoster} alt="" />
         <div className="doctor-appointments-hero__overlay" aria-hidden="true" />
         <div className="doctor-appointments-hero__content">
-          <span className="doctor-appointments-hero__eyebrow">{t("appt.heroEyebrow")}</span>
-          <h1 className="doctor-appointments-hero__title" id="doctor-appointments-hero-title">{t("appt.heroTitle")}</h1>
-          <p className="doctor-appointments-hero__copy">{t("appt.heroCopy")}</p>
+          <span className="doctor-appointments-hero__eyebrow">{isTherapist ? therapist.appointmentsEyebrow : t("appt.heroEyebrow")}</span>
+          <h1 className="doctor-appointments-hero__title" id="doctor-appointments-hero-title">{isTherapist ? therapist.appointmentsTitle : t("appt.heroTitle")}</h1>
+          <p className="doctor-appointments-hero__copy">{isTherapist ? therapist.appointmentsBody : t("appt.heroCopy")}</p>
         </div>
       </section>
 

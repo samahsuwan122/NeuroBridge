@@ -39,8 +39,8 @@ const ADMIN_NAV: NavItem[] = [
 ];
 
 export function Layout() {
-  useClinicianPreferences();
   const { user, roles, isClinician, isAdmin, logout } = useAuth();
+  useClinicianPreferences(user?.id, roles.includes("doctor"));
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const location = useLocation();
