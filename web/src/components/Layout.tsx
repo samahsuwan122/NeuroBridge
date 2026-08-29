@@ -1,13 +1,25 @@
-import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import { initials } from "../lib";
+import { initials, patientName } from "../lib";
 import { useI18n } from "../i18n/useI18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import type { TranslationKey } from "../i18n/translations";
+import type { Lang, TranslationKey } from "../i18n/translations";
+import type { PatientListResponse, PatientProfile } from "../types";
 import { useClinicianPreferences } from "../clinicianPreferences";
 import doctorCareIllustration from "../assets/doctor-care.png";
 import { ClinicianNotificationCenter } from "./ClinicianNotificationCenter";
+import neurobridgeAiMascot from "../assets/neurobridge-ai-mascot.png";
+import { familyMemberPhotoCopy } from "../familyMembers";
+
+const topbarCopy: Record<Lang, { current: string; patients: string; switchPatient: string }> = {
+  en: { current: "Current patient", patients: "Assigned patients", switchPatient: "Switch patient" },
+  ar: { current: "المريض الحالي", patients: "المرضى المسندون", switchPatient: "تبديل المريض" },
+  fr: { current: "Patient actuel", patients: "Patients assignés", switchPatient: "Changer de patient" },
+  es: { current: "Paciente actual", patients: "Pacientes asignados", switchPatient: "Cambiar paciente" },
+  de: { current: "Aktueller Patient", patients: "Zugewiesene Patienten", switchPatient: "Patient wechseln" },
+};
 
 type NavItem = { to: string; key: TranslationKey; icon: string; end: boolean };
 
@@ -29,11 +41,35 @@ const ADMIN_NAV: NavItem[] = [
 export function Layout() {
   useClinicianPreferences();
   const { user, roles, isClinician, isAdmin, logout } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [patientOpen, setPatientOpen] = useState(false);
+  const [patients, setPatients] = useState<PatientProfile[]>([]);
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [logoFailed, setLogoFailed] = useState(false);
   const isDoctor = roles.includes("doctor");
+
+  useEffect(() => {
+    if (!isClinician) return;
+    let active = true;
+    api<PatientListResponse>("/patients?limit=200")
+      .then((result) => { if (active) setPatients(result.patients); })
+      .catch(() => { if (active) setPatients([]); });
+    return () => { active = false; };
+  }, [isClinician]);
+
+  const routePatientId = /^\/patients\/([^/]+)/.exec(location.pathname)?.[1];
+  const selectedPatient = useMemo(
+    () => patients.find((patient) => patient.id === routePatientId) ?? patients.find((patient) => patient.id === selectedPatientId) ?? patients[0],
+    [patients, routePatientId, selectedPatientId],
+  );
+  const choosePatient = (patient: PatientProfile) => {
+    setSelectedPatientId(patient.id);
+    setPatientOpen(false);
+    navigate(`/patients/${patient.id}`);
+  };
 
   const handleLogout = () => {
     logout();
@@ -125,22 +161,46 @@ export function Layout() {
           >
             ☰
           </button>
-          <div className="topbar__spacer" />
-          <LanguageSwitcher />
-          {isClinician && user?.id && (
-            <ClinicianNotificationCenter providerUserId={user.id} />
-          )}
-          <div className="topbar__user provider-identity">
-            <span className="avatar provider-identity__avatar" aria-hidden="true">
-              {initials(user?.full_name)}
-            </span>
-            <div className="topbar__meta">
-              <strong>{user?.full_name ?? t("role.clinician")}</strong>
-              <span>{isClinician ? `${clinicianRole} · ${t("provider.careProvider")}` : clinicianRole}</span>
+          <div className="clinician-topbar-identities family-topbar-identities">
+            <div className="topbar__user family-account-profile clinician-account-profile">
+              <span className="avatar" aria-hidden="true">{initials(user?.full_name)}</span>
+              <div className="topbar__meta">
+                <strong>{user?.full_name ?? t("role.clinician")}</strong>
+                <span>{isClinician ? `${clinicianRole} · ${t("provider.careProvider")}` : clinicianRole}</span>
+              </div>
             </div>
-            <button className="btn btn--ghost btn--sm" onClick={handleLogout}>
-              {t("action.logout")}
-            </button>
+            {isClinician && selectedPatient && (
+              <div className="family-patient-switcher clinician-patient-switcher">
+                <button className="family-patient-chip" type="button" onClick={() => setPatientOpen((value) => !value)} aria-expanded={patientOpen} aria-label={topbarCopy[lang].switchPatient}>
+                  <span className="patient-context-avatar" aria-hidden="true">{initials(patientName(selectedPatient.user))}</span>
+                  <span><strong>{patientName(selectedPatient.user)}</strong><small>{topbarCopy[lang].current}</small></span>
+                  <i aria-hidden="true">⌄</i>
+                </button>
+                {patientOpen && (
+                  <div className="family-patient-popover clinician-patient-popover">
+                    <strong>{topbarCopy[lang].patients}</strong>
+                    {patients.map((patient) => (
+                      <button type="button" key={patient.id} className={selectedPatient.id === patient.id ? "is-active" : ""} onClick={() => choosePatient(patient)}>
+                        <span className="patient-context-avatar" aria-hidden="true">{initials(patientName(patient.user))}</span>
+                        <span><b>{patientName(patient.user)}</b><small>{topbarCopy[lang].current}</small></span>
+                        {selectedPatient.id === patient.id && <em>✓</em>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="topbar__spacer" />
+          <div className="clinician-topbar-utilities family-topbar-utilities">
+            {isClinician && (
+              <NavLink className="family-header-ai clinician-header-ai" to="/ai-companion" title={familyMemberPhotoCopy[lang].openAi} aria-label={familyMemberPhotoCopy[lang].openAi}>
+                <img src={neurobridgeAiMascot} alt="" />
+              </NavLink>
+            )}
+            {isClinician && user?.id && <ClinicianNotificationCenter providerUserId={user.id} />}
+            <LanguageSwitcher />
+            <button className="btn btn--ghost btn--sm" onClick={handleLogout}>{t("action.logout")}</button>
           </div>
         </header>
 
