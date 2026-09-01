@@ -26,7 +26,7 @@ const routes:[string,string[]][]=[
 ];
 
 export function parseFamilyAiAction(raw:string,patients:PatientProfile[],current:PatientProfile|null,providers:Provider[],imageUrl?:string):ParseResult{
- const n=normalize(raw);if(includesAny(n,["دواء","علاج","تشخيص","medication","medicine","treatment","diagnose","médicament","traitement","medicamento","medikament","behandlung"]))return{medical:true};
+ const n=normalize(raw);if(includesAny(n,["دواء","علاج","تشخيص","طوارئ","طارئ","عاجل","medication","medicine","treatment","diagnose","emergency","urgent","médicament","traitement","urgence","urgent","medicamento","emergencia","urgente","medikament","behandlung","notfall","dringend"]))return{medical:true};
  if(includesAny(n,["ادفع","pay appointment","make payment","payer","pagar","bezahlen"]))return{payment:true};
  const patient=patientMatch(raw,patients,current);
  const avatar=includesAny(n,["صوره شخصيه","صورة شخصية","صوره المريض","صورة المريض","حط هاي صوره","خلي هاي صوره","profile picture","patient avatar","use this as","set this photo","photo de profil","foto de perfil","profilbild"]);

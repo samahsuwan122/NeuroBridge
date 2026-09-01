@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { formatDateTime } from "../lib";
 import { Badge } from "./ui";
 import type { ProviderMessageReply } from "../types";
@@ -13,6 +13,14 @@ interface Bubble {
   text: string;
   at: string;
 }
+
+const sameUserId = (senderId?: string | null, currentUserId?: string | null) =>
+  Boolean(
+    senderId &&
+      currentUserId &&
+      senderId.trim().toLocaleLowerCase() ===
+        currentUserId.trim().toLocaleLowerCase(),
+  );
 
 /**
  * Two-way provider chat: an optional header, an optional safety strip, the
@@ -43,6 +51,10 @@ export function ChatThread({
   onBack,
   avatarUrl,
   avatarText,
+  headerActions,
+  hideOriginal = false,
+  emptyState,
+  sendLabel,
 }: {
   originalId: string;
   originalSenderId: string;
@@ -61,6 +73,10 @@ export function ChatThread({
   onBack?: () => void;
   avatarUrl?: string;
   avatarText?: string;
+  headerActions?: ReactNode;
+  hideOriginal?: boolean;
+  emptyState?: ReactNode;
+  sendLabel?: string;
 }) {
   const { t, dir } = useI18n();
   const [body, setBody] = useState("");
@@ -69,13 +85,13 @@ export function ChatThread({
   const [sent, setSent] = useState(false);
 
   const bubbles: Bubble[] = [
-    {
+    ...(!hideOriginal ? [{
       id: originalId,
       senderId: originalSenderId,
       senderName: originalSenderName || t("family.chatFamily"),
       text: originalText,
       at: originalAt,
-    },
+    }] : []),
     ...replies.map((r) => ({
       id: r.id,
       senderId: r.sender_user_id,
@@ -123,12 +139,14 @@ export function ChatThread({
             {subtitle && <span className="chat__subtitle">{subtitle}</span>}
           </div>
           {statusLabel && <Badge tone="neutral">{statusLabel}</Badge>}
+          {headerActions}
         </div>
       )}
 
       <div className="chat__log">
+        {!bubbles.length && emptyState}
         {bubbles.map((b) => {
-          const mine = Boolean(currentUserId) && b.senderId === currentUserId;
+          const mine = sameUserId(b.senderId, currentUserId);
           return (
             <div
               key={b.id}
@@ -169,7 +187,7 @@ export function ChatThread({
               type="submit"
               disabled={sending || !body.trim()}
             >
-              {sending ? t("family.sending") : t("family.sendReply")}
+              {sending ? t("family.sending") : sendLabel || t("family.sendReply")}
             </button>
           </div>
           {error && <div className="mform__error">{error}</div>}

@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resources | NeuroBridge</title>
-  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/neurobridge-logo-mark-premium.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="backgrounds.css" />
 </head>
 
-<body>
+<body class="site-editorial resources-page">
+  <a class="skip-link" href="#main-content" data-i18n="Skip to content">Skip to content</a>
   <header class="nav" id="top">
     <div class="container nav__inner">
       <a class="brand" href="index.html">
-        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <img class="brand__logo" src="assets/neurobridge-logo-mark-premium.png" alt="" width="42" height="42" />
         <span class="brand__text">NeuroBridge</span>
       </a>
 
@@ -24,8 +27,7 @@
         <a href="patients.html" data-i18n="Patients">Patients</a>
         <a href="families.html" data-i18n="Families">Families</a>
         <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
-        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
-        <a href="resources.html" data-i18n="Resources">Resources</a>
+        <a href="resources.html" aria-current="page" data-i18n="Resources">Resources</a>
         <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
       </nav>
 <button
@@ -80,39 +82,60 @@
     </div>
   </header>
 
-  <main>
-    <section class="section page-hero">
+  <main id="main-content">
+    <section class="section resources-journey" aria-labelledby="resources-journey-title">
       <div class="container">
-        <div class="section__head reveal">
+        <header class="resources-page__head reveal">
           <span class="eyebrow" data-i18n="resources.eyebrow">Resources</span>
-          <h1 data-i18n="resources.title">How NeuroBridge works</h1>
-          <p class="section__sub" data-i18n="resources.subtitle">
-            A simple connected loop between daily practice, family support,
-            and care-team review.
-          </p>
+          <h1 id="resources-journey-title">Support that moves<br />with the care journey.</h1>
+          <p>NeuroBridge connects daily cognitive practice, family involvement, care-team review, and clear follow-up.</p>
+        </header>
+
+        <div class="resources-journey__flow reveal">
+          <svg class="resources-journey__path" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M24 82 C140 18 238 138 354 76 S565 30 666 84 S864 135 970 70 S1112 32 1176 78" />
+            <circle cx="24" cy="82" r="4" /><circle cx="354" cy="76" r="4" />
+            <circle cx="666" cy="84" r="4" /><circle cx="970" cy="70" r="4" />
+            <circle cx="1176" cy="78" r="3" />
+          </svg>
+
+          <article class="resources-journey__step">
+            <span class="resources-journey__number">01</span>
+            <span class="resources-journey__role">Patient</span>
+            <h2 data-i18n="resources.step.practice.title">Patient practices</h2>
+            <p data-i18n="resources.step.practice.text">Daily activities and games in the patient app.</p>
+          </article>
+          <article class="resources-journey__step">
+            <span class="resources-journey__number">02</span>
+            <span class="resources-journey__role">Family</span>
+            <h2 data-i18n="resources.step.family.title">Family supports</h2>
+            <p data-i18n="resources.step.family.text">Encouragement, memories, and appointments.</p>
+          </article>
+          <article class="resources-journey__step">
+            <span class="resources-journey__number">03</span>
+            <span class="resources-journey__role">Care team</span>
+            <h2 data-i18n="resources.step.review.title">Care team reviews</h2>
+            <p data-i18n="resources.step.review.text">Assigned care teams review performance-only progress.</p>
+          </article>
+          <article class="resources-journey__step">
+            <span class="resources-journey__number">04</span>
+            <span class="resources-journey__role">Follow-up</span>
+            <h2 data-i18n="resources.step.followup.title">Summaries support follow-up</h2>
+            <p data-i18n="resources.step.followup.text">Readable summaries support care-team review and supportive follow-up.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section section--tint">
-      <div class="container">
-        <div class="steps">
-          <article class="step reveal"><span class="step__num">1</span><h3 data-i18n="resources.step.practice.title">Patient practices</h3><p data-i18n="resources.step.practice.text">Daily activities and games in the patient app.</p></article>
-          <article class="step reveal"><span class="step__num">2</span><h3 data-i18n="resources.step.family.title">Family supports</h3><p data-i18n="resources.step.family.text">Encouragement, memories, and appointments.</p></article>
-          <article class="step reveal"><span class="step__num">3</span><h3 data-i18n="resources.step.review.title">Care team reviews</h3><p data-i18n="resources.step.review.text">Assigned care teams review performance-only progress.</p></article>
-          <article class="step reveal"><span class="step__num">4</span><h3 data-i18n="resources.step.followup.title">Summaries support follow-up</h3><p data-i18n="resources.step.followup.text">Readable summaries support care-team review and supportive follow-up.</p></article>
-        </div>
-      </div>
-    </section>
+    <section class="section resources-guidance" id="faq" aria-labelledby="resources-guidance-title">
+      <div class="container resources-guidance__inner">
+        <header class="resources-page__head resources-page__head--guidance reveal">
+          <span class="eyebrow">Help &amp; guidance</span>
+          <h2 id="resources-guidance-title">Common questions,<br />clear boundaries.</h2>
+          <p>A concise view of how NeuroBridge supports care while keeping review, access, and responsibility clear.</p>
+        </header>
 
-    <section class="section" id="faq">
-      <div class="container container--narrow">
-        <div class="section__head reveal">
-          <span class="eyebrow" data-i18n="resources.faq.eyebrow">FAQ</span>
-          <h2 data-i18n="resources.faq.title">Common questions</h2>
-        </div>
-
-        <div class="faq reveal">
+        <div class="resources-faq faq reveal">
           <details>
             <summary data-i18n="resources.faq.what.question">What does NeuroBridge do?</summary>
             <p data-i18n="resources.faq.what.answer">NeuroBridge connects patients, families, and care teams to organize daily activities, appointments, messages, and performance-only progress summaries.</p>
@@ -138,28 +161,19 @@
             <p data-i18n="resources.faq.demo.answer">Yes. Clinics can submit a request through the Request demo page.</p>
           </details>
         </div>
-      </div>
-    </section>
 
-    <section class="section section--dark">
-      <div class="container">
-        <div class="section__head reveal">
-          <span class="eyebrow eyebrow--gold" data-i18n="resources.safety.eyebrow">Supportive boundaries</span>
-          <h2 data-i18n="resources.safety.title">Supportive review only</h2>
-          <p class="section__sub section__sub--light" data-i18n="resources.safety.subtitle">
-            NeuroBridge focuses on organization, daily activities, family support,
-            messages, appointments, and performance-only progress summaries.
-          </p>
-        </div>
-
-        <div class="grid grid--3">
-          <article class="card card--glassdark reveal"><h3 data-i18n="resources.safety.followup.title">Supportive follow-up</h3><p data-i18n="resources.safety.followup.text">The platform supports daily activities and performance-only progress.</p></article>
-          <article class="card card--glassdark reveal"><h3 data-i18n="resources.safety.review.title">Care-team review</h3><p data-i18n="resources.safety.review.text">Care-team review remains the final step.</p></article>
-          <article class="card card--glassdark reveal"><h3 data-i18n="resources.safety.access.title">Scoped access</h3><p data-i18n="resources.safety.access.text">Users only see information related to their role and assignment.</p></article>
+        <div class="resources-boundaries reveal" id="supportive-boundaries">
+          <div class="resources-boundaries__label" data-i18n="resources.safety.eyebrow">Supportive boundaries</div>
+          <div class="resources-boundaries__items">
+            <article><span>01</span><div><h3 data-i18n="resources.safety.followup.title">Supportive follow-up</h3><p data-i18n="resources.safety.followup.text">The platform supports daily activities and performance-only progress.</p></div></article>
+            <article><span>02</span><div><h3 data-i18n="resources.safety.review.title">Care-team review</h3><p data-i18n="resources.safety.review.text">Care-team review remains the final step.</p></div></article>
+            <article><span>03</span><div><h3 data-i18n="resources.safety.access.title">Scoped access</h3><p data-i18n="resources.safety.access.text">Users only see information related to their role and assignment.</p></div></article>
+          </div>
         </div>
       </div>
     </section>
   </main>
+
  <!-- Language modal -->
 <div
   class="lang-modal"

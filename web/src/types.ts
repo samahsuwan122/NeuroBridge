@@ -200,6 +200,7 @@ export interface Provider {
   role: string;
   specialty?: string | null;
   bio_short?: string | null;
+  languages?: string[];
   clinic_name?: string | null;
   governorate?: string | null;
   city?: string | null;
@@ -230,6 +231,7 @@ export interface ProviderMessage {
   created_at: string;
   provider_name?: string | null;
   sender_name?: string | null;
+  sender_relationship?: string | null;
   patient_name?: string | null;
   latest_reply_preview?: string | null;
   latest_reply_at?: string | null;

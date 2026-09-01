@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Care Teams | NeuroBridge</title>
-  <link rel="icon" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/neurobridge-logo-mark-premium.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="backgrounds.css" />
 </head>
 
-<body>
+<body class="site-editorial care-teams-page">
+  <a class="skip-link" href="#main-content" data-i18n="Skip to content">Skip to content</a>
   <header class="nav" id="top">
     <div class="container nav__inner">
       <a class="brand" href="index.html">
-        <img class="brand__logo" src="assets/neurobridge-logo-mark.png" alt="" width="42" height="42" />
+        <img class="brand__logo" src="assets/neurobridge-logo-mark-premium.png" alt="" width="42" height="42" />
         <span class="brand__text">NeuroBridge</span>
       </a>
 
@@ -23,8 +26,7 @@
         <a href="platform.html" data-i18n="Platform">Platform</a>
         <a href="patients.html" data-i18n="Patients">Patients</a>
         <a href="families.html" data-i18n="Families">Families</a>
-        <a href="care-teams.html" data-i18n="Care Teams">Care Teams</a>
-        <a href="clinics.html" data-i18n="Clinics">Clinics</a>
+        <a href="care-teams.html" aria-current="page" data-i18n="Care Teams">Care Teams</a>
         <a href="resources.html" data-i18n="Resources">Resources</a>
         <a class="btn btn--gold nav__cta" href="request-demo.html" data-i18n="nav.signin">Sign in</a>
       </nav>
@@ -60,12 +62,15 @@
     </div>
   </header>
 
-  <main>
-    <section class="section page-hero">
+  <main id="main-content">
+    <section class="section page-hero care-teams-hero">
       <div class="container">
         <div class="section__head reveal">
           <span class="eyebrow" data-i18n="For doctors &amp; therapists">For doctors & therapists</span>
-          <h1 data-i18n="Supportive oversight, never automated judgment.">Supportive oversight, never automated judgment.</h1>
+          <h1>
+            <span>Clear progress,</span><br />
+            <span>more thoughtful care.</span>
+          </h1>
           <p class="section__sub" data-i18n="Care teams can review assigned patients, goals, activities, messages, appointments, and performance-only progress summaries.">
             Care teams can review assigned patients, goals, activities, messages,
             appointments, and performance-only progress summaries.
@@ -74,19 +79,27 @@
       </div>
     </section>
 
-    <section class="section section--blue">
+    <section class="section section--blue care-showcase">
       <div class="container">
-        <div class="doc-preview">
-          <figure class="doc-preview__media reveal">
-            <img class="photo" src="assets/photos/doctor-review.jpg" alt="Care provider reviewing progress" width="480" height="360" />
-            <figcaption class="fam__hero-cap">
-              <b data-i18n="Performance-only review">Performance-only review</b>
-              <span data-i18n="Pending care-team review.">Pending care-team review.</span>
-            </figcaption>
+        <div class="doc-preview care-showcase__layout">
+          <figure class="doc-preview__media care-showcase__media reveal">
+            <video
+              class="care-showcase__video"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              poster="assets/photos/doctor-review.jpg"
+              data-reduced-motion-pause
+              aria-label="Care provider reviewing progress with a patient"
+            >
+              <source src="assets/videos/care-team.mp4" type="video/mp4" />
+            </video>
           </figure>
 
-          <div class="doc-preview__panels">
-            <article class="dash__card reveal">
+          <div class="doc-preview__panels care-showcase__panels">
+            <article class="dash__card care-showcase__panel reveal">
               <header class="dash__head"><h3 data-i18n="Assigned patients">Assigned patients</h3><span class="tag tag--teal">6</span></header>
               <ul class="mini-list">
                 <li><b data-i18n="S. Nasser">S. Nasser</b><span data-i18n="On track">On track</span></li>
@@ -95,7 +108,7 @@
               </ul>
             </article>
 
-            <article class="dash__card reveal">
+            <article class="dash__card care-showcase__panel reveal">
               <header class="dash__head"><h3 data-i18n="Patient goals">Patient goals</h3><span class="tag tag--gold" data-i18n="Active">Active</span></header>
               <ul class="mini-list">
                 <li><b data-i18n="Weekly activity practice">Weekly activity practice</b><span>40%</span></li>
@@ -103,7 +116,7 @@
               </ul>
             </article>
 
-            <article class="dash__card reveal">
+            <article class="dash__card care-showcase__panel reveal">
               <header class="dash__head"><h3 data-i18n="Provider messages">Provider messages</h3><span class="tag tag--gold" data-i18n="2 new">2 new</span></header>
               <div class="chat-mock">
                 <p class="cm cm--them" data-i18n="Quick question about Thursday's plan.">Quick question about Thursday's plan.</p>
@@ -111,7 +124,7 @@
               </div>
             </article>
 
-            <article class="dash__card reveal">
+            <article class="dash__card care-showcase__panel reveal">
               <header class="dash__head"><h3 data-i18n="Progress review">Progress review</h3><span class="tag tag--teal" data-i18n="Trend">Trend</span></header>
               <div class="chart chart--sm">
                 <i style="height:44%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:78%"></i><i style="height:88%"></i>
@@ -120,24 +133,24 @@
             </article>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="grid grid--3">
-          <article class="card reveal"><h3 data-i18n="Assigned activities">Assigned activities</h3><p data-i18n="Doctors and therapists can assign supportive activities for follow-up.">Doctors and therapists can assign supportive activities for follow-up.</p></article>
-          <article class="card reveal"><h3 data-i18n="Patient goals">Patient goals</h3><p data-i18n="Goals support coordination, activity support, and care-team review.">Goals support coordination, activity support, and care-team review.</p></article>
-          <article class="card reveal"><h3 data-i18n="Reports">Reports</h3><p data-i18n="Weekly and monthly summaries support clearer review.">Weekly and monthly summaries support clearer review.</p></article>
+        <div class="care-showcase__summary">
+          <article class="reveal"><span>01</span><h3 data-i18n="Assigned activities">Assigned activities</h3><p data-i18n="Doctors and therapists can assign supportive activities for follow-up.">Doctors and therapists can assign supportive activities for follow-up.</p></article>
+          <article class="reveal"><span>02</span><h3 data-i18n="Patient goals">Patient goals</h3><p data-i18n="Goals support coordination, activity support, and care-team review.">Goals support coordination, activity support, and care-team review.</p></article>
+          <article class="reveal"><span>03</span><h3 data-i18n="Reports">Reports</h3><p data-i18n="Weekly and monthly summaries support clearer review.">Weekly and monthly summaries support clearer review.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="cta">
+    <section class="cta care-teams-cta">
       <div class="container cta__inner reveal">
-        <h2 data-i18n="See the care-team dashboard in action.">See the care-team dashboard in action.</h2>
+        <span class="care-teams-cta__eyebrow">Explore Care Teams</span>
+        <h2>
+          <span>See the care-team</span><br />
+          <span>dashboard in action.</span>
+        </h2>
         <p data-i18n="Request a walkthrough of assigned patients, goals, reports, and messages.">Request a walkthrough of assigned patients, goals, reports, and messages.</p>
-        <a class="btn btn--gold" href="request-demo.html" data-i18n="Request demo">Request demo</a>
+        <a class="btn btn--gold" href="request-demo.html" data-i18n="Request demo">Request access </a>
       </div>
     </section>
   </main>
@@ -217,5 +230,24 @@
 </div>
   <script src="translations.js"></script>
   <script src="script.js"></script>
+  <script>
+    (function () {
+      var video = document.querySelector("video[data-reduced-motion-pause]");
+      if (!video || !window.matchMedia) return;
+      var motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+      function updateVideoMotion() {
+        if (motionPreference.matches) {
+          video.pause();
+          video.currentTime = 0;
+        } else {
+          var playback = video.play();
+          if (playback && playback.catch) playback.catch(function () {});
+        }
+      }
+      updateVideoMotion();
+      if (motionPreference.addEventListener) motionPreference.addEventListener("change", updateVideoMotion);
+      else if (motionPreference.addListener) motionPreference.addListener(updateVideoMotion);
+    })();
+  </script>
 </body>
 </html>

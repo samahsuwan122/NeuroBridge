@@ -84,6 +84,15 @@ export function AdminAccessRequestsPage() {
     );
   }, [items, search]);
 
+  const queueCounts = useMemo(
+    () => ({
+      visible: visible.length,
+      pending: visible.filter((request) => request.status === "pending").length,
+      reviewed: visible.filter((request) => request.status === "reviewed").length,
+    }),
+    [visible],
+  );
+
   // Non-admins never mount here via routing, but guard defensively.
   if (!isAdmin) {
     return (
@@ -128,17 +137,36 @@ export function AdminAccessRequestsPage() {
   };
 
   return (
-    <div className="page">
-      <div className="page__head">
+    <div className="page admin-page">
+      <div className="admin-page__head">
         <div>
           <span className="eyebrow">{t("admin.eyebrow")}</span>
           <h1>{t("admin.title")}</h1>
-          <p className="page__sub">{t("admin.sub")}</p>
+          <p>{t("admin.sub")}</p>
         </div>
+        <span className="admin-page__context">{t("admin.operationalQueue")}</span>
       </div>
 
+      {!loading && !error && (
+        <section className="admin-summary" aria-label={t("admin.queueSummary")}>
+          <div>
+            <span>{t("admin.resultsInView")}</span>
+            <strong>{queueCounts.visible}</strong>
+          </div>
+          <div>
+            <span>{t("admin.pendingInView")}</span>
+            <strong>{queueCounts.pending}</strong>
+          </div>
+          <div>
+            <span>{t("admin.reviewedInView")}</span>
+            <strong>{queueCounts.reviewed}</strong>
+          </div>
+        </section>
+      )}
+
+      <section className="admin-queue" aria-label={t("admin.title")}>
       <div className="admin-toolbar">
-        <div className="admin-filters" role="tablist" aria-label={t("admin.status")}>
+        <div className="admin-filters" role="group" aria-label={t("admin.status")}>
           {FILTERS.map((f) => (
             <button
               key={f}
@@ -179,7 +207,11 @@ export function AdminAccessRequestsPage() {
       ) : error ? (
         <ErrorState message={error} onRetry={() => load(filter)} />
       ) : visible.length === 0 ? (
-        <EmptyState message={t("admin.empty")} />
+        <div className="admin-empty">
+          <span className="admin-empty__mark" aria-hidden="true">✓</span>
+          <strong>{t("admin.emptyTitle")}</strong>
+          <p>{search.trim() ? t("admin.emptySearchHelp") : t("admin.emptyHelp")}</p>
+        </div>
       ) : (
         <ul className="admin-list">
           {visible.map((r) => {
@@ -191,11 +223,16 @@ export function AdminAccessRequestsPage() {
             return (
               <li className="admin-card" key={r.id}>
                 <div className="admin-card__head">
-                  <div>
+                  <div className="admin-card__identity">
+                    <span className="admin-card__avatar" aria-hidden="true">
+                      {r.full_name.trim().slice(0, 1).toUpperCase() || "?"}
+                    </span>
+                    <div>
                     <strong className="admin-card__name">{r.full_name}</strong>
                     <a className="admin-card__email" href={`mailto:${r.email}`}>
                       {r.email}
                     </a>
+                    </div>
                   </div>
                   <Badge tone={tone}>{statusLabel}</Badge>
                 </div>
@@ -217,6 +254,10 @@ export function AdminAccessRequestsPage() {
                     <dt>{t("admin.created")}</dt>
                     <dd>{formatDateTime(r.created_at)}</dd>
                   </div>
+                  <div>
+                    <dt>{t("admin.updatedAt")}</dt>
+                    <dd>{formatDateTime(r.updated_at)}</dd>
+                  </div>
                 </dl>
 
                 {r.message && (
@@ -227,7 +268,10 @@ export function AdminAccessRequestsPage() {
                 )}
 
                 <label className="admin-note">
-                  <span>{t("admin.adminNote")}</span>
+                  <span>
+                    <b>{t("admin.adminNote")}</b>
+                    <small>{t("admin.noteHelp")}</small>
+                  </span>
                   <textarea
                     rows={2}
                     value={notes[r.id] ?? ""}
@@ -279,6 +323,7 @@ export function AdminAccessRequestsPage() {
           })}
         </ul>
       )}
+      </section>
     </div>
   );
 }

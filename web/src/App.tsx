@@ -21,8 +21,13 @@ import { FamilyMessagesPage } from "./pages/FamilyMessagesPage";
 import { FamilyReportsPage } from "./pages/FamilyReportsPage";
 import { ProviderDetailPage } from "./pages/ProviderDetailPage";
 import { AdminAccessRequestsPage } from "./pages/AdminAccessRequestsPage";
+import { AdminDashboardPage } from "./pages/AdminDashboardPage";
+import { AdminUsersPage } from "./pages/AdminUsersPage";
+import { AdminAuditLogPage, AdminMedicalCentersPage, AdminProviderApprovalsPage, AdminRolesPage, AdminSettingsPage } from "./pages/AdminModulePages";
 import { RoleAccessPage } from "./pages/RoleAccessPage";
 import { AICompanionPage } from "./pages/AICompanionPage";
+import { ClinicianMessagesPage } from "./pages/ClinicianMessagesPage";
+import { ClinicianSettingsPage } from "./pages/ClinicianSettingsPage";
 import { useI18n } from "./i18n/useI18n";
 import { FamilyMemberProvider } from "./familyMembers";
 import { CurrentFamilyPatientProvider } from "./currentFamilyPatient";
@@ -66,24 +71,36 @@ function AppRoutes() {
             <Route path="/review-queue" element={<ReviewQueuePage />} />
           )}
           {isClinician && <Route path="/ai-companion" element={<AICompanionPage />} />}
+          {isClinician && <Route path="/messages" element={<ClinicianMessagesPage />} />}
+          {isClinician && <Route path="/settings" element={<ClinicianSettingsPage />} />}
+          {isAdmin && (
+            <Route path="/admin" element={<AdminDashboardPage />} />
+          )}
+          {isAdmin && <Route path="/admin/users" element={<AdminUsersPage />} />}
+          {isAdmin && <Route path="/admin/users/:section" element={<AdminUsersPage />} />}
+          {isAdmin && <Route path="/admin/provider-approvals" element={<AdminProviderApprovalsPage />} />}
+          {isAdmin && <Route path="/admin/roles" element={<AdminRolesPage />} />}
+          {isAdmin && <Route path="/admin/medical-centers" element={<AdminMedicalCentersPage />} />}
+          {isAdmin && <Route path="/admin/audit-log" element={<AdminAuditLogPage />} />}
+          {isAdmin && <Route path="/admin/settings" element={<AdminSettingsPage />} />}
           {isAdmin && (
             <Route
               path="/admin/access-requests"
               element={<AdminAccessRequestsPage />}
             />
           )}
-          {/* A pure admin (no clinician role) lands on the admin page. */}
+          {/* A pure admin (no clinician role) lands on the Admin overview. */}
           {!isClinician && (
             <Route
               path="/"
-              element={<Navigate to="/admin/access-requests" replace />}
+              element={<Navigate to="/admin" replace />}
             />
           )}
           <Route
             path="*"
             element={
               <Navigate
-                to={isClinician ? "/" : "/admin/access-requests"}
+                to={isClinician ? "/" : "/admin"}
                 replace
               />
             }

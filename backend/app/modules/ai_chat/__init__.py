@@ -1,0 +1,1 @@
+"""NeuroBridge AI Companion module."""
