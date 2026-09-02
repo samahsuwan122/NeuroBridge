@@ -22,7 +22,7 @@ const topbarCopy: Record<Lang, { current: string; patients: string; switchPatien
   de: { current: "Aktueller Patient", patients: "Zugewiesene Patienten", switchPatient: "Patient wechseln" },
 };
 
-type AdminNavIconName = "overview"|"users"|"patient"|"doctor"|"therapist"|"family"|"approval"|"request"|"roles"|"center"|"audit"|"settings";
+type AdminNavIconName = "overview"|"users"|"patient"|"doctor"|"therapist"|"family"|"approval"|"request"|"roles"|"audit"|"settings";
 type NavItem = { to: string; key: TranslationKey; icon: string; end: boolean; adminIcon?: AdminNavIconName };
 
 function AdminNavIcon({name}:{name:AdminNavIconName}) {
@@ -36,7 +36,6 @@ function AdminNavIcon({name}:{name:AdminNavIconName}) {
     {name==="approval"&&<><path d="M12 3 19 6v5c0 4.5-2.6 7.7-7 10-4.4-2.3-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-5"/></>}
     {name==="request"&&<><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h7M8.5 17H13"/></>}
     {name==="roles"&&<><circle cx="8" cy="8" r="3"/><path d="M3 19c.5-4 2-6 5-6s4.5 2 5 6M16 5l4 2v3c0 2.5-1.3 4.4-4 6-2.7-1.6-4-3.5-4-6V7l4-2Z"/></>}
-    {name==="center"&&<><path d="M4 20h16M6 20V7h12v13M9 7V4h6v3M9 11h2M13 11h2M9 15h2M13 15h2"/></>}
     {name==="audit"&&<><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4"/><path d="m16 17 1.3 1.3L20 15.5"/></>}
     {name==="settings"&&<><circle cx="12" cy="12" r="3"/><path d="M19 13.5v-3l-2-.7-.7-1.7.9-1.9-2.1-2.1-1.9.9-1.7-.7-.7-2h-3l-.7 2-1.7.7-1.9-.9-2.1 2.1.9 1.9-.7 1.7-2 .7v3l2 .7.7 1.7-.9 1.9 2.1 2.1 1.9-.9 1.7.7.7 2h3l.7-2 1.7-.7 1.9.9 2.1-2.1-.9-1.9.7-1.7 2-.7Z"/></>}
   </svg>;
@@ -69,7 +68,6 @@ const ADMIN_APPROVAL_NAV: NavItem[] = [
 ];
 const ADMIN_SYSTEM_NAV:NavItem[]=[
   {to:"/admin/roles",key:"admin.nav.roles",icon:"",adminIcon:"roles",end:true},
-  {to:"/admin/medical-centers",key:"admin.nav.medicalCenters",icon:"",adminIcon:"center",end:true},
   {to:"/admin/audit-log",key:"admin.nav.auditLog",icon:"",adminIcon:"audit",end:true},
 ];
 const ADMIN_PREFERENCE_NAV:NavItem[]=[{to:"/admin/settings",key:"admin.nav.settings",icon:"",adminIcon:"settings",end:true}];

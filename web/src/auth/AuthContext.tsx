@@ -6,18 +6,33 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { ApiError, getToken, setToken } from "../api/client";
+
+import {
+  getToken,
+  setToken,
+} from "../api/client";
+
+import { webAccountApi } from "../api/webAccountClient";
+
 import type { UserBasic } from "../types";
 
 interface MeResponse {
+  success: boolean;
   user: UserBasic;
   roles: string[];
 }
 
 interface LoginResponse {
+  success: boolean;
+  message?: string;
   access_token: string;
   user: UserBasic;
   roles: string[];
+}
+
+interface LogoutResponse {
+  success: boolean;
+  message?: string;
 }
 
 interface AuthContextValue {
@@ -27,104 +42,68 @@ interface AuthContextValue {
   isClinician: boolean;
   isFamily: boolean;
   isAdmin: boolean;
+
   login: (
     emailOrPhone: string,
     password: string,
   ) => Promise<string[]>;
+
   logout: () => void;
 }
 
-const WEB_API_BASE =
-  (import.meta.env.VITE_WEB_API_BASE_URL as string | undefined) ??
-  "https://toyoraljana.com/api_web";
-
-async function webAuthApi<T>(
-  endpoint: string,
-  options: RequestInit = {},
-): Promise<T> {
-  const headers = new Headers(options.headers);
-  const token = getToken();
-
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
-
-  if (
-    options.body &&
-    !(options.body instanceof FormData) &&
-    !headers.has("Content-Type")
-  ) {
-    headers.set("Content-Type", "application/json");
-  }
-
-  let response: Response;
-
-  try {
-    response = await fetch(
-      `${WEB_API_BASE.replace(/\/+$/, "")}/${endpoint.replace(/^\/+/, "")}`,
-      {
-        ...options,
-        headers,
-      },
-    );
-  } catch {
-    throw new ApiError(
-      0,
-      "Cannot reach the server. Is the backend running?",
-    );
-  }
-
-  let data: unknown = null;
-
-  try {
-    data = await response.json();
-  } catch {
-    // The server returned an empty or non-JSON response.
-  }
-
-  if (!response.ok) {
-    const message =
-      data &&
-      typeof data === "object" &&
-      "message" in data &&
-      typeof data.message === "string"
-        ? data.message
-        : `Request failed (${response.status}).`;
-
-    throw new ApiError(response.status, message);
-  }
-
-  return data as T;
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null);
+const AuthContext =
+  createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [user, setUser] = useState<UserBasic | null>(null);
-  const [roles, setRoles] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] =
+    useState<UserBasic | null>(null);
 
+  const [roles, setRoles] =
+    useState<string[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  /*
+   * عند فتح الموقع والتأكد من وجود Token،
+   * نجلب الحساب الحالي من api_web/me.php.
+   */
   useEffect(() => {
     let active = true;
 
-    void (async () => {
-      if (!getToken()) {
-        setLoading(false);
+    const loadCurrentUser = async () => {
+      const token = getToken();
+
+      if (!token) {
+        if (active) {
+          setUser(null);
+          setRoles([]);
+          setLoading(false);
+        }
+
         return;
       }
 
       try {
-        const result = await webAuthApi<MeResponse>("me.php");
+        const response =
+          await webAccountApi<MeResponse>(
+            "me.php",
+          );
 
-        if (active) {
-          setUser(result.user);
-          setRoles(result.roles);
+        if (!active) {
+          return;
         }
+
+        setUser(response.user);
+        setRoles(response.roles);
       } catch {
+        /*
+         * Token منتهي أو قديم أو غير صحيح.
+         */
         setToken(null);
 
         if (active) {
@@ -136,44 +115,61 @@ export function AuthProvider({
           setLoading(false);
         }
       }
-    })();
+    };
+
+    void loadCurrentUser();
 
     return () => {
       active = false;
     };
   }, []);
 
+  /*
+   * تسجيل الدخول من api_web/login.php.
+   */
   const login = useCallback(
     async (
       emailOrPhone: string,
       password: string,
-    ) => {
-      const result = await webAuthApi<LoginResponse>(
-        "login.php",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email_or_phone: emailOrPhone,
-            password,
-            remember_me: true,
-          }),
-        },
-      );
+    ): Promise<string[]> => {
+      const response =
+        await webAccountApi<LoginResponse>(
+          "login.php",
+          {
+            method: "POST",
 
-      setToken(result.access_token);
-      setUser(result.user);
-      setRoles(result.roles);
+            body: JSON.stringify({
+              email_or_phone:
+                emailOrPhone.trim(),
 
-      return result.roles;
+              password,
+            }),
+          },
+        );
+
+      setToken(response.access_token);
+      setUser(response.user);
+      setRoles(response.roles);
+
+      return response.roles;
     },
     [],
   );
 
+  /*
+   * تسجيل الخروج من api_web/logout.php.
+   */
   const logout = useCallback(() => {
-    void webAuthApi("logout.php", {
-      method: "POST",
-    }).catch(() => {
-      // تسجيل الخروج محليًا حتى لو تعذر الوصول للخادم.
+    webAccountApi<LogoutResponse>(
+      "logout.php",
+      {
+        method: "POST",
+      },
+    ).catch(() => {
+      /*
+       * حتى لو فشل اتصال الخروج،
+       * نحذف الجلسة من المتصفح.
+       */
     });
 
     setToken(null);
@@ -181,12 +177,18 @@ export function AuthProvider({
     setRoles([]);
   }, []);
 
+  /*
+   * الصلاحيات حسب الدور الذي أعاده PHP.
+   */
   const isClinician =
     roles.includes("doctor") ||
     roles.includes("therapist");
 
-  const isFamily = roles.includes("family");
-  const isAdmin = roles.includes("admin");
+  const isFamily =
+    roles.includes("family");
+
+  const isAdmin =
+    roles.includes("admin");
 
   return (
     <AuthContext.Provider
@@ -207,7 +209,8 @@ export function AuthProvider({
 }
 
 export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext);
+  const context =
+    useContext(AuthContext);
 
   if (!context) {
     throw new Error(
