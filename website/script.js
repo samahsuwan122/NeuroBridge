@@ -25,7 +25,13 @@
     button.innerHTML = isDark
       ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
       : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.6 8.6 0 1 0 20.2 15.2Z"/></svg>';
-    button.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    var language = document.documentElement.lang || "en";
+    var labels = {
+      ar: { light: "التبديل إلى الوضع الفاتح", dark: "التبديل إلى الوضع الداكن" },
+      de: { light: "Zum hellen Modus wechseln", dark: "Zum dunklen Modus wechseln" }
+    };
+    var localized = labels[language];
+    button.setAttribute("aria-label", localized ? (isDark ? localized.light : localized.dark) : (isDark ? "Switch to light mode" : "Switch to dark mode"));
     button.setAttribute("aria-pressed", isDark ? "true" : "false");
   }
 
@@ -388,6 +394,57 @@
         o: el.textContent
       });
     });
+
+    /* Keep translated typography inside the English composition. Long copy is
+       reduced only when it would add a line and move the content below it. */
+    var fitTextItems = dataI18nEls.map(function (item) {
+      var el = item.e;
+      var isCopy = el.matches("h1,h2,h3,blockquote,p.section__sub,.hero__description,.hero__subtitle,.ai-chat-intro__lead");
+      var isNav = el.matches(".nav__links a");
+      if (!isCopy && !isNav) return null;
+      var rect = el.getBoundingClientRect();
+      var computed = window.getComputedStyle(el);
+      var size = parseFloat(computed.fontSize);
+      if (rect.width < 2 || rect.height < 2 || !size) return null;
+      return {
+        e: el,
+        copy: isCopy,
+        nav: isNav,
+        width: rect.width,
+        height: rect.height,
+        size: size,
+        minSize: Math.max(isNav ? 11 : 13, size * (el.matches("h1,h2") ? 0.68 : 0.78))
+      };
+    }).filter(Boolean);
+
+    function fitTranslatedText(lang) {
+      fitTextItems.forEach(function (item) {
+        var el = item.e;
+        el.style.removeProperty("font-size");
+        el.style.removeProperty("min-height");
+        el.style.removeProperty("width");
+        el.style.removeProperty("flex-basis");
+
+        if (item.nav && window.matchMedia("(min-width: 901px)").matches) {
+          el.style.width = item.width + "px";
+          el.style.flexBasis = item.width + "px";
+        }
+        if (lang === "en") return;
+
+        var size = item.size;
+        var tooTall = function () {
+          return item.copy && el.getBoundingClientRect().height > item.height + 1;
+        };
+        var tooWide = function () {
+          return item.nav && el.scrollWidth > el.clientWidth + 1;
+        };
+        while ((tooTall() || tooWide()) && size > item.minSize) {
+          size = Math.max(item.minSize, size - 0.5);
+          el.style.setProperty("font-size", size + "px", "important");
+        }
+        if (item.copy) el.style.minHeight = item.height + "px";
+      });
+    }
     var dataI18nAttrs = [];
     ["placeholder", "aria-label", "title"].forEach(function (attr) {
       document.querySelectorAll("[data-i18n-" + attr + "]").forEach(function (el) {
@@ -407,6 +464,7 @@
       var h = document.documentElement;
       h.setAttribute("lang", lang);
       h.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+      updateThemeButton(h.getAttribute("data-theme") === "dark" ? "dark" : "light");
       els.forEach(function (el) {
         if (lang === "en") { el.innerHTML = el._h; return; }
         var t = tr(lang, el._k);
@@ -432,6 +490,18 @@
         var translated = lang === "en" ? null : tr(lang, item.k);
         item.e.setAttribute(item.a, translated != null ? translated : item.o);
       });
+      fitTranslatedText(lang);
+      var languageButton = document.getElementById("langBtn");
+      var menuButton = document.getElementById("navToggle");
+      var closeButton = document.querySelector(".lang-modal__x");
+      var uiLabels = {
+        ar: { language: "اختر لغتك", menu: "فتح أو إغلاق القائمة", close: "إغلاق اختيار اللغة" },
+        de: { language: "Sprache auswählen", menu: "Menü öffnen oder schließen", close: "Sprachauswahl schließen" },
+        en: { language: "Choose your language", menu: "Toggle menu", close: "Close language selector" }
+      }[lang] || null;
+      if (uiLabels && languageButton) languageButton.setAttribute("aria-label", uiLabels.language);
+      if (uiLabels && menuButton) menuButton.setAttribute("aria-label", uiLabels.menu);
+      if (uiLabels && closeButton) closeButton.setAttribute("aria-label", uiLabels.close);
       var lbl = document.getElementById("langBtnLabel");
       if (lbl) lbl.textContent = CODE[lang] || lang.toUpperCase();
       document.querySelectorAll(".lang-opt").forEach(function (b) {
@@ -440,6 +510,7 @@
         if (on) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current");
       });
       try { localStorage.setItem("nb_lang", lang); } catch (e) {}
+      document.dispatchEvent(new CustomEvent("nb:languagechange", { detail: { lang: lang } }));
     }
 
     // -- Language modal ------------------------------------------------------
