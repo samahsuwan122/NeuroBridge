@@ -1,0 +1,16 @@
+import { createContext,useContext,useEffect,useMemo,useState,type ReactNode } from "react";
+import { useFamilyMembers } from "./familyMembers";
+import type { AssistantTopic } from "./lib/demoFamilyAssistant";
+
+const STORAGE_KEY="nb_family_ai_preferences";
+export type AnswerStyle="short"|"balanced"|"detailed";
+type Scores=Partial<Record<AssistantTopic,number>>;
+interface MemberPreferences{responseStyle:AnswerStyle;topicScores:Scores;feedbackScores:Scores;suggestionUsage:Scores}
+interface Store{members:Record<string,MemberPreferences>;global:{rememberPreferences:boolean;usePatientContext:boolean;personalizeSuggestions:boolean}}
+const freshMember=():MemberPreferences=>({responseStyle:"balanced",topicScores:{},feedbackScores:{},suggestionUsage:{}});
+const defaults:Store={members:{},global:{rememberPreferences:true,usePatientContext:true,personalizeSuggestions:true}};
+function readStore():Store{try{const value=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null") as Partial<Store>|null;return{members:value?.members&&typeof value.members==="object"?value.members:{},global:{...defaults.global,...value?.global}}}catch{return defaults}}
+type Value={profile:MemberPreferences;global:Store["global"];setStyle:(style:AnswerStyle)=>void;setGlobal:(change:Partial<Store["global"]>)=>void;recordSuggestion:(topic:AssistantTopic)=>void;recordFeedback:(topic:AssistantTopic,helpful:boolean)=>void;score:(topic:AssistantTopic)=>number;clear:()=>void};
+const Context=createContext<Value|null>(null);const clamp=(value:number)=>Math.max(-5,Math.min(12,value));
+export function FamilyAiPreferencesProvider({children}:{children:ReactNode}){const {active}=useFamilyMembers();const memberId=active?.id||"shared";const [store,setStore]=useState(readStore);const profile=store.members[memberId]||freshMember();useEffect(()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(store))}catch{/* keep session personalization if storage is unavailable */}},[store]);const updateMember=(change:(value:MemberPreferences)=>MemberPreferences)=>setStore(current=>({...current,members:{...current.members,[memberId]:change(current.members[memberId]||freshMember())}}));const value=useMemo<Value>(()=>({profile,global:store.global,setStyle:responseStyle=>updateMember(item=>({...item,responseStyle})),setGlobal:change=>setStore(current=>({...current,global:{...current.global,...change}})),recordSuggestion:topic=>{if(!store.global.rememberPreferences)return;updateMember(item=>({...item,suggestionUsage:{...item.suggestionUsage,[topic]:clamp((item.suggestionUsage[topic]||0)+.5)}}))},recordFeedback:(topic,helpful)=>{if(!store.global.rememberPreferences)return;updateMember(item=>({...item,feedbackScores:{...item.feedbackScores,[topic]:clamp((item.feedbackScores[topic]||0)+(helpful?1:-.5))}}))},score:topic=>store.global.personalizeSuggestions?clamp((profile.topicScores[topic]||0)+(profile.feedbackScores[topic]||0)+(profile.suggestionUsage[topic]||0)):0,clear:()=>setStore(current=>({...defaults,global:{...current.global},members:{}}))}),[profile,store.global,memberId]);return <Context.Provider value={value}>{children}</Context.Provider>}
+export function useFamilyAiPreferences(){const value=useContext(Context);if(!value)throw new Error("useFamilyAiPreferences must be used inside FamilyAiPreferencesProvider");return value}

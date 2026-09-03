@@ -1,0 +1,148 @@
+import type { ReactNode } from "react";
+import { useI18n } from "../i18n/useI18n";
+
+// ---- Section header --------------------------------------------------------
+export function SectionHeader({
+  eyebrow,
+  title,
+  action,
+}: {
+  eyebrow?: string;
+  title: string;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="section-header">
+      <div>
+        {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+        <h2>{title}</h2>
+      </div>
+      {action}
+    </div>
+  );
+}
+
+// ---- Card ------------------------------------------------------------------
+export function Card({
+  children,
+  className = "",
+  as: Tag = "div",
+  id,
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: "div" | "article" | "section";
+  id?: string;
+}) {
+  return (
+    <Tag className={`card ${className}`} id={id}>
+      {children}
+    </Tag>
+  );
+}
+
+// ---- Stat card -------------------------------------------------------------
+export function StatCard({
+  label,
+  value,
+  hint,
+  icon,
+}: {
+  label: string;
+  value: ReactNode;
+  hint?: string;
+  icon?: string;
+}) {
+  return (
+    <div className="stat">
+      {icon && (
+        <span className="stat__icon" aria-hidden="true">
+          {icon}
+        </span>
+      )}
+      <div>
+        <div className="stat__value">{value}</div>
+        <div className="stat__label">{label}</div>
+        {hint && <div className="stat__hint">{hint}</div>}
+      </div>
+    </div>
+  );
+}
+
+// ---- Badge -----------------------------------------------------------------
+export function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "live" | "plan" | "gold";
+}) {
+  return <span className={`badge badge--${tone}`}>{children}</span>;
+}
+
+// ---- Bar list (CSS-only "chart") -------------------------------------------
+export function BarList({
+  items,
+}: {
+  items: { label: string; value: number; caption?: string }[];
+}) {
+  const max = Math.max(1, ...items.map((i) => i.value));
+  return (
+    <div className="barlist">
+      {items.map((item) => (
+        <div className="barlist__row" key={item.label}>
+          <div className="barlist__head">
+            <span>{item.label}</span>
+            <strong>{item.caption ?? `${Math.round(item.value)}%`}</strong>
+          </div>
+          <div className="barlist__track">
+            <div
+              className="barlist__fill"
+              style={{ width: `${Math.min(100, (item.value / max) * 100)}%` }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ---- States ----------------------------------------------------------------
+export function Spinner({ label }: { label?: string }) {
+  const { t } = useI18n();
+  return (
+    <div className="state">
+      <div className="spinner" aria-hidden="true" />
+      <p>{label ?? t("common.loading")}</p>
+    </div>
+  );
+}
+
+export function ErrorState({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry?: () => void;
+}) {
+  const { t } = useI18n();
+  return (
+    <div className="state state--error">
+      <p>{message}</p>
+      {onRetry && (
+        <button className="btn btn--ghost" onClick={onRetry}>
+          {t("common.retry")}
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function EmptyState({ message, icon }: { message: string; icon?: "session" | "performance" | "activities" | "goal" | "care" }) {
+  return (
+    <div className="state state--empty">
+      {icon && <span className={`workspace-empty-icon workspace-empty-icon--${icon}`} aria-hidden="true" />}
+      <p>{message}</p>
+    </div>
+  );
+}
