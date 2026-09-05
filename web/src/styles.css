@@ -58,6 +58,18 @@
   --font-heading: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
 }
 
+/* Link a patient to the signed-in family account. */
+.link-patient-form{display:grid;gap:.8rem;text-align:start}
+.link-patient-form label{display:grid;gap:.38rem;color:#594033;font-size:.78rem;font-weight:700}
+.link-patient-form input,.link-patient-form select{width:100%;min-height:44px;padding:.68rem .8rem;border:1px solid #dfcdb3;border-radius:11px;background:#fff;color:#39281f;font:inherit;outline:none}
+.link-patient-form input:focus,.link-patient-form select:focus{border-color:#b78648;box-shadow:0 0 0 3px rgba(183,134,72,.13)}
+.link-patient-actions{display:flex;justify-content:flex-end;gap:.55rem;margin-top:.15rem}
+.link-patient-message{padding:.65rem .75rem;border-radius:10px;font-size:.76rem;text-align:center}
+.link-patient-message--error{background:#fff0ed;color:#a43c2f}
+.link-patient-message--success{background:#eaf5ed;color:#2d7042}
+html[data-theme="dark"] .shell .link-patient-form label{color:var(--settings-primary)}
+html[data-theme="dark"] .shell .link-patient-form :is(input,select){border-color:var(--border);background:#211814;color:var(--settings-primary)}
+
 /* Accessibility: a clear, warm keyboard-focus ring across the portal. */
 :focus-visible {
   outline: 2px solid var(--caramel);
@@ -2763,6 +2775,35 @@ html[dir="rtl"] .settings-toggle input:checked::after { transform: translateX(-2
     max-width: 100%;
     gap: 0.8rem;
   }
+  html,
+  body,
+  #root,
+  .shell,
+  .main,
+  .content {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  .page > *,
+  .report-summary,
+  .stat-grid,
+  .grid-2,
+  .card {
+    visibility: visible !important;
+  }
+  .page__head,
+  .report-summary,
+  .stat-grid,
+  .grid-2,
+  .card,
+  .report-appts__item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
   .card,
   .stat,
   .table-card,
@@ -5191,7 +5232,15 @@ html[dir="rtl"] .family-ai-composer .btn::before { transform:none; }
 .billing-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}.billing-summary article{position:relative;display:grid;gap:.25rem;padding:1rem;border:1px solid #e4d5c2;border-radius:16px;background:#fffdfa}.billing-summary span{color:#806956;font-size:.72rem}.billing-summary strong{color:#4c3528;font-size:1.2rem}.billing-summary small{position:absolute;inset-inline-end:1rem;top:1rem;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#f1e4d1;color:#6f513a}.billing-tools{display:flex;justify-content:space-between;gap:1rem;align-items:center}.billing-tools>label{width:min(360px,100%)}.billing-list{overflow:hidden;border:1px solid #e3d4c1;border-radius:16px;background:#fff}.billing-list__head,.billing-list article{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr .85fr .8fr .8fr;gap:.65rem;align-items:center;padding:.75rem 1rem}.billing-list__head{background:#f5ede2;color:#806956;font-size:.67rem;font-weight:700}.billing-list article{border-top:1px solid #eee4d7;color:#5d4434;font-size:.75rem}.billing-list article strong{font-size:.77rem}
 @media(max-width:900px){.family-appt-grid{grid-template-columns:1fr}.booking-dialog{max-height:95dvh}.booking-progress small{display:none}.booking-progress span:not(:last-child)::after{width:75%}.payment-methods{grid-template-columns:repeat(3,1fr)}.billing-list__head{display:none}.billing-list article{grid-template-columns:1fr 1fr}.billing-list article>div::before{content:attr(data-label);display:block;color:#99816e;font-size:.61rem;margin-bottom:.18rem}}
 @media(max-width:600px){.family-appt-intro{align-items:start}.family-appt-intro>.btn{width:100%}.family-appt-tabs{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.family-appt-tabs button{padding:.5rem .25rem}.booking-backdrop{padding:0}.booking-dialog{width:100%;height:100dvh;max-height:none;border-radius:0}.booking-body{min-height:0;padding:1rem}.booking-progress{padding:.65rem .35rem}.provider-choice-grid,.type-options,.booking-summary-final,.payment-fields,.demo-card-form,.receipt-dialog dl{grid-template-columns:1fr}.date-options{grid-template-columns:1fr}.payment-methods{grid-template-columns:1fr 1fr}.demo-card-form .full{grid-column:auto}.family-appt-card__facts{grid-template-columns:1fr}.family-appt-card__facts div:last-child{grid-column:auto}.billing-summary{grid-template-columns:1fr}.billing-tools{align-items:stretch;flex-direction:column}.billing-tools .family-appt-tabs{grid-template-columns:repeat(4,1fr)}.billing-list article{grid-template-columns:1fr;padding:1rem}.mini-dialog,.confirm-dialog,.receipt-dialog{width:calc(100% - 1rem);max-height:92dvh}.family-appt-card>footer .is-danger{margin-inline-start:0}}
-@media print{body *{visibility:hidden}.receipt-dialog,.receipt-dialog *{visibility:visible}.receipt-dialog{position:fixed;inset:0;width:100%;max-width:none;max-height:none;border:0;box-shadow:none}.booking-backdrop{background:#fff}.receipt-dialog header>button,.receipt-dialog footer{display:none}}
+@media print{
+  /* Receipt-only print rules must not hide patient reports. */
+  body:has(.receipt-dialog) *{visibility:hidden}
+  body:has(.receipt-dialog) .receipt-dialog,
+  body:has(.receipt-dialog) .receipt-dialog *{visibility:visible}
+  .receipt-dialog{position:fixed;inset:0;width:100%;max-width:none;max-height:none;border:0;box-shadow:none}
+  .booking-backdrop{background:#fff}
+  .receipt-dialog header>button,.receipt-dialog footer{display:none}
+}
 
 /* Shared family-member identity */
 .family-member-switcher{position:relative}.family-member-chip{display:flex;align-items:center;gap:.4rem;max-width:190px;border:1px solid #dcc8a9;border-radius:999px;padding:.42rem .68rem;background:#fffaf1;color:#604534;cursor:pointer}.family-member-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.72rem;font-weight:700}.family-member-chip i{font-style:normal;color:#a07c4f}.family-member-popover{position:absolute;z-index:80;top:calc(100% + .55rem);inset-inline-end:0;width:260px;padding:.65rem;border:1px solid #dfcdb3;border-radius:15px;background:#fffdfa;box-shadow:0 18px 45px rgba(57,38,25,.18)}.family-member-popover>strong{display:block;padding:.35rem .45rem .55rem;color:#5b4030;font-size:.76rem}.family-member-popover>button{width:100%;display:flex;align-items:center;justify-content:space-between;border:0;border-radius:10px;padding:.55rem;background:transparent;color:#533b2d;text-align:start;cursor:pointer}.family-member-popover>button:hover,.family-member-popover>button.is-active{background:#f3e5d1}.family-member-popover button span{display:grid;gap:.1rem;font-weight:700}.family-member-popover button small{color:#967b65;font-weight:400}.family-member-popover>a{display:block;margin-top:.35rem;padding:.55rem;border-top:1px solid #eadfce;color:#765234;font-size:.72rem;text-decoration:none}.family-members-settings{grid-column:1/-1}.family-members-settings>header{align-items:center}.family-members-settings>header>.btn{margin-inline-start:auto}.family-members-guidance{margin:.7rem 0;padding:.7rem;border-radius:11px;background:#f9f2e8;color:#7c6654;font-size:.73rem;line-height:1.55}.family-members-list{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}.family-members-list article{display:flex;align-items:center;justify-content:space-between;gap:.4rem;padding:.65rem;border:1px solid #e4d5c2;border-radius:12px;background:#fff}.family-members-list article.is-active{border-color:#bd9560;background:#f8ead5}.family-member-select{display:grid;gap:.12rem;border:0;background:transparent;color:#50382b;text-align:start;cursor:pointer}.family-member-select span{font-weight:700}.family-member-select small{color:#927864}.family-members-list article>div{display:flex;align-items:center;gap:.25rem}.family-members-list article>div button{border:0;border-radius:7px;padding:.3rem;background:transparent;color:#806957;font-size:.65rem;cursor:pointer}.family-members-list article>div .is-danger{color:#9a4c45}.family-member-editor{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:.6rem;margin-top:.7rem;padding:.75rem;border:1px solid #dfcdb3;border-radius:12px;background:#fcf7ef}.family-member-editor label{display:grid;gap:.3rem;color:#705743;font-size:.7rem}.family-member-editor input,.family-member-editor select{min-height:38px;border:1px solid #dccab3;border-radius:9px;padding:.5rem;background:#fff;font:inherit}.family-member-editor>div{display:flex;gap:.35rem}.family-member-editor>div>button:not(.btn){border:0;background:transparent;color:#765d49;cursor:pointer}.family-member-backdrop{position:fixed;z-index:1200;inset:0;display:grid;place-items:center;padding:1rem;background:rgba(46,31,22,.45)}.family-member-required{width:min(420px,100%);padding:1.1rem;border-radius:18px;background:#fffdfa;box-shadow:0 25px 70px rgba(45,29,20,.23)}.family-member-required h2{margin:.1rem 0;color:#493326}.family-member-required p{color:#816a57;font-size:.78rem}.family-member-required>div{display:grid;gap:.4rem}.family-member-required>div button{display:flex;justify-content:space-between;border:1px solid #e3d3bd;border-radius:10px;padding:.65rem;background:#fff;color:#543b2d;text-align:start;cursor:pointer}.family-member-required button small{display:block;color:#927964}.member-modal-cancel{margin-top:.7rem;border:0;background:transparent;color:#7b624f;cursor:pointer}
@@ -6942,6 +6991,19 @@ html[data-theme="dark"] .shell .family-settings__guidance details:hover{backgrou
 /* Residual component surfaces with stronger legacy selectors. */
 html[data-theme="dark"] .shell :is(.sender-popover,.settings-row,.family-settings__ease-grid>.settings-row,.settings-language-display,.settings-toggle,.assistant-memory-style){border-color:var(--family-border);background:var(--family-surface-soft);color:var(--family-text-secondary)}
 html[data-theme="dark"] .shell :is(.family-appt-card>footer button,.billing-list button,.booking-success>button,.booking-dialog>header>button,.mini-dialog>header>button,.receipt-dialog>header>button,.family-ai-action-card>footer button,.family-ai-draft>button,.family-ai-recording button){border-color:var(--family-border);background:var(--family-surface-soft);color:var(--family-text-secondary)}
+
+/* Interactive payment card used by the family appointment flow. */
+.payment-card-section{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(340px,1.1fr);align-items:center;gap:1.25rem;padding:1rem;border:1px solid #e5d4bd;border-radius:18px;background:linear-gradient(135deg,#fffaf2,#f7ecdc)}
+.payment-card-preview{position:relative;isolation:isolate;aspect-ratio:1.586/1;max-width:430px;width:100%;overflow:hidden;padding:1.35rem;border-radius:22px;background:linear-gradient(135deg,#342117 0%,#68472f 55%,#b78751 135%);color:#fff8eb;box-shadow:0 22px 45px rgba(62,39,24,.28);font-family:Inter,system-ui,sans-serif}
+.payment-card-preview::before,.payment-card-preview::after{content:"";position:absolute;z-index:-1;border-radius:50%;border:1px solid rgba(255,230,186,.2)}
+.payment-card-preview::before{width:230px;height:230px;inset:-115px -55px auto auto}.payment-card-preview::after{width:190px;height:190px;inset:auto auto -115px -40px}
+.payment-card-preview__top{display:flex;justify-content:space-between;align-items:center}.payment-card-preview__brand{font-size:1.05rem;font-weight:850;letter-spacing:.03em}.payment-card-preview__contactless{font-weight:900;letter-spacing:-.18em;transform:rotate(90deg)}
+.payment-card-preview__chip{display:block;width:47px;height:35px;margin-top:1.5rem;border-radius:8px;background:linear-gradient(135deg,#f5df9b,#b98b47);box-shadow:inset 0 0 0 1px rgba(77,49,23,.32)}
+.payment-card-preview__number{display:block;margin-top:1.15rem;font-size:clamp(1rem,2vw,1.35rem);letter-spacing:.13em;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.payment-card-preview__bottom{position:absolute;inset:auto 1.35rem 1.2rem;display:grid;grid-template-columns:1fr auto auto;gap:1rem;align-items:end}.payment-card-preview__bottom span{display:grid;min-width:0}.payment-card-preview__bottom small{margin-bottom:.2rem;color:#e8d4b9;font-size:.52rem;text-transform:uppercase}.payment-card-preview__bottom bdi{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.72rem;font-weight:750;text-transform:uppercase}
+.payment-card-section .demo-card-form{align-content:center}.payment-card-section .demo-card-form input:focus{outline:2px solid rgba(185,139,82,.28);border-color:#b98b52}
+html[data-theme="dark"] .payment-card-section{border-color:var(--family-border);background:var(--family-surface-soft)}
+@media(max-width:760px){.payment-card-section{grid-template-columns:1fr}.payment-card-preview{margin-inline:auto}.payment-card-preview__number{font-size:1rem}.payment-card-preview__bottom{gap:.55rem}}
 html[data-theme="dark"] .shell :is(.family-appt-card>footer button,.billing-list button,.booking-success>button,.family-ai-action-card>footer button,.family-ai-draft>button,.family-ai-recording button):hover{border-color:var(--family-border-strong);background:var(--family-hover);color:var(--family-text)}
 html[data-theme="dark"] .shell :is(.family-appt-card>footer .is-primary,.family-ai-action-card>footer button.is-confirm,.family-ai-draft>button.is-send){border-color:#8b6845;background:#765638;color:#fff4e4}
 html[data-theme="dark"] .shell :is(.family-report-kpis article,.family-report-controls){border-color:var(--family-border);background:var(--family-surface-raised);background-image:none;color:var(--family-text);box-shadow:var(--family-shadow)}

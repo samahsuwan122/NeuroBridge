@@ -1,18 +1,44 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { Badge, EmptyState } from "./ui";
 import { formatDate } from "../lib";
 import { useI18n } from "../i18n/useI18n";
 import type { TranslationKey } from "../i18n/translations";
 import type {
-  ActivityTemplate,
-  ActivityTemplateListResponse,
   AssignedActivity,
   AssignedActivityListResponse,
+  PatientListResponse,
+  PatientProfile,
 } from "../types";
 
-const DIFFICULTY_FALLBACK = ["easy", "medium", "hard"];
-const KNOWN_DIFFICULTIES = ["easy", "medium", "hard"];
+type AiQuestion = {
+  prompt: string;
+  options: string[];
+  answer: string;
+  explanation: string;
+};
+
+type GeneratedContent = {
+  source: "ai";
+  description: string;
+  questions: AiQuestion[];
+};
+
+type AiGeneratedActivity = {
+  title: string;
+  instructions: string;
+  template_type: string;
+  difficulty: string;
+  duration_minutes: number;
+  generated_content: GeneratedContent;
+};
+
+type AiGenerateResponse = {
+  success: boolean;
+  activity: AiGeneratedActivity;
+};
+
+const DIFFICULTIES = ["easy", "medium", "hard"];
 const KNOWN_STATUSES = ["assigned", "completed", "skipped"];
 
 function statusTone(status: string): "neutral" | "live" | "plan" | "gold" {
@@ -21,113 +47,159 @@ function statusTone(status: string): "neutral" | "live" | "plan" | "gold" {
   return "plan";
 }
 
-/**
- * Care-team activity builder: pick a safe predefined template, customize a few
- * parameters, preview, and assign to the patient. Shows the patient's assigned
- * activities with their status. All content is cognitive-exercise only.
- */
 export function ActivityBuilder({
   patientProfileId,
 }: {
   patientProfileId: string;
 }) {
   const { t } = useI18n();
-  const difficultyLabel = (d: string) =>
-    KNOWN_DIFFICULTIES.includes(d) ? t(`difficulty.${d}` as TranslationKey) : d;
-  const statusLabel = (s: string) =>
-    KNOWN_STATUSES.includes(s) ? t(`activityStatus.${s}` as TranslationKey) : s;
 
-  const [templates, setTemplates] = useState<ActivityTemplate[]>([]);
-  const [difficulties, setDifficulties] = useState<string[]>(DIFFICULTY_FALLBACK);
   const [activities, setActivities] = useState<AssignedActivity[]>([]);
+  const [patients, setPatients] = useState<PatientProfile[]>([]);
+  const [targetPatientId, setTargetPatientId] = useState(patientProfileId);
+  const [loadingPatients, setLoadingPatients] = useState(true);
   const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [assigning, setAssigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
 
-  // Form state.
-  const [templateType, setTemplateType] = useState("memory_recall");
+  const [description, setDescription] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
   const [duration, setDuration] = useState(10);
-  const [title, setTitle] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [generated, setGenerated] = useState<AiGeneratedActivity | null>(null);
 
-  const selected = useMemo(
-    () => templates.find((t) => t.template_type === templateType),
-    [templates, templateType],
-  );
+  const difficultyLabel = (value: string) =>
+    DIFFICULTIES.includes(value)
+      ? t(`difficulty.${value}` as TranslationKey)
+      : value;
 
-  const loadActivities = async () => {
+  const statusLabel = (value: string) =>
+    KNOWN_STATUSES.includes(value)
+      ? t(`activityStatus.${value}` as TranslationKey)
+      : value;
+
+  const loadActivities = async (patientId = targetPatientId) => {
     try {
-      const res = await api<AssignedActivityListResponse>(
-        `/activities/patient/${patientProfileId}?limit=100`,
+      const response = await api<AssignedActivityListResponse>(
+        `/activities/patient/${patientId}?limit=100`,
       );
-      setActivities(res.activities);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("ab.couldNotLoad"));
+      setActivities(response.activities);
+    } catch (reason) {
+      setError(
+        reason instanceof Error ? reason.message : "تعذر تحميل الأنشطة.",
+      );
     }
   };
 
   useEffect(() => {
-    let alive = true;
-    void (async () => {
-      try {
-        const t = await api<ActivityTemplateListResponse>("/activities/templates");
-        if (!alive) return;
-        setTemplates(t.templates);
-        setDifficulties(t.difficulties.length ? t.difficulties : DIFFICULTY_FALLBACK);
-      } catch {
-        /* templates are optional chrome; ignore load failure */
-      }
-      await loadActivities();
-    })();
-    return () => {
-      alive = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setTargetPatientId(patientProfileId);
   }, [patientProfileId]);
 
-  // When the template changes, prefill title/instructions from its defaults.
-  const applyTemplate = (type: string) => {
-    setTemplateType(type);
-    const tpl = templates.find((t) => t.template_type === type);
-    setTitle(tpl?.default_title ?? "");
-    setInstructions(tpl?.default_instructions ?? "");
-  };
+  useEffect(() => {
+    void loadActivities(targetPatientId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetPatientId]);
+
+  useEffect(() => {
+    const loadPatients = async () => {
+      setLoadingPatients(true);
+      try {
+        const response = await api<PatientListResponse>("/patients?limit=200");
+        setPatients(response.patients);
+      } catch (reason) {
+        setError(
+          reason instanceof Error ? reason.message : "تعذر تحميل قائمة المرضى.",
+        );
+      } finally {
+        setLoadingPatients(false);
+      }
+    };
+
+    void loadPatients();
+  }, []);
 
   const startBuilder = () => {
+    setDescription("");
+    setDifficulty("easy");
+    setDuration(10);
+    setGenerated(null);
     setError(null);
     setOk(null);
-    const first = templates[0]?.template_type ?? "memory_recall";
-    applyTemplate(first);
-    setDifficulty(difficulties[0] ?? "easy");
-    setDuration(10);
     setOpen(true);
   };
 
-  const assign = async () => {
-    setBusy(true);
+  const generateWithAi = async () => {
+    const cleanDescription = description.trim();
+
+    if (cleanDescription.length < 10) {
+      setError("اكتبي وصفًا أوضح للنشاط، على الأقل 10 أحرف.");
+      return;
+    }
+
+    setGenerating(true);
     setError(null);
     setOk(null);
+    setGenerated(null);
+
+    try {
+      const response = await api<AiGenerateResponse>(
+        "/activities/generate-ai",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            patient_profile_id: targetPatientId,
+            prompt: cleanDescription,
+            difficulty,
+            duration_minutes: duration,
+          }),
+        },
+      );
+
+      setGenerated(response.activity);
+      setOk("تم إنشاء النشاط. راجعيه ثم اضغطي تعيين للمريض.");
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "تعذر إنشاء النشاط بالذكاء الاصطناعي.",
+      );
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const assign = async () => {
+    if (!generated) return;
+
+    setAssigning(true);
+    setError(null);
+    setOk(null);
+
     try {
       const created = await api<AssignedActivity>("/activities/assign", {
         method: "POST",
         body: JSON.stringify({
-          patient_profile_id: patientProfileId,
-          template_type: templateType,
-          difficulty,
-          duration_minutes: duration,
-          title: title.trim() || undefined,
-          instructions: instructions.trim() || undefined,
+          patient_profile_id: targetPatientId,
+          template_type: generated.template_type,
+          difficulty: generated.difficulty,
+          duration_minutes: generated.duration_minutes,
+          title: generated.title,
+          instructions: generated.instructions,
+          generated_content: generated.generated_content,
         }),
       });
-      setActivities((prev) => [created, ...prev]);
-      setOk(t("ab.assigned"));
+
+      setActivities((current) => [created, ...current]);
       setOpen(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("ab.couldNotAssign"));
+      setGenerated(null);
+      setOk("تم تعيين النشاط للمريض بنجاح.");
+    } catch (reason) {
+      setError(
+        reason instanceof Error ? reason.message : "تعذر تعيين النشاط.",
+      );
     } finally {
-      setBusy(false);
+      setAssigning(false);
     }
   };
 
@@ -135,139 +207,212 @@ export function ActivityBuilder({
     <div className="activity-builder">
       <div className="section-header">
         <div>
-          <span className="eyebrow">{t("ab.eyebrow")}</span>
-          <h2>{t("ab.title")}</h2>
+          <span className="eyebrow">منشئ الأنشطة بالذكاء الاصطناعي</span>
+          <h2>أنشطة مخصصة</h2>
         </div>
+
         {!open && (
           <button className="btn btn--gold btn--sm" onClick={startBuilder}>
-            {t("ab.create")}
+            + إنشاء نشاط بالـAI
           </button>
         )}
       </div>
 
-      <p className="muted-sub">{t("ab.help")}</p>
+      <p className="muted-sub">
+        اكتبي وصف النشاط الذي تريدينه وسيقوم الذكاء الاصطناعي بإنشاء الأسئلة
+        والخيارات والإجابات، ثم راجعي النشاط قبل إرساله للمريض.
+      </p>
 
       {ok && <div className="banner banner--ok">{ok}</div>}
       {error && <div className="banner banner--warn">{error}</div>}
 
       {open && (
-        <div className="activity-form">
+        <div className="activity-form ai-activity-form">
           <div className="activity-form__grid">
-            <label>
-              {t("ab.template")}
+            <label className="activity-form__full">
+              تعيين النشاط إلى المريض
               <select
-                value={templateType}
-                onChange={(e) => applyTemplate(e.target.value)}
+                value={targetPatientId}
+                disabled={loadingPatients || generating || assigning}
+                onChange={(event) => {
+                  setTargetPatientId(event.target.value);
+                  setGenerated(null);
+                  setOk(null);
+                  setError(null);
+                }}
               >
-                {templates.map((tpl) => (
-                  <option key={tpl.template_type} value={tpl.template_type}>
-                    {tpl.label}
+                {loadingPatients && <option value={targetPatientId}>جاري تحميل المرضى...</option>}
+                {!loadingPatients && patients.length === 0 && (
+                  <option value={targetPatientId}>لا يوجد مرضى معيّنون لك</option>
+                )}
+                {patients.map((patient) => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.user?.full_name ?? `المريض رقم ${patient.id}`}
                   </option>
                 ))}
               </select>
             </label>
+
+            <label className="activity-form__full">
+              صفي النشاط المطلوب للذكاء الاصطناعي
+              <textarea
+                rows={5}
+                maxLength={1500}
+                value={description}
+                disabled={generating || assigning}
+                onChange={(event) => {
+                  setDescription(event.target.value);
+                  setGenerated(null);
+                }}
+                placeholder="مثال: أنشئ نشاط ذاكرة سهلًا عن أسماء أفراد العائلة، يتكون من 5 أسئلة اختيار من متعدد، وبعبارات عربية بسيطة."
+              />
+              <small>{description.length}/1500</small>
+            </label>
+
             <label>
-              {t("ab.difficulty")}
+              مستوى الصعوبة
               <select
                 value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value)}
+                disabled={generating || assigning}
+                onChange={(event) => {
+                  setDifficulty(event.target.value);
+                  setGenerated(null);
+                }}
               >
-                {difficulties.map((d) => (
-                  <option key={d} value={d}>
-                    {difficultyLabel(d)}
+                {DIFFICULTIES.map((value) => (
+                  <option key={value} value={value}>
+                    {difficultyLabel(value)}
                   </option>
                 ))}
               </select>
             </label>
+
             <label>
-              {t("ab.duration")}
+              المدة بالدقائق
               <input
                 type="number"
                 min={1}
                 max={60}
                 value={duration}
-                onChange={(e) =>
-                  setDuration(Math.max(1, Math.min(60, Number(e.target.value) || 1)))
-                }
+                disabled={generating || assigning}
+                onChange={(event) => {
+                  setDuration(
+                    Math.max(1, Math.min(60, Number(event.target.value) || 1)),
+                  );
+                  setGenerated(null);
+                }}
               />
             </label>
-            <label className="activity-form__full">
-              {t("ab.titleField")}
-              <input
-                type="text"
-                value={title}
-                maxLength={255}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={t("ab.titlePlaceholder")}
-              />
-            </label>
-            <label className="activity-form__full">
-              {t("ab.instructions")}
-              <textarea
-                rows={3}
-                value={instructions}
-                onChange={(e) => setInstructions(e.target.value)}
-                placeholder={t("ab.instructionsPlaceholder")}
-              />
-            </label>
-          </div>
-
-          {/* Preview of what the patient will receive */}
-          <div className="activity-preview">
-            <span className="activity-preview__label">{t("ab.preview")}</span>
-            <strong className="activity-preview__title">
-              {title.trim() || selected?.default_title || t("word.activity")}
-            </strong>
-            <div className="activity-preview__meta">
-              <span className="pill">{selected?.label ?? templateType}</span>
-              <span className="pill">{difficultyLabel(difficulty)}</span>
-              <span className="pill">
-                {duration} {t("ab.minutes")}
-              </span>
-              <span className="pill">
-                {selected?.playable ? t("ab.playable") : t("ab.guidedPreview")}
-              </span>
-            </div>
-            {(instructions.trim() || selected?.default_instructions) && (
-              <p className="activity-preview__text">
-                {instructions.trim() || selected?.default_instructions}
-              </p>
-            )}
           </div>
 
           <div className="activity-form__actions">
-            <button className="btn btn--gold" disabled={busy} onClick={assign}>
-              {busy ? t("ab.assigning") : t("ab.assign")}
+            <button
+              className="btn btn--gold"
+              disabled={generating || assigning || description.trim().length < 10}
+              onClick={generateWithAi}
+            >
+              {generating ? "جاري إنشاء النشاط..." : "✨ إنشاء النشاط بالـAI"}
             </button>
+
             <button
               className="btn btn--ghost"
-              disabled={busy}
-              onClick={() => setOpen(false)}
+              disabled={generating || assigning}
+              onClick={() => {
+                setOpen(false);
+                setGenerated(null);
+              }}
             >
               {t("common.cancel")}
             </button>
           </div>
+
+          {generated && (
+            <div className="activity-preview ai-activity-preview">
+              <span className="activity-preview__label">معاينة النشاط</span>
+              <h3>{generated.title}</h3>
+              <p>{generated.instructions}</p>
+
+              <div className="activity-preview__meta">
+                <span className="pill">{generated.template_type}</span>
+                <span className="pill">
+                  {difficultyLabel(generated.difficulty)}
+                </span>
+                <span className="pill">
+                  {generated.duration_minutes} دقيقة
+                </span>
+                <span className="pill">
+                  {generated.generated_content.questions.length} أسئلة
+                </span>
+              </div>
+
+              <div className="ai-question-list">
+                {generated.generated_content.questions.map((question, index) => (
+                  <article className="ai-question-card" key={`${index}-${question.prompt}`}>
+                    <strong>
+                      {index + 1}. {question.prompt}
+                    </strong>
+
+                    <ul>
+                      {question.options.map((option) => (
+                        <li
+                          key={option}
+                          className={option === question.answer ? "is-correct" : ""}
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <small>
+                      الإجابة: {question.answer} — {question.explanation}
+                    </small>
+                  </article>
+                ))}
+              </div>
+
+              <div className="activity-form__actions">
+                <button
+                  className="btn btn--gold"
+                  disabled={assigning || generating || !targetPatientId}
+                  onClick={assign}
+                >
+                  {assigning ? "جاري التعيين..." : "تعيين النشاط للمريض"}
+                </button>
+
+                <button
+                  className="btn btn--ghost"
+                  disabled={assigning || generating}
+                  onClick={generateWithAi}
+                >
+                  إعادة الإنشاء
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       <div className="activity-list">
         {activities.length === 0 ? (
-          <EmptyState message={t("ab.noneAssigned")} icon="activities" />
+          <EmptyState message="لا توجد أنشطة مسندة لهذا المريض بعد." icon="activities" />
         ) : (
           <ul className="activity-list__items">
-            {activities.map((a) => (
-              <li className="activity-item" key={a.id}>
+            {activities.map((activity) => (
+              <li className="activity-item" key={activity.id}>
                 <div className="activity-item__main">
-                  <strong>{a.title}</strong>
+                  <strong>{activity.title}</strong>
                   <span className="activity-item__sub">
-                    {difficultyLabel(a.difficulty)} · {a.duration_minutes}{" "}
-                    {t("ab.minutes")} · {t("ab.assignedOn", { date: formatDate(a.created_at) })}
-                    {a.completed_at
-                      ? ` · ${t("ab.completedOn", { date: formatDate(a.completed_at) })}`
-                      : ""}
+                    {difficultyLabel(activity.difficulty)} ·{" "}
+                    {activity.duration_minutes} دقيقة ·{" "}
+                    {t("ab.assignedOn", {
+                      date: formatDate(activity.created_at),
+                    })}
                   </span>
                 </div>
-                <Badge tone={statusTone(a.status)}>{statusLabel(a.status)}</Badge>
+
+                <Badge tone={statusTone(activity.status)}>
+                  {statusLabel(activity.status)}
+                </Badge>
               </li>
             ))}
           </ul>

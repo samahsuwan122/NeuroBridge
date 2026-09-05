@@ -6,15 +6,14 @@ import {
   type ChangeEvent,
   type KeyboardEvent,
 } from "react";
-import { api, resolveMediaUrl as resolveApiMediaUrl } from "../api/client";
+import { resolveMediaUrl as resolveApiMediaUrl } from "../api/client";
+import { webAccountApi } from "../api/webAccountClient";
 import { useAuth } from "../auth/AuthContext";
 import { Card, ErrorState, Spinner } from "../components/ui";
 import { formatDateTime, initials } from "../lib";
 import type {
   Provider,
-  ProviderListResponse,
   ProviderMessage,
-  ProviderMessageListResponse,
   ProviderMessageThread,
 } from "../types";
 import { useI18n } from "../i18n/useI18n";
@@ -191,12 +190,14 @@ export function FamilyMessagesPage() {
     setLoading(true);
     setLoadError(false);
     try {
-      const [providerResult, threadResult] = await Promise.all([
-        api<ProviderListResponse>("/providers"),
-        api<ProviderMessageListResponse>("/provider-messages?limit=200").catch(
-          (): ProviderMessageListResponse => ({ success: true, total: 0, limit: 200, offset: 0, messages: [] }),
-        ),
-      ]);
+      if (!patient) return;
+      const result = await webAccountApi<{
+        success: boolean;
+        providers: Provider[];
+        messages: ProviderMessage[];
+      }>(`family_messages.php?action=list&patient_id=${encodeURIComponent(patient.id)}`);
+      const providerResult = { providers: result.providers };
+      const threadResult = { messages: result.messages };
       setProviders(providerResult.providers);
       const aiDraft=takeAiProviderDraft();
       if(aiDraft&&aiDraft.patientId===patient?.id&&providerResult.providers.some(item=>item.provider_user_id===aiDraft.providerId)){setSelectedId(aiDraft.providerId);setBody(aiDraft.body)}
@@ -253,7 +254,10 @@ export function FamilyMessagesPage() {
     loadingThreads.current.add(summary.id);
     setThreadLoading(true);
     try {
-      const thread = await api<ProviderMessageThread>(`/provider-messages/${summary.id}`);
+      if (!patient) return;
+      const thread = await webAccountApi<ProviderMessageThread>(
+        `family_messages.php?action=thread&id=${encodeURIComponent(summary.id)}&patient_id=${encodeURIComponent(patient.id)}`,
+      );
       const local: LocalMessage[] = [
         {
           id: thread.id,
@@ -279,7 +283,10 @@ export function FamilyMessagesPage() {
       if (!clearedIds.has(providerId)) setMessages((current) => ({ ...current, [providerId]: local }));
       loadedThreads.current.add(summary.id);
       setThreads((current) => current.map((item) => item.provider_user_id === providerId ? { ...item, unread_reply_count: 0 } : item));
-      await api(`/provider-messages/${summary.id}/read`, { method: "PATCH" }).catch(() => undefined);
+      await webAccountApi("family_messages.php", {
+        method: "PATCH",
+        body: JSON.stringify({ action: "read", id: summary.id, patient_id: patient.id }),
+      }).catch(() => undefined);
     } catch {
       setThreadError(true);
     } finally {
@@ -366,15 +373,34 @@ export function FamilyMessagesPage() {
     mediaRecorder.current?.stop();
   };
 
-  const send = () => {
-    if (!selectedId || (!body.trim() && !draft)) return;
+  const send = async () => {
+    if (!selectedId || !patient || (!body.trim() && !draft)) return;
+    const text = body.trim() || (draft ? `📎 ${draft.fileName}` : "");
+    const summary = threadByProvider.get(selectedId);
+    try {
+      if (summary) {
+        await webAccountApi("family_messages.php", {
+          method: "PATCH",
+          body: JSON.stringify({ action: "reply", id: summary.id, patient_id: patient.id, message: text }),
+        });
+      } else {
+        const created = await webAccountApi<ProviderMessage>("family_messages.php", {
+          method: "POST",
+          body: JSON.stringify({ provider_id: selectedId, patient_id: patient.id, message: text }),
+        });
+        setThreads((current) => [created, ...current]);
+      }
+    } catch {
+      setThreadError(true);
+      return;
+    }
     const next: LocalMessage = {
       id: localId(),
       conversationId: selectedId,
       senderType: "family",
       senderName: familySender.trim() || undefined,
       type: draft?.type ?? "text",
-      text: body.trim() || undefined,
+      text,
       mediaUrl: draft?.url,
       fileName: draft?.fileName,
       fileSize: draft?.fileSize,
@@ -393,7 +419,7 @@ export function FamilyMessagesPage() {
   const onComposerKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      send();
+      void send();
     }
   };
 
@@ -552,7 +578,7 @@ export function FamilyMessagesPage() {
                 {recording && <div className="voice-recording"><span><i /> {t("family.recording")} <strong>{durationLabel(recordSeconds)}</strong></span><button type="button" onClick={stopRecording}>{t("family.stopRecording")}</button></div>}
                 {micError && <div className="mform__error">{t("family.microphoneUnavailable")}</div>}
                 <div className="sender-control"><button type="button" className="sender-chip sender-chip--member" onClick={() => setSenderOpen((value) => !value)} aria-expanded={senderOpen}><FamilyMemberAvatar member={active}/><span>{familySender ? `${t("family.familySender")}: ${familySender}` : t("family.setSender")}</span></button>{senderOpen && <div className="sender-popover"><label>{t("family.familySender")}<input autoFocus value={familySender} onChange={(event) => setFamilySender(event.target.value)} placeholder={t("family.familySenderExample")} /></label><button type="button" onClick={() => setSenderOpen(false)}>✓</button></div>}</div>
-                <div className="composer-main"><div className="attachment-wrap"><button type="button" className="composer-attach" onClick={() => setMenuOpen((value) => !value)} aria-label={t("family.attachMessage")} aria-expanded={menuOpen}>＋</button>{menuOpen && <div className="attachment-menu"><button type="button" onClick={() => photoInput.current?.click()}>{t("family.photo")}</button><button type="button" onClick={() => videoInput.current?.click()}>{t("family.video")}</button><button type="button" onClick={() => fileInput.current?.click()}>{t("family.file")}</button><button type="button" onClick={() => void startRecording()}>{t("family.voiceMessage")}</button></div>}</div><textarea rows={1} value={body} onChange={(event) => setBody(event.target.value)} onKeyDown={onComposerKeyDown} placeholder={t("family.writeMessage")} aria-label={t("family.writeMessage")} /><button type="button" className="btn btn--gold composer-send" onClick={send} disabled={!body.trim() && !draft} aria-label={t("family.send")}>{t("family.send")}</button></div>
+                <div className="composer-main"><div className="attachment-wrap"><button type="button" className="composer-attach" onClick={() => setMenuOpen((value) => !value)} aria-label={t("family.attachMessage")} aria-expanded={menuOpen}>＋</button>{menuOpen && <div className="attachment-menu"><button type="button" onClick={() => photoInput.current?.click()}>{t("family.photo")}</button><button type="button" onClick={() => videoInput.current?.click()}>{t("family.video")}</button><button type="button" onClick={() => fileInput.current?.click()}>{t("family.file")}</button><button type="button" onClick={() => void startRecording()}>{t("family.voiceMessage")}</button></div>}</div><textarea rows={1} value={body} onChange={(event) => setBody(event.target.value)} onKeyDown={onComposerKeyDown} placeholder={t("family.writeMessage")} aria-label={t("family.writeMessage")} /><button type="button" className="btn btn--gold composer-send" onClick={() => void send()} disabled={!body.trim() && !draft} aria-label={t("family.send")}>{t("family.send")}</button></div>
                 <input ref={photoInput} hidden type="file" accept="image/*" onChange={(event) => chooseMedia(event, "photo")} /><input ref={videoInput} hidden type="file" accept="video/*" onChange={(event) => chooseMedia(event, "video")} /><input ref={fileInput} hidden type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.xls,.xlsx" onChange={(event) => chooseMedia(event, "file")} />
               </div>}
             </div>}

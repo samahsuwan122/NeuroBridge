@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
@@ -16,6 +17,10 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   AppLanguage _language = AppLanguage.arabic;
+
+  // Dark Mode
+  bool _isDarkMode = false;
+
   String get _currentFont {
     if (_language == AppLanguage.arabic) {
       return 'ArabicElegant';
@@ -28,13 +33,39 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
 
-  static const Color _background = AppColors.background;
-  static const Color _pinkLight = Color(0xFFEADCC8);
-  static const Color _rose = AppColors.primary;
-  static const Color _roseDark = AppColors.primaryDark;
-  static const Color _brown = AppColors.textPrimary;
-  static const Color _muted = AppColors.textSecondary;
-  static const Color _border = AppColors.border;
+  // =========================
+  // LIGHT COLORS
+  // =========================
+
+  static const Color _lightBackground = Color(0xFFFFFBF7);
+  static const Color _lightCard = Colors.white;
+  static const Color _lightText = Color(0xFF4D3935);
+  static const Color _lightSecondaryText = Color(0xFF8C7773);
+  static const Color _lightBorder = Color(0xFFE9DDCD);
+
+  // =========================
+  // DARK COLORS
+  // =========================
+
+  static const Color _darkBackground = Color(0xFF181515);
+  static const Color _darkCard = Color(0xFF242020);
+  static const Color _darkText = Color(0xFFF5EDE7);
+  static const Color _darkSecondaryText = Color(0xFFB9AAA3);
+  static const Color _darkBorder = Color(0xFF3A3330);
+
+  static const Color _primary = AppColors.primary;
+
+  Color get _background =>
+      _isDarkMode ? _darkBackground : _lightBackground;
+
+  Color get _cardColor => _isDarkMode ? _darkCard : _lightCard;
+
+  Color get _mainText => _isDarkMode ? _darkText : _lightText;
+
+  Color get _secondaryText =>
+      _isDarkMode ? _darkSecondaryText : _lightSecondaryText;
+
+  Color get _border => _isDarkMode ? _darkBorder : _lightBorder;
 
   @override
   void initState() {
@@ -42,7 +73,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 500),
     );
 
     _fadeAnimation = CurvedAnimation(
@@ -51,12 +82,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.07),
+      begin: const Offset(0, 0.02),
       end: Offset.zero,
     ).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.easeOutCubic,
+        curve: Curves.easeOut,
       ),
     );
 
@@ -77,6 +108,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       textDirection: _language.direction,
       child: Theme(
         data: Theme.of(context).copyWith(
+          brightness: _isDarkMode ? Brightness.dark : Brightness.light,
+          scaffoldBackgroundColor: _background,
           textTheme: Theme.of(context).textTheme.apply(
                 fontFamily: _currentFont,
               ),
@@ -86,288 +119,254 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         ),
         child: Scaffold(
           backgroundColor: _background,
-          body: Stack(
-            children: [
-              // الخلفية
-              const Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFFFFFDF8),
-                        Color(0xFFF7F0E5),
-                        Color(0xFFEDE1D1),
-                        Color(0xFFFFFAFB),
-                      ],
-                      stops: [
-                        0.0,
-                        0.35,
-                        0.72,
-                        1.0,
-                      ],
-                    ),
+          body: SafeArea(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    20,
+                    14,
+                    20,
+                    30,
                   ),
-                ),
-              ),
-
-              // دوائر ناعمة بالخلفية
-              Positioned(
-                top: -120,
-                right: -100,
-                child: _GlowCircle(
-                  size: 300,
-                  color: _pinkLight.withValues(alpha: 0.45),
-                ),
-              ),
-
-              Positioned(
-                bottom: -150,
-                left: -100,
-                child: _GlowCircle(
-                  size: 340,
-                  color: _pinkLight.withValues(alpha: 0.38),
-                ),
-              ),
-
-              Positioned(
-                top: 330,
-                left: -70,
-                child: _GlowCircle(
-                  size: 170,
-                  color: const Color(0xFFEEE0CE).withValues(alpha: 0.45),
-                ),
-              ),
-
-              SafeArea(
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(
-                        20,
-                        12,
-                        20,
-                        34,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: 620,
                       ),
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxWidth: 620,
+                      child: Column(
+                        children: [
+                          // =========================
+                          // TOP BAR
+                          // =========================
+
+                          _TopBar(
+                            language: _language,
+                            isDarkMode: _isDarkMode,
+                            onLanguageChanged: (language) {
+                              setState(() {
+                                _language = language;
+                              });
+                            },
+                            onThemeChanged: () {
+                              setState(() {
+                                _isDarkMode = !_isDarkMode;
+                              });
+                            },
                           ),
-                          child: Column(
+
+                          const SizedBox(height: 35),
+
+                          // =========================
+                          // HERO
+                          // =========================
+
+                          _HeroSection(
+                            title: strings.title,
+                            description: strings.description,
+                            isDarkMode: _isDarkMode,
+                            mainText: _mainText,
+                            secondaryText: _secondaryText,
+                            borderColor: _border,
+                          ),
+
+                          const SizedBox(height: 36),
+
+                          // =========================
+                          // FEATURES TITLE
+                          // =========================
+
+                          Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              strings.featuresTitle,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: _mainText,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 13),
+
+                          // =========================
+                          // FEATURE 1
+                          // =========================
+
+                          _FeatureCard(
+                            icon: Icons.psychology_alt_rounded,
+                            title: strings.exercises,
+                            description: strings.exercisesDescription,
+                            accentColor: const Color(0xFFB89272),
+                            iconBackground: _isDarkMode
+                                ? const Color(0xFF342C27)
+                                : const Color(0xFFF4ECE3),
+                            cardColor: _cardColor,
+                            borderColor: _border,
+                            mainText: _mainText,
+                            secondaryText: _secondaryText,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // =========================
+                          // FEATURE 2
+                          // =========================
+
+                          _FeatureCard(
+                            icon: Icons.insights_rounded,
+                            title: strings.progress,
+                            description: strings.progressDescription,
+                            accentColor: const Color(0xFF7895A4),
+                            iconBackground: _isDarkMode
+                                ? const Color(0xFF273137)
+                                : const Color(0xFFEDF3F5),
+                            cardColor: _cardColor,
+                            borderColor: _border,
+                            mainText: _mainText,
+                            secondaryText: _secondaryText,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // =========================
+                          // FEATURE 3
+                          // =========================
+
+                          _FeatureCard(
+                            icon: Icons.family_restroom_rounded,
+                            title: strings.family,
+                            description: strings.familyDescription,
+                            accentColor: const Color(0xFFC79A62),
+                            iconBackground: _isDarkMode
+                                ? const Color(0xFF352E25)
+                                : const Color(0xFFFFF4E5),
+                            cardColor: _cardColor,
+                            borderColor: _border,
+                            mainText: _mainText,
+                            secondaryText: _secondaryText,
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // =========================
+                          // CREATE ACCOUNT
+                          // =========================
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: FilledButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const RoleSelectionScreen(),
+                                  ),
+                                );
+                              },
+                              style: FilledButton.styleFrom(
+                                backgroundColor: _primary,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Text(
+                                strings.createAccount,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // =========================
+                          // LOGIN
+                          // =========================
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: _isDarkMode
+                                    ? const Color(0xFFE3C6B2)
+                                    : AppColors.primaryDark,
+                                backgroundColor: _cardColor,
+                                side: BorderSide(
+                                  color: _border,
+                                  width: 1,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Text(
+                                strings.login,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // =========================
+                          // TRUST MESSAGE
+                          // =========================
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              _TopBar(
-                                language: _language,
-                                onChanged: (language) {
-                                  setState(() {
-                                    _language = language;
-                                  });
-                                },
+                              Icon(
+                                Icons.verified_user_outlined,
+                                size: 16,
+                                color: _isDarkMode
+                                    ? const Color(0xFFD0A98D)
+                                    : _primary,
                               ),
-
-                              const SizedBox(height: 36),
-
-                              // HERO
-                              _HeroSection(
-                                title: strings.title,
-                                description: strings.description,
-                              ),
-
-                              const SizedBox(height: 38),
-
-                              // عنوان المميزات
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 5,
-                                    height: 28,
-                                    decoration: BoxDecoration(
-                                      color: _rose,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
+                              const SizedBox(width: 7),
+                              Flexible(
+                                child: Text(
+                                  'مساحتك آمنة، داعمة ومصممة لرحلة تأهيل أفضل',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 11.5,
+                                    height: 1.4,
+                                    color: _secondaryText,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      strings.featuresTitle,
-                                      style: const TextStyle(
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w900,
-                                        color: _brown,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              const SizedBox(height: 17),
-
-                              // المميزات
-                              _FeatureCard(
-                                icon: Icons.psychology_alt_rounded,
-                                title: strings.exercises,
-                                description: strings.exercisesDescription,
-                                accentColor: const Color(0xFF4A3528),
-                                iconBackground: const Color(0xFFF1E7D8),
-                              ),
-
-                              const SizedBox(height: 13),
-
-                              _FeatureCard(
-                                icon: Icons.insights_rounded,
-                                title: strings.progress,
-                                description: strings.progressDescription,
-                                accentColor: const Color(0xFF7895A4),
-                                iconBackground: const Color(0xFFEAF2F5),
-                              ),
-
-                              const SizedBox(height: 13),
-
-                              _FeatureCard(
-                                icon: Icons.family_restroom_rounded,
-                                title: strings.family,
-                                description: strings.familyDescription,
-                                accentColor: const Color(0xFFC79A62),
-                                iconBackground: const Color(0xFFFFF2DF),
-                              ),
-
-                              const SizedBox(height: 35),
-
-                              // إنشاء حساب
-                              SizedBox(
-                                width: double.infinity,
-                                height: 60,
-                                child: FilledButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            const RoleSelectionScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: _rose,
-                                    foregroundColor: Colors.white,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        strings.createAccount,
-                                        style: const TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w900,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 9),
-                                      const Icon(
-                                        Icons.arrow_forward_rounded,
-                                        size: 21,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 13),
-
-                              // تسجيل الدخول
-                              SizedBox(
-                                width: double.infinity,
-                                height: 60,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => const LoginScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: _roseDark,
-                                    backgroundColor: Colors.white.withValues(
-                                      alpha: 0.70,
-                                    ),
-                                    side: const BorderSide(
-                                      color: Color(0xFFD8C4A8),
-                                      width: 1.3,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    strings.login,
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 25),
-
-                              // Privacy / trust
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 13,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(
-                                    alpha: 0.52,
-                                  ),
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: _border,
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.verified_user_outlined,
-                                      size: 18,
-                                      color: _rose,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        'مساحتك آمنة، داعمة ومصممة لرحلة تأهيل أفضل',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          height: 1.5,
-                                          color: _muted,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -376,45 +375,47 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 }
 
 // ======================================================
-// HERO
+// HERO SECTION
 // ======================================================
 
 class _HeroSection extends StatelessWidget {
   final String title;
   final String description;
+  final bool isDarkMode;
+  final Color mainText;
+  final Color secondaryText;
+  final Color borderColor;
 
   const _HeroSection({
     required this.title,
     required this.description,
+    required this.isDarkMode,
+    required this.mainText,
+    required this.secondaryText,
+    required this.borderColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // دائرة حول الشعار
+        // =========================
+        // LOGO
+        // =========================
+
         Container(
-          width: 185,
-          height: 185,
-          padding: const EdgeInsets.all(15),
+          width: 130,
+          height: 130,
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFFFFFFF),
-                Color(0xFFF3E7D8),
-              ],
+            color: isDarkMode
+                ? const Color(0xFF242020)
+                : Colors.white,
+            border: Border.all(
+              color: borderColor,
+              width: 1,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF4A3528).withValues(alpha: 0.13),
-                blurRadius: 40,
-                spreadRadius: 2,
-                offset: const Offset(0, 18),
-              ),
-            ],
           ),
           child: Image.asset(
             'assets/images/neurobridge_logo.png',
@@ -422,72 +423,60 @@ class _HeroSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 23),
+        const SizedBox(height: 16),
 
-        // الاسم
-        const Text(
+        // =========================
+        // APP NAME
+        // =========================
+
+        Text(
           'NeuroBridge',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'EnglishScript',
-            fontSize: 46,
+            fontSize: 32,
             fontWeight: FontWeight.w700,
-            fontStyle: FontStyle.italic,
-            color: Color(0xFF6D513F),
-            letterSpacing: -1.8,
-            height: 1.05,
+            color: isDarkMode
+                ? const Color(0xFFE3C6B2)
+                : const Color(0xFF6D513F),
           ),
         ),
 
-        const SizedBox(height: 7),
+        const SizedBox(height: 18),
 
-        // Badge صغير
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 13,
-            vertical: 7,
-          ),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF4EBDD),
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: const Text(
-            'رحلتك • دعمك • تقدّمك',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF76513E),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 25),
+        // =========================
+        // TITLE
+        // =========================
 
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 29,
-            height: 1.25,
-            fontWeight: FontWeight.w900,
-            color: Color(0xFF4D3935),
+          style: TextStyle(
+            fontSize: 26,
+            height: 1.3,
+            fontWeight: FontWeight.w800,
+            color: mainText,
           ),
         ),
 
-        const SizedBox(height: 15),
+        const SizedBox(height: 11),
 
-        Container(
+        // =========================
+        // DESCRIPTION
+        // =========================
+
+        ConstrainedBox(
           constraints: const BoxConstraints(
             maxWidth: 500,
           ),
           child: Text(
             description,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 15,
-              height: 1.8,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF8C7773),
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.7,
+              fontWeight: FontWeight.w400,
+              color: secondaryText,
             ),
           ),
         ),
@@ -502,29 +491,38 @@ class _HeroSection extends StatelessWidget {
 
 class _TopBar extends StatelessWidget {
   final AppLanguage language;
-  final ValueChanged<AppLanguage> onChanged;
+  final bool isDarkMode;
+  final ValueChanged<AppLanguage> onLanguageChanged;
+  final VoidCallback onThemeChanged;
 
   const _TopBar({
     required this.language,
-    required this.onChanged,
+    required this.isDarkMode,
+    required this.onLanguageChanged,
+    required this.onThemeChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Mini logo
+        // =========================
+        // SMALL LOGO
+        // =========================
+
         Container(
-          width: 45,
-          height: 45,
+          width: 38,
+          height: 38,
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(
-              alpha: 0.78,
-            ),
-            borderRadius: BorderRadius.circular(14),
+            color: isDarkMode
+                ? const Color(0xFF242020)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(9),
             border: Border.all(
-              color: const Color(0xFFE9DDCD),
+              color: isDarkMode
+                  ? const Color(0xFF3A3330)
+                  : const Color(0xFFE8DDD0),
             ),
           ),
           child: Image.asset(
@@ -532,35 +530,81 @@ class _TopBar extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(width: 9),
+        const SizedBox(width: 8),
 
-        const Expanded(
+        // =========================
+        // APP NAME
+        // =========================
+
+        Expanded(
           child: Text(
             'NeuroBridge',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontFamily: 'EnglishScript',
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.italic,
-              color: Color(0xFF6D513F),
-              letterSpacing: -0.8,
+              color: isDarkMode
+                  ? const Color(0xFFE3C6B2)
+                  : const Color(0xFF6D513F),
             ),
           ),
         ),
 
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
+
+        // =========================
+        // DARK / LIGHT MODE
+        // =========================
+
+        InkWell(
+          onTap: onThemeChanged,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            width: 40,
+            height: 38,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isDarkMode
+                  ? const Color(0xFF242020)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: isDarkMode
+                    ? const Color(0xFF3A3330)
+                    : const Color(0xFFE0D3C4),
+              ),
+            ),
+            child: Icon(
+              isDarkMode
+                  ? Icons.light_mode_rounded
+                  : Icons.dark_mode_rounded,
+              size: 18,
+              color: isDarkMode
+                  ? const Color(0xFFE3C6B2)
+                  : const Color(0xFF5A4440),
+            ),
+          ),
+        ),
+
+        const SizedBox(width: 7),
+
+        // =========================
+        // LANGUAGE
+        // =========================
 
         PopupMenuButton<AppLanguage>(
           initialValue: language,
           tooltip: 'Language',
           position: PopupMenuPosition.under,
-          onSelected: onChanged,
-          elevation: 10,
-          color: const Color(0xFFFEFBF5),
+          onSelected: onLanguageChanged,
+          elevation: 4,
+          color: isDarkMode
+              ? const Color(0xFF242020)
+              : Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
           itemBuilder: (context) {
             return AppLanguage.values.map((item) {
@@ -568,98 +612,112 @@ class _TopBar extends StatelessWidget {
 
               return PopupMenuItem<AppLanguage>(
                 value: item,
-                child: SizedBox(
-                  width: 170,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 31,
-                        height: 31,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xFFE9D9C4)
-                              : const Color(0xFFF6F0E7),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          item.code,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w900,
-                            color: isSelected
-                                ? const Color(0xFF76513E)
-                                : const Color(0xFF8B7774),
-                          ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? (isDarkMode
+                                ? const Color(0xFF3A302B)
+                                : const Color(0xFFF0E5D8))
+                            : (isDarkMode
+                                ? const Color(0xFF302A28)
+                                : const Color(0xFFF8F5F1)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        item.code,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: isDarkMode
+                              ? const Color(0xFFE3C6B2)
+                              : const Color(0xFF76513E),
                         ),
                       ),
-                      const SizedBox(width: 11),
-                      Expanded(
-                        child: Text(
-                          item.name,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight:
-                                isSelected ? FontWeight.w900 : FontWeight.w600,
-                            color: const Color(0xFF513D39),
-                          ),
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: Text(
+                        item.name,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: isDarkMode
+                              ? const Color(0xFFF0E7E2)
+                              : const Color(0xFF513D39),
                         ),
                       ),
-                      if (isSelected)
-                        const Icon(
-                          Icons.check_circle_rounded,
-                          size: 20,
-                          color: Color(0xFF4A3528),
-                        ),
-                    ],
-                  ),
+                    ),
+
+                    if (isSelected)
+                      Icon(
+                        Icons.check,
+                        size: 18,
+                        color: isDarkMode
+                            ? const Color(0xFFE3C6B2)
+                            : const Color(0xFF4A3528),
+                      ),
+                  ],
                 ),
               );
             }).toList();
           },
           child: Container(
+            height: 38,
             padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 10,
+              horizontal: 9,
             ),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(
-                alpha: 0.76,
-              ),
-              borderRadius: BorderRadius.circular(17),
+              color: isDarkMode
+                  ? const Color(0xFF242020)
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: const Color(0xFFDDCDB9),
+                color: isDarkMode
+                    ? const Color(0xFF3A3330)
+                    : const Color(0xFFE0D3C4),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9F6A77).withValues(alpha: 0.06),
-                  blurRadius: 14,
-                  offset: const Offset(0, 6),
-                ),
-              ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.language_rounded,
-                  size: 19,
-                  color: Color(0xFF4A3528),
+                  size: 17,
+                  color: isDarkMode
+                      ? const Color(0xFFE3C6B2)
+                      : const Color(0xFF4A3528),
                 ),
-                const SizedBox(width: 6),
+
+                const SizedBox(width: 4),
+
                 Text(
                   language.code,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF5A4440),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: isDarkMode
+                        ? const Color(0xFFE3C6B2)
+                        : const Color(0xFF5A4440),
                   ),
                 ),
-                const SizedBox(width: 3),
-                const Icon(
+
+                const SizedBox(width: 1),
+
+                Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  size: 17,
-                  color: Color(0xFF8D7773),
+                  size: 16,
+                  color: isDarkMode
+                      ? const Color(0xFFB9AAA3)
+                      : const Color(0xFF8D7773),
                 ),
               ],
             ),
@@ -680,6 +738,10 @@ class _FeatureCard extends StatelessWidget {
   final String description;
   final Color accentColor;
   final Color iconBackground;
+  final Color cardColor;
+  final Color borderColor;
+  final Color mainText;
+  final Color secondaryText;
 
   const _FeatureCard({
     required this.icon,
@@ -687,107 +749,86 @@ class _FeatureCard extends StatelessWidget {
     required this.description,
     required this.accentColor,
     required this.iconBackground,
+    required this.cardColor,
+    required this.borderColor,
+    required this.mainText,
+    required this.secondaryText,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(17),
+      padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(
-          alpha: 0.74,
-        ),
-        borderRadius: BorderRadius.circular(23),
+        color: cardColor,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFFE9DDCD),
+          color: borderColor,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9E6F79).withValues(alpha: 0.055),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Row(
         children: [
+          // =========================
+          // ICON
+          // =========================
+
           Container(
-            width: 58,
-            height: 58,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               color: iconBackground,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               icon,
               color: accentColor,
-              size: 29,
+              size: 24,
             ),
           ),
-          const SizedBox(width: 16),
+
+          const SizedBox(width: 12),
+
+          // =========================
+          // TEXT
+          // =========================
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF513D39),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: mainText,
                   ),
                 ),
-                const SizedBox(height: 6),
+
+                const SizedBox(height: 3),
+
                 Text(
                   description,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.6,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF8B7774),
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    color: secondaryText,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 7),
+
+          const SizedBox(width: 5),
+
           Icon(
             Icons.arrow_forward_ios_rounded,
-            size: 15,
-            color: accentColor.withValues(
-              alpha: 0.65,
-            ),
+            size: 12,
+            color: accentColor.withValues(alpha: 0.6),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ======================================================
-// BACKGROUND CIRCLE
-// ======================================================
-
-class _GlowCircle extends StatelessWidget {
-  final double size;
-  final Color color;
-
-  const _GlowCircle({
-    required this.size,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-        ),
       ),
     );
   }

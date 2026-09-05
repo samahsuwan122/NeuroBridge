@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { api, ApiError } from "../api/client";
+import { ApiError } from "../api/client";
+import { webAccountApi } from "../api/webAccountClient";
 import type { MemoryEntry } from "../types";
 import { useI18n } from "../i18n/useI18n";
 import { MemoryVoiceRecorder } from "./MemoryVoiceRecorder";
@@ -86,37 +87,23 @@ export function MemoryForm({ patientId, initialContributor, onCancel, onSaved }:
     }
     setSubmitting(true);
     try {
-      // 1) Create the memory (JSON).
-      const created = await api<MemoryEntry>("/memories", {
+      const body = new FormData();
+      body.append("patient_id", patientId);
+      body.append("title", title.trim());
+      body.append("description", description.trim());
+      body.append("person_name", personName.trim());
+      body.append("relationship", relationship.trim());
+      body.append("place_name", place.trim());
+      body.append("memory_date", memoryDate);
+      body.append("category", category.trim());
+      body.append("media_kind", mediaKind);
+      if (media) body.append("media", media);
+
+      const response = await webAccountApi<{ success: boolean; memory: MemoryEntry }>("family_memories.php", {
         method: "POST",
-        body: JSON.stringify({
-          patient_profile_id: patientId,
-          title: title.trim(),
-          description: description.trim() || undefined,
-          person_name: personName.trim() || undefined,
-          relationship: relationship.trim() || undefined,
-          place_name: place.trim() || undefined,
-          memory_date: memoryDate || undefined,
-          category: category.trim() || undefined,
-        }),
+        body,
       });
-
-      // 2) Optionally attach an image (multipart). Non-blocking on failure.
-      let mediaFailed = false;
-      if (media && mediaKind !== "audio") {
-        try {
-          const fd = new FormData();
-          fd.append("file", media);
-          await api<MemoryEntry>(`/memories/${created.id}/media`, {
-            method: "POST",
-            body: fd,
-          });
-        } catch {
-          mediaFailed = true;
-        }
-      }
-
-      onSaved({ mediaFailed, created, localMedia: mediaKind === "audio" ? media ?? undefined : undefined, mediaKind });
+      onSaved({ mediaFailed: false, created: response.memory, mediaKind });
     } catch (err) {
       const message =
         err instanceof ApiError

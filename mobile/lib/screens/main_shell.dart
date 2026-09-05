@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
+import '../core/localization/patient_i18n.dart';
 
 import 'caregiver/caregiver_home_screen.dart';
 
@@ -8,6 +9,7 @@ import 'patient/patient_home_screen.dart';
 import 'patient/exercises_screen.dart';
 import 'patient/progress_screen.dart';
 import 'patient/patient_profile_screen.dart';
+import 'patient/patient_care_screen.dart';
 
 class MainShell extends StatelessWidget {
   final Map<String, dynamic> user;
@@ -113,6 +115,9 @@ class _PatientMainShellState extends State<PatientMainShell> {
       ExercisesScreen(
         onBack: _openHome,
       ),
+      PatientCareScreen(
+        onBack: _openHome,
+      ),
       ProgressScreen(
         refreshToken: _refreshToken,
         onBack: _openHome,
@@ -142,8 +147,12 @@ class _PatientMainShellState extends State<PatientMainShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
+    final rawLanguage = widget.user['preferred_language']?.toString().trim().toLowerCase() ?? 'ar';
+    final language = const {'ar', 'en', 'fr', 'es', 'de', 'tr'}.contains(rawLanguage) ? rawLanguage : 'ar';
+    return PatientI18n(
+      language: language,
+      child: Builder(builder: (context) => Directionality(
+      textDirection: context.patientI18n.isRtl ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: IndexedStack(
@@ -189,52 +198,58 @@ class _PatientMainShellState extends State<PatientMainShell> {
               labelBehavior:
                   NavigationDestinationLabelBehavior
                       .alwaysShow,
-              destinations: const [
+              destinations: [
                 NavigationDestination(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.home_outlined,
                   ),
-                  selectedIcon: Icon(
+                  selectedIcon: const Icon(
                     Icons.home_rounded,
                     color: _rose,
                   ),
-                  label: 'الرئيسية',
+                  label: context.tr('home'),
                 ),
                 NavigationDestination(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.psychology_alt_outlined,
                   ),
-                  selectedIcon: Icon(
+                  selectedIcon: const Icon(
                     Icons.psychology_alt_rounded,
                     color: _rose,
                   ),
-                  label: 'التمارين',
+                  label: context.tr('exercises'),
                 ),
                 NavigationDestination(
-                  icon: Icon(
+                  icon: const Icon(Icons.medical_services_outlined),
+                  selectedIcon: const Icon(Icons.medical_services_rounded, color: _rose),
+                  label: context.tr('care'),
+                ),
+                NavigationDestination(
+                  icon: const Icon(
                     Icons.insights_outlined,
                   ),
-                  selectedIcon: Icon(
+                  selectedIcon: const Icon(
                     Icons.insights_rounded,
                     color: _rose,
                   ),
-                  label: 'التقدّم',
+                  label: context.tr('progress'),
                 ),
                 NavigationDestination(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.person_outline_rounded,
                   ),
-                  selectedIcon: Icon(
+                  selectedIcon: const Icon(
                     Icons.person_rounded,
                     color: _rose,
                   ),
-                  label: 'حسابي',
+                  label: context.tr('account'),
                 ),
               ],
             ),
           ),
         ),
       ),
+      )),
     );
   }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { api } from "../api/client";
+import { webAccountApi } from "../api/webAccountClient";
 import { MemoryForm } from "../components/MemoryForm";
 import type { MemoryMediaKind } from "../components/MemoryForm";
 import { FamilyMemoryGallery } from "../components/FamilyMemoryGallery";
@@ -45,7 +45,7 @@ export function FamilyMemoriesPage() {
         return;
       }
 
-      const response = await api<MemoryListResponse>("/memories?limit=200");
+      const response = await webAccountApi<MemoryListResponse>(`family_memories.php?patient_id=${encodeURIComponent(patient.id)}`);
       setMemories(
         [...readAiMemories(),...response.memories].filter(
           (memory) => memory.patient_profile_id === patient.id,
@@ -101,7 +101,7 @@ export function FamilyMemoriesPage() {
   };
 
   const refreshMemories = async (patientId: string) => {
-    const response = await api<MemoryListResponse>("/memories?limit=200");
+    const response = await webAccountApi<MemoryListResponse>(`family_memories.php?patient_id=${encodeURIComponent(patientId)}`);
     const refreshed = [...readAiMemories(),...response.memories].filter(
         (memory) => memory.patient_profile_id === patientId,
       );

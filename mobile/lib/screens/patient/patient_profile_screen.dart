@@ -146,7 +146,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 
   static const rose = AppColors.primary;
   static const brown = AppColors.textPrimary;
-  static const muted = AppColors.textSecondary;
 
   Future<void> _confirmLogout(BuildContext context) async {
     final confirmed = await showDialog<bool>(

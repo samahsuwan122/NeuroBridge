@@ -44,6 +44,8 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
           const SizedBox(height: 16),
           if (_loading) const Center(child: CircularProgressIndicator())
           else if (_error != null) Center(child: Text(_error!))
+          else if (_exercises.isEmpty)
+            const Center(child: Text('لا توجد تمارين متاحة حاليًا.'))
           else GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -73,7 +75,29 @@ class _ExerciseCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(exercise.icon, color: exercise.color), const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(exercise.icon, color: exercise.color),
+              const Spacer(),
+              if (exercise.isAssigned)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE8F3EA),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'مُعيّن لك',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF52715A),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
           Text(exercise.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 6), Text(exercise.description, maxLines: 2, overflow: TextOverflow.ellipsis),
           const Spacer(), Text('${exercise.durationMinutes} دقائق · ${exercise.difficultyTitle}'),

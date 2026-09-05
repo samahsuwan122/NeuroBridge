@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../notifications_screen.dart';
 
 import '../../core/services/caregiver_dashboard_service.dart';
 import '../../widgets/caregiver_ui.dart';
@@ -8,7 +9,7 @@ import 'caregiver_alerts_screen.dart';
 import 'caregiver_guide_screen.dart';
 import 'caregiver_profile_screen.dart';
 import 'caregiver_wellbeing_screen.dart';
-import 'family_appointments_screen.dart';
+import 'family_appointments_live_screen.dart';
 import 'family_memory_album_screen.dart';
 import 'family_permissions_screen.dart';
 import 'family_progress_screen.dart';
@@ -674,7 +675,10 @@ class _CaregiverHomeScreenState
               enabled: _hasPatient,
               onTap: () {
                 _openPage(
-                  const FamilyAppointmentsScreen(),
+                  FamilyAppointmentsLiveScreen(
+                    patientId: _selectedPatientId!,
+                    patientName: _patientName,
+                  ),
                   patientRequired: true,
                 );
               },
@@ -688,6 +692,17 @@ class _CaregiverHomeScreenState
   Widget _buildPatientMenus() {
     return Column(
       children: [
+        CaregiverMenuTile(
+          icon: Icons.notifications_active_outlined,
+          title: 'الإشعارات',
+          subtitle: 'تذكيرات المواعيد وروابط Zoom',
+          color: CaregiverColors.gold,
+          onTap: () => _openPage(
+            const UserNotificationsScreen(),
+            patientRequired: false,
+          ),
+        ),
+        const SizedBox(height: 10),
         CaregiverMenuTile(
           icon: Icons.summarize_outlined,
           title: _hasPatient
@@ -757,7 +772,10 @@ class _CaregiverHomeScreenState
           color: CaregiverColors.green,
           onTap: () {
             _openAndReload(
-              const FamilyMemoryAlbumScreen(),
+              FamilyMemoryAlbumScreen(
+  patientId: _selectedPatientId!,
+  patientName: _patientName,
+),
               patientRequired: true,
             );
           },

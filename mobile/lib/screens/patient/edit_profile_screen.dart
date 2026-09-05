@@ -26,7 +26,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   static const Color rose = AppColors.primary;
   static const Color brown = AppColors.textPrimary;
-  static const Color muted = AppColors.textSecondary;
 
   @override
   void initState() {

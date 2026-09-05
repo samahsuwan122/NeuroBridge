@@ -26,7 +26,32 @@ export function PatientDetailPage() {
   const [results, setResults] = useState<GameResult[]>([]);
   const [overviewGoals, setOverviewGoals] = useState<Goal[]>([]);
   const [overviewActivities, setOverviewActivities] = useState<AssignedActivity[]>([]);
-  const load = async () => { setLoading(true); setError(null); try { const [p,g,r] = await Promise.all([api<PatientProfile>(`/patients/${id}`),api<GameListResponse>("/games"),api<GameResultListResponse>(`/games/results?patient_profile_id=${id}&limit=200`)]); setPatient(p); setGames(g.games); setResults(r.results); } catch { setError(t("pd.couldNotLoad")); } finally { setLoading(false); } };
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // بيانات المريض هي الطلب الأساسي. فشل الألعاب أو النتائج لا يجب أن
+      // يمنع الطبيب من فتح ملف المريض كاملًا.
+      const patientData = await api<PatientProfile>(`/patients/${id}`);
+      setPatient(patientData);
+
+      const [gamesRequest, resultsRequest] = await Promise.allSettled([
+        api<GameListResponse>("/games"),
+        api<GameResultListResponse>(`/games/results?patient_profile_id=${id}&limit=200`),
+      ]);
+
+      setGames(gamesRequest.status === "fulfilled" ? gamesRequest.value.games : []);
+      setResults(resultsRequest.status === "fulfilled" ? resultsRequest.value.results : []);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error && requestError.message.trim()
+          ? requestError.message
+          : t("pd.couldNotLoad"),
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => { void load(); }, [id]);
   useEffect(() => { if (activeTab !== "overview") return; void Promise.all([listPatientGoals(id),api<AssignedActivityListResponse>(`/activities/patient/${id}?limit=3`)]).then(([goals,activities])=>{setOverviewGoals(goals.goals.filter((goal)=>goal.status==="active").slice(0,3));setOverviewActivities(activities.activities.slice(0,3));}).catch(()=>{setOverviewGoals([]);setOverviewActivities([]);}); }, [activeTab,id]);
   const gameName = useMemo(() => { const map = new Map(games.map((g) => [g.id,g.name])); return (gid:string) => map.get(gid) ?? t("word.activity"); }, [games,t]);

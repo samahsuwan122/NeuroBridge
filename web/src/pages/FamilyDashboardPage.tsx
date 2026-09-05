@@ -35,8 +35,8 @@ import { readDemoAppointments } from "../lib/familyBookingDemo";
 import { useCurrentFamilyPatient } from "../currentFamilyPatient";
 
 const dashboardCopy={
- en:{account:"You're using the shared Demo Family account.",next:"Next appointment",viewAppointment:"View appointment",bookAppointment:"Book appointment",noAppointment:"No upcoming appointment",noAppointmentHelp:"You can book a new appointment when needed.",latest:"Latest care-team update",viewMessage:"View message",noMessages:"No new care-team messages",quick:"Quick actions",encouragement:"Send encouragement",memory:"Add memory",book:"Book appointment",message:"Message care team",upcoming:"Upcoming appointment",payment:"Payment pending",newMessage:"New message",doctor:"Doctor",therapist:"Therapist",inPerson:"In person",remote:"Remote",paid:"Paid",pending:"Pending"},
- ar:{account:"أنت الآن تستخدم حساب Demo Family العائلي.",next:"الموعد القادم",viewAppointment:"عرض الموعد",bookAppointment:"حجز موعد",noAppointment:"لا يوجد موعد قادم",noAppointmentHelp:"يمكنك حجز موعد جديد عند الحاجة.",latest:"آخر تحديث من فريق الرعاية",viewMessage:"عرض الرسالة",noMessages:"لا توجد رسائل جديدة",quick:"إجراءات سريعة",encouragement:"إرسال تشجيع",memory:"إضافة ذكرى",book:"حجز موعد",message:"مراسلة مقدم الرعاية",upcoming:"موعد قريب",payment:"دفعة بانتظار الدفع",newMessage:"رسالة جديدة",doctor:"طبيب",therapist:"معالج",inPerson:"في المركز",remote:"عن بُعد",paid:"مدفوع",pending:"معلّق"},
+ en:{account:"You are using your verified family account.",next:"Next appointment",viewAppointment:"View appointment",bookAppointment:"Book appointment",noAppointment:"No upcoming appointment",noAppointmentHelp:"You can book a new appointment when needed.",latest:"Latest care-team update",viewMessage:"View message",noMessages:"No new care-team messages",quick:"Quick actions",encouragement:"Send encouragement",memory:"Add memory",book:"Book appointment",message:"Message care team",upcoming:"Upcoming appointment",payment:"Payment pending",newMessage:"New message",doctor:"Doctor",therapist:"Therapist",inPerson:"In person",remote:"Remote",paid:"Paid",pending:"Pending"},
+ ar:{account:"أنت الآن تستخدم حساب العائلة الحقيقي والموثّق.",next:"الموعد القادم",viewAppointment:"عرض الموعد",bookAppointment:"حجز موعد",noAppointment:"لا يوجد موعد قادم",noAppointmentHelp:"يمكنك حجز موعد جديد عند الحاجة.",latest:"آخر تحديث من فريق الرعاية",viewMessage:"عرض الرسالة",noMessages:"لا توجد رسائل جديدة",quick:"إجراءات سريعة",encouragement:"إرسال تشجيع",memory:"إضافة ذكرى",book:"حجز موعد",message:"مراسلة مقدم الرعاية",upcoming:"موعد قريب",payment:"دفعة بانتظار الدفع",newMessage:"رسالة جديدة",doctor:"طبيب",therapist:"معالج",inPerson:"في المركز",remote:"عن بُعد",paid:"مدفوع",pending:"معلّق"},
  fr:{account:"Vous utilisez le compte familial partagé Demo Family.",next:"Prochain rendez-vous",viewAppointment:"Voir le rendez-vous",bookAppointment:"Prendre rendez-vous",noAppointment:"Aucun rendez-vous à venir",noAppointmentHelp:"Vous pouvez prendre un nouveau rendez-vous si nécessaire.",latest:"Dernière actualité de l’équipe soignante",viewMessage:"Voir le message",noMessages:"Aucun nouveau message de l’équipe soignante",quick:"Actions rapides",encouragement:"Envoyer un encouragement",memory:"Ajouter un souvenir",book:"Prendre rendez-vous",message:"Écrire à l’équipe soignante",upcoming:"Rendez-vous à venir",payment:"Paiement en attente",newMessage:"Nouveau message",doctor:"Médecin",therapist:"Thérapeute",inPerson:"En personne",remote:"À distance",paid:"Payé",pending:"En attente"},
  es:{account:"Estás usando la cuenta familiar compartida Demo Family.",next:"Próxima cita",viewAppointment:"Ver cita",bookAppointment:"Reservar cita",noAppointment:"No hay próximas citas",noAppointmentHelp:"Puedes reservar una nueva cita cuando sea necesario.",latest:"Última actualización del equipo asistencial",viewMessage:"Ver mensaje",noMessages:"No hay mensajes nuevos del equipo asistencial",quick:"Acciones rápidas",encouragement:"Enviar ánimo",memory:"Añadir recuerdo",book:"Reservar cita",message:"Escribir al equipo asistencial",upcoming:"Próxima cita",payment:"Pago pendiente",newMessage:"Mensaje nuevo",doctor:"Médico",therapist:"Terapeuta",inPerson:"Presencial",remote:"A distancia",paid:"Pagado",pending:"Pendiente"},
  de:{account:"Sie verwenden das gemeinsame Familienkonto Demo Family.",next:"Nächster Termin",viewAppointment:"Termin anzeigen",bookAppointment:"Termin buchen",noAppointment:"Kein bevorstehender Termin",noAppointmentHelp:"Bei Bedarf können Sie einen neuen Termin buchen.",latest:"Neueste Nachricht des Betreuungsteams",viewMessage:"Nachricht anzeigen",noMessages:"Keine neuen Nachrichten des Betreuungsteams",quick:"Schnellaktionen",encouragement:"Ermutigung senden",memory:"Erinnerung hinzufügen",book:"Termin buchen",message:"Betreuungsteam schreiben",upcoming:"Bevorstehender Termin",payment:"Zahlung ausstehend",newMessage:"Neue Nachricht",doctor:"Arzt",therapist:"Therapeut",inPerson:"Vor Ort",remote:"Online",paid:"Bezahlt",pending:"Ausstehend"}
@@ -46,7 +46,7 @@ export function FamilyDashboardPage() {
   const { t,lang } = useI18n();
   const { user } = useAuth();
   const {active}=useFamilyMembers();
-  const {patient,loading:patientLoading,copy:patientCopy,name:currentPatientName,relationship:currentPatientRelationship}=useCurrentFamilyPatient();
+  const {patient,loading:patientLoading,error:patientError,reload:reloadPatients,copy:patientCopy,name:currentPatientName,relationship:currentPatientRelationship}=useCurrentFamilyPatient();
   const dc=dashboardCopy[lang];
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,11 +61,12 @@ export function FamilyDashboardPage() {
     setError(null);
     try {
       const [g, r,providerResult,messageResult] = await Promise.all([
-        api<GameListResponse>("/games"),
+        api<GameListResponse>("/games")
+          .catch(()=>({success:true,total:0,games:[]} as GameListResponse)),
         patient
           ? api<GameResultListResponse>(
               `/games/results?patient_profile_id=${patient.id}&limit=200`,
-            )
+            ).catch(()=>({success:true,total:0,results:[]} as GameResultListResponse))
           : Promise.resolve({ results: [] } as unknown as GameResultListResponse),
         api<ProviderListResponse>("/providers").catch(()=>({success:true,providers:[]})),
         api<ProviderMessageListResponse>("/provider-messages?limit=200").catch(()=>({success:true,total:0,limit:200,offset:0,messages:[]})),
@@ -138,6 +139,7 @@ export function FamilyDashboardPage() {
   const relationship = currentPatientRelationship(patient);
 
   if (loading||patientLoading) return <Spinner label={t("family.loadView")} />;
+  if (patientError) return <ErrorState message={patientError} onRetry={reloadPatients} />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (

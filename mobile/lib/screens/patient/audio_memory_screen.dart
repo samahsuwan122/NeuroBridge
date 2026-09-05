@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/localization/patient_i18n.dart';
 import '../../widgets/patient_page.dart';
 import 'exercise_result_screen.dart';
 
@@ -98,9 +99,7 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
       await _tts.speak(_round.words.join('،   '));
     } catch (_) {
       if (!mounted) return;
-      _showMessage(
-        'تعذر تشغيل الصوت. تأكدي أن صوت الجهاز والمتصفح يعملان.',
-      );
+      _showMessage(context.tr('audioError'));
     } finally {
       if (mounted) setState(() => _speaking = false);
     }
@@ -112,7 +111,7 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
     if (correct) _correctAnswers++;
 
     setState(() => _answered = true);
-    _showMessage(correct ? 'إجابة صحيحة، أحسنتِ 🌷' : 'لا بأس، سنحاول مرة أخرى.');
+    _showMessage(context.tr(correct ? 'correctAnswer' : 'tryAgain'));
   }
 
   void _next() {
@@ -176,7 +175,7 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
     final progress = (_roundIndex + 1) / _rounds.length;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.patientI18n.isRtl ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         body: PatientPage(
           child: Column(
@@ -191,10 +190,10 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
                     },
                     icon: const Icon(Icons.arrow_forward_ios_rounded),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'تمرين الذاكرة السمعية',
-                      style: TextStyle(
+                      context.tr('audioMemory'),
+                      style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w900,
                         color: AppColors.textPrimary,
@@ -207,7 +206,7 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
               Row(
                 children: [
                   Text(
-                    'الجولة ${_roundIndex + 1} من ${_rounds.length}',
+                    context.tr('roundOf').replaceAll('{current}', '${_roundIndex + 1}').replaceAll('{total}', '${_rounds.length}'),
                     style: const TextStyle(
                       fontWeight: FontWeight.w800,
                       color: AppColors.textSecondary,
@@ -231,7 +230,7 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
               Center(
                 child: Semantics(
                   button: true,
-                  label: _played ? 'إعادة سماع الكلمات' : 'سماع الكلمات',
+                  label: context.tr(_played ? 'listenAgain' : 'listenWords'),
                   child: Container(
                     width: 118,
                     height: 118,
@@ -268,8 +267,8 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
               const SizedBox(height: 22),
               Text(
                 _played
-                    ? 'اختر مجموعة الكلمات التي سمعتها.'
-                    : 'اضغط على زر الصوت، استمع جيدًا، ثم اختر ما سمعته.',
+                    ? context.tr('chooseHeardWords')
+                    : context.tr('listenInstruction'),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   height: 1.6,
@@ -279,9 +278,9 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
               const SizedBox(height: 18),
               Row(
                 children: [
-                  const Text(
-                    'سرعة القراءة',
-                    style: TextStyle(fontWeight: FontWeight.w800),
+                  Text(
+                    context.tr('readingSpeed'),
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                   Expanded(
                     child: Slider(
@@ -377,10 +376,10 @@ class _AudioMemoryScreenState extends State<AudioMemoryScreen> {
                   ),
                   child: Text(
                     !_answered
-                        ? 'تحقق من الإجابة'
+                        ? context.tr('checkAnswer')
                         : _roundIndex == _rounds.length - 1
-                            ? 'عرض النتيجة'
-                            : 'الجولة التالية',
+                            ? context.tr('showResult')
+                            : context.tr('nextRound'),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
@@ -404,3 +403,4 @@ class _AudioRound {
 
   String get correctAnswer => words.join('، ');
 }
+

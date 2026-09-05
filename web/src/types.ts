@@ -52,6 +52,22 @@ export interface PatientProfile {
   updated_at: string;
 }
 
+export interface DailyCheckin {
+  mood: string;
+  sleep_quality?: string | null;
+  readiness?: string | null;
+  energy: number;
+  need_help: boolean;
+  checkin_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DailyCheckinResponse {
+  success: boolean;
+  checkin: DailyCheckin | null;
+}
+
 export interface GameDefinition {
   id: string;
   name: string;

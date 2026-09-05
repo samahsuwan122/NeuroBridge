@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../core/services/exercise_progress_service.dart';
+import '../../core/services/patient_features_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../widgets/patient_page.dart';
 import '../help_center_screen.dart';
 import 'achievements_screen.dart';
 import 'daily_check_in_screen.dart';
+import 'encouragement_screen.dart';
 import 'exercises_screen.dart';
 import 'memory_tree_screen.dart';
 import 'patient_family_screen.dart';
@@ -36,6 +38,7 @@ class PatientHomeScreen extends StatefulWidget {
 class _PatientHomeScreenState extends State<PatientHomeScreen> {
   Map<String, dynamic> _data = const {};
   bool _loading = true;
+  Map<String, dynamic>? _latestEncouragement;
 
   String get _firstName {
     final name = widget.fullName.trim();
@@ -58,8 +61,9 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
 
   Future<void> _load() async {
     try {
-      final data = await ExerciseProgressService.loadDashboard();
-      if (mounted) setState(() { _data = data; _loading = false; });
+      final results = await Future.wait<dynamic>([ExerciseProgressService.loadDashboard(),PatientFeaturesService.loadEncouragements()]);
+      final messages=results[1] as List<Map<String,dynamic>>;
+      if (mounted) setState(() { _data = Map<String,dynamic>.from(results[0] as Map);_latestEncouragement=messages.isEmpty?null:messages.first; _loading = false; });
     } catch (_) {
       if (mounted) setState(() => _loading = false);
     }
@@ -153,6 +157,23 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
               Expanded(child:_Stat(Icons.insights_rounded,'${_int('today_average')}%','أداء اليوم',const Color(0xFF7895A4))),
             ]),
             const SizedBox(height:25),
+            if (_latestEncouragement != null) ...[
+              NeuroCard(
+                onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const EncouragementScreen())),
+                color:const Color(0xFFFFF7EC),
+                child:Row(children:[
+                  Container(width:48,height:48,decoration:BoxDecoration(color:const Color(0xFFF3DFCB),borderRadius:BorderRadius.circular(15)),child:const Icon(Icons.favorite_rounded,color:Color(0xFFB46F5B))),
+                  const SizedBox(width:12),
+                  Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+                    Text('رسالة تشجيع من ${_latestEncouragement!['sender_name']??'العائلة'}',style:const TextStyle(fontWeight:FontWeight.w900)),
+                    const SizedBox(height:4),
+                    Text((_latestEncouragement!['message']?.toString().trim().isNotEmpty??false)?_latestEncouragement!['message'].toString():'وصلتك رسالة تحتوي على صورة أو تسجيل',maxLines:2,overflow:TextOverflow.ellipsis,style:const TextStyle(color:AppColors.textSecondary,height:1.5)),
+                  ])),
+                  const Icon(Icons.arrow_back_ios_new_rounded,size:14),
+                ]),
+              ),
+              const SizedBox(height:18),
+            ],
             const PatientSectionTitle(title:'وصول سريع'),
             const SizedBox(height:12),
             GridView.count(
@@ -164,6 +185,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
                 _Action(Icons.park_rounded,'شجرة الذاكرة','ذكرياتك الجميلة',()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const MemoryTreeScreen()))),
                 _Action(Icons.favorite_outline_rounded,'حالتي اليوم','كيف تشعر؟',()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const DailyCheckInScreen()))),
                 _Action(Icons.family_restroom_rounded,'العائلة','الأشخاص المرتبطون',()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const PatientFamilyScreen()))),
+                _Action(Icons.favorite_rounded,'رسائل التشجيع','رسائل العائلة',()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const EncouragementScreen()))),
                 _Action(Icons.emoji_events_outlined,'الإنجازات','شاهد إنجازاتك',()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const AchievementsScreen()))),
               ],
             ),

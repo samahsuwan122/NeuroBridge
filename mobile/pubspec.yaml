@@ -13,7 +13,11 @@ dependencies:
   http: ^1.6.0
   shared_preferences: ^2.5.5
   flutter_tts: ^4.2.5
-
+  url_launcher: ^6.3.2
+  image_picker: ^1.1.2
+  path_provider: ^2.1.6
+  record: ^7.1.1
+ 
 dev_dependencies:
   flutter_test:
     sdk: flutter

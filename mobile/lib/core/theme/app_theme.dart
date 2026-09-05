@@ -176,4 +176,52 @@ abstract final class AppTheme {
       ),
     );
   }
+
+  static ThemeData get dark {
+    const background = Color(0xFF17120F);
+    const surface = Color(0xFF241B16);
+    const surfaceSoft = Color(0xFF30231C);
+    const text = Color(0xFFF8EBDD);
+    const muted = Color(0xFFCAB8A8);
+    const border = Color(0xFF5A4031);
+    const gold = Color(0xFFD3A45F);
+
+    final scheme = ColorScheme.fromSeed(
+      seedColor: AppColors.secondary,
+      brightness: Brightness.dark,
+      primary: gold,
+      secondary: const Color(0xFFE2B979),
+      surface: surface,
+      error: const Color(0xFFFF8B83),
+    );
+
+    return light.copyWith(
+      brightness: Brightness.dark,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: background,
+      canvasColor: background,
+      cardColor: surface,
+      dividerColor: border,
+      appBarTheme: const AppBarTheme(backgroundColor: background, foregroundColor: text, elevation: 0, surfaceTintColor: Colors.transparent),
+      textTheme: light.textTheme.apply(bodyColor: text, displayColor: text).copyWith(
+        bodyLarge: const TextStyle(color: muted, fontSize: 17, height: 1.6),
+        bodyMedium: const TextStyle(color: muted, fontSize: 15, height: 1.5),
+      ),
+      cardTheme: CardThemeData(color: surface, surfaceTintColor: Colors.transparent, elevation: 2, shadowColor: Colors.black45, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22), side: const BorderSide(color: border))),
+      dialogTheme: DialogThemeData(backgroundColor: surface, surfaceTintColor: Colors.transparent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24), side: const BorderSide(color: border))),
+      inputDecorationTheme: light.inputDecorationTheme.copyWith(
+        filled: true,
+        fillColor: surfaceSoft,
+        labelStyle: const TextStyle(color: muted),
+        hintStyle: const TextStyle(color: muted),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: border)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: border)),
+      ),
+      navigationBarTheme: const NavigationBarThemeData(backgroundColor: surface, indicatorColor: surfaceSoft, surfaceTintColor: Colors.transparent, elevation: 0, labelTextStyle: WidgetStatePropertyAll(TextStyle(color: text, fontSize: 12, fontWeight: FontWeight.w600))),
+      chipTheme: ChipThemeData(backgroundColor: surface, selectedColor: surfaceSoft, side: const BorderSide(color: border), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), labelStyle: const TextStyle(color: text)),
+      outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: text, side: const BorderSide(color: border), minimumSize: const Size(double.infinity, 52), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)))),
+      filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(backgroundColor: const Color(0xFF6B4935), foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 56), textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)))),
+    );
+  }
 }
+

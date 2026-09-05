@@ -270,12 +270,12 @@ export function ClinicianSettingsPage(){
 <aside className="clinician-profile-identity">
 <div className="clinician-profile-photo-wrap">
 <ProviderProfileAvatar src={photo} name={name} variant="settings"/>
-<label className="clinician-profile-camera" title={c.readOnly} aria-label={c.readOnly} aria-disabled={!editingAvailable}>
+<label className="clinician-profile-camera" title={c.readOnly} aria-label={c.readOnly} aria-disabled="true">
 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
 <path d="M4 7h4l1.5-2h5L16 7h4v12H4z"/>
 <circle cx="12" cy="13" r="3.5"/>
 </svg>
-<input hidden type="file" disabled={!editingAvailable} accept="image/jpeg,image/png,image/webp" onChange={pickPhoto}/>
+<input hidden type="file" disabled accept="image/jpeg,image/png,image/webp" onChange={pickPhoto}/>
 </label>
 </div>
 <div className="clinician-profile-card-copy">

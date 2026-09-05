@@ -9,6 +9,7 @@ import { useI18n } from "../i18n/useI18n";
 import { FamilyMemberAvatar, useFamilyMembers } from "../familyMembers";
 import { useCurrentFamilyPatient } from "../currentFamilyPatient";
 import { AI_ACTION_EVENT,readAiEncouragements } from "../lib/familyAiLocalActions";
+import { webAccountApi } from "../api/webAccountClient";
 
 const MESSAGE_MAX = 300;
 const CAPTION_MAX = 180;
@@ -23,6 +24,12 @@ interface LocalMedia {
   name?: string;
   duration?: number;
   placeholder?: boolean;
+  file?: Blob;
+}
+
+interface ApiEncouragement {
+  id:string; patient_id:string; sender_name:string; message:string; caption?:string|null;
+  media_type?:MediaKind|null; media_url?:string|null; media_duration?:number|null; created_at:string;
 }
 
 interface PreviewItem {
@@ -54,39 +61,8 @@ export function MultimediaEncouragementComposer() {
   const [elapsed, setElapsed] = useState(0);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
-  const [items, setItems] = useState<PreviewItem[]>(() => [
-    {
-      id: "demo-text",
-      patientId:patient?.id,
-      sender: demoSender,
-      timestampKey: "encourage.today",
-      message: "encourage.demoText",
-    },
-    {
-      id: "demo-voice",
-      patientId:patient?.id,
-      sender: demoSender,
-      timestampKey: "encourage.today",
-      caption: "encourage.demoVoice",
-      media: { kind: "voice", duration: 18, placeholder: true },
-    },
-    {
-      id: "demo-image",
-      patientId:patient?.id,
-      sender: demoSender,
-      timestampKey: "encourage.today",
-      caption: "encourage.demoImage",
-      media: { kind: "image", placeholder: true },
-    },
-    {
-      id: "demo-video",
-      patientId:patient?.id,
-      sender: demoSender,
-      timestampKey: "encourage.today",
-      caption: "encourage.demoVideo",
-      media: { kind: "video", placeholder: true },
-    },
-  ]);
+  const [items, setItems] = useState<PreviewItem[]>([]);
+  const [sending,setSending]=useState(false);
 
   const imageInput = useRef<HTMLInputElement>(null);
   const videoInput = useRef<HTMLInputElement>(null);
@@ -98,6 +74,8 @@ export function MultimediaEncouragementComposer() {
   const elapsedRef = useRef(0);
   const ownedUrls = useRef(new Set<string>());
   useEffect(()=>{const sync=()=>{const local=readAiEncouragements().filter(item=>item.patientId===patient?.id).map(item=>({id:item.id,patientId:item.patientId,sender:item.sender,timestampKey:"encourage.justNow" as const,message:item.message}));setItems(current=>{const ids=new Set(local.map(item=>item.id));return[...current.filter(item=>!ids.has(item.id)),...local]})};sync();window.addEventListener(AI_ACTION_EVENT,sync);return()=>window.removeEventListener(AI_ACTION_EVENT,sync)},[patient?.id]);
+
+  useEffect(()=>{let cancelled=false;if(!patient){setItems([]);return()=>{cancelled=true}};(async()=>{try{const result=await webAccountApi<{success:boolean;encouragements:ApiEncouragement[]}>(`family_encouragements.php?patient_id=${encodeURIComponent(patient.id)}`);if(cancelled)return;setItems(result.encouragements.map(item=>({id:item.id,patientId:item.patient_id,sender:item.sender_name,timestampKey:"encourage.today",message:item.message||undefined,caption:item.caption||undefined,media:item.media_type&&item.media_url?{kind:item.media_type,url:item.media_url,duration:item.media_duration||undefined}:undefined})))}catch(reason){if(!cancelled)setError(reason instanceof Error?reason.message:"تعذر تحميل رسائل التشجيع")}})();return()=>{cancelled=true}},[patient?.id]);
 
   const stopTracks = () => {
     stream.current?.getTracks().forEach((track) => track.stop());
@@ -146,7 +124,7 @@ export function MultimediaEncouragementComposer() {
     revokeUrl(media?.url);
     const url = URL.createObjectURL(file);
     ownedUrls.current.add(url);
-    setMedia({ kind, url, name: file.name });
+    setMedia({ kind, url, name: file.name, file });
     setMode(kind);
     setCaption("");
   };
@@ -182,7 +160,7 @@ export function MultimediaEncouragementComposer() {
         if (blob.size) {
           const url = URL.createObjectURL(blob);
           ownedUrls.current.add(url);
-          setMedia({ kind: "voice", url, duration: Math.max(elapsedRef.current, 1) });
+          setMedia({ kind: "voice", url, duration: Math.max(elapsedRef.current, 1), file: blob });
         }
         setRecording(false);
       };
@@ -213,33 +191,28 @@ export function MultimediaEncouragementComposer() {
     if (nextMode === "voice") void startRecording();
   };
 
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
     setStatus("");
     const text = message.trim();
     const mediaCaption = caption.trim();
+    if (!patient) {
+      setError(patientCopy.noneHelp);
+      return;
+    }
     if (!text && !media) {
       setError(t("encourage.validation"));
       return;
     }
-    setItems((current) => [
-      ...current,
-      {
-        id: crypto.randomUUID?.() ?? `preview-${Date.now()}`,
-        patientId:patient?.id,
-        sender,
-        timestampKey: "encourage.justNow",
-        message: text || undefined,
-        caption: mediaCaption || undefined,
-        media: media || undefined,
-      },
-    ]);
-    setMessage("");
-    setCaption("");
-    setMedia(null);
-    setMode("text");
-    setStatus(t("encourage.success"));
+    setSending(true);
+    try {
+      const body=new FormData();body.set("patient_id",patient.id);body.set("message",text);body.set("caption",mediaCaption);
+      if(media?.file){body.set("media_type",media.kind);body.set("media_duration",String(media.duration||0));body.set("media",media.file,media.name||`encouragement.${media.kind==="image"?"jpg":media.kind==="video"?"mp4":"webm"}`)}
+      const result=await webAccountApi<{success:boolean;encouragement:ApiEncouragement}>("family_encouragements.php",{method:"POST",body});
+      const item=result.encouragement;setItems(current=>[{id:item.id,patientId:item.patient_id,sender:item.sender_name||sender,timestampKey:"encourage.justNow",message:item.message||undefined,caption:item.caption||undefined,media:item.media_type&&item.media_url?{kind:item.media_type,url:item.media_url,duration:item.media_duration||undefined}:undefined},...current]);
+      revokeUrl(media?.url);setMessage("");setCaption("");setMedia(null);setMode("text");setStatus(t("encourage.success"));
+    } catch(reason) {setError(reason instanceof Error?reason.message:"تعذر إرسال رسالة التشجيع")} finally {setSending(false)}
   };
 
   const renderMedia = (itemMedia: LocalMedia, alt = t("encourage.selectedPhotoAlt")) => {
@@ -319,7 +292,7 @@ export function MultimediaEncouragementComposer() {
 
           <div className="enc-suggestions"><strong>{t("encourage.quickSuggestions")}</strong><div>{suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => { setMessage(suggestion); setMode("text"); messageInput.current?.focus(); }}>{suggestion}</button>)}</div></div>
 
-          <div className="enc-composer__footer"><div className="enc-feedback" aria-live="polite">{error && <p className="enc-feedback__error">{error}</p>}{status && <p className="enc-feedback__success">{status}</p>}</div><button className="btn btn--gold enc-submit" type="submit" disabled={recording}><span aria-hidden="true">↗</span>{t("encourage.sendMessage")}</button></div>
+          <div className="enc-composer__footer"><div className="enc-feedback" aria-live="polite">{error && <p className="enc-feedback__error">{error}</p>}{status && <p className="enc-feedback__success">{status}</p>}</div><button className="btn btn--gold enc-submit" type="submit" disabled={recording||sending||!patient}><span aria-hidden="true">↗</span>{sending?"…":t("encourage.sendMessage")}</button></div>
         </form>
 
         <aside className="enc-live-preview" aria-labelledby="enc-preview-title">

@@ -31,6 +31,13 @@ const STATUS_TONE: Record<string, Tone> = {
   declined: "plan",
 };
 
+const REQUEST_ROLE_LABEL: Record<string, string> = {
+  patient: "مريض",
+  family: "فرد من العائلة",
+  doctor: "طبيب",
+  therapist: "معالج",
+};
+
 /**
  * Admin-only page to review public access requests submitted from the website
  * Request Access form. It reviews/updates request status only — it never
@@ -240,7 +247,7 @@ export function AdminAccessRequestsPage() {
                 <dl className="admin-card__grid">
                   <div>
                     <dt>{t("admin.requestedRole")}</dt>
-                    <dd>{r.requested_role || "—"}</dd>
+                    <dd>{REQUEST_ROLE_LABEL[r.requested_role] || r.requested_role || "—"}</dd>
                   </div>
                   <div>
                     <dt>{t("admin.phone")}</dt>
